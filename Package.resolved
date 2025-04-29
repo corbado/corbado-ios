@@ -1,0 +1,33 @@
+{
+  "originHash" : "53b5b2ea336529227e6e074dc3b6d547b60407578aaf007afae3422c9442971b",
+  "pins" : [
+    {
+      "identity" : "cborcoding",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SomeRandomiOSDev/CBORCoding.git",
+      "state" : {
+        "revision" : "6fbd643c64cf6ef7a98391820c372d05fa9ed9ab",
+        "version" : "1.4.0"
+      }
+    },
+    {
+      "identity" : "half",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SomeRandomiOSDev/Half",
+      "state" : {
+        "revision" : "14b1ab35ffdf62c999ef1016ec0f8e745a6feed5",
+        "version" : "1.4.2"
+      }
+    },
+    {
+      "identity" : "swifter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/httpswift/swifter.git",
+      "state" : {
+        "revision" : "9483a5d459b45c3ffd059f7b55f9638e268632fd",
+        "version" : "1.5.0"
+      }
+    }
+  ],
+  "version" : 3
+}
