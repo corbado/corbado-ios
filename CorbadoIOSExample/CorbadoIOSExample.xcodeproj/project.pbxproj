@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		352F43522DC0EC2B00A71FC5 /* CorbadoIOS in Frameworks */ = {isa = PBXBuildFile; productRef = 352F43512DC0EC2B00A71FC5 /* CorbadoIOS */; };
+		352F43622DC10E7500A71FC5 /* CorbadoIOS in Frameworks */ = {isa = PBXBuildFile; productRef = 352F43612DC10E7500A71FC5 /* CorbadoIOS */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				352F43522DC0EC2B00A71FC5 /* CorbadoIOS in Frameworks */,
+				352F43622DC10E7500A71FC5 /* CorbadoIOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				352F43402DC0EC0500A71FC5 /* CorbadoIOSExample */,
+				352F43602DC10E7500A71FC5 /* Frameworks */,
 				352F433F2DC0EC0500A71FC5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +49,13 @@
 				352F433E2DC0EC0500A71FC5 /* CorbadoIOSExample.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		352F43602DC10E7500A71FC5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -70,7 +78,7 @@
 			);
 			name = CorbadoIOSExample;
 			packageProductDependencies = (
-				352F43512DC0EC2B00A71FC5 /* CorbadoIOS */,
+				352F43612DC10E7500A71FC5 /* CorbadoIOS */,
 			);
 			productName = CorbadoIOSExample;
 			productReference = 352F433E2DC0EC0500A71FC5 /* CorbadoIOSExample.app */;
@@ -101,7 +109,7 @@
 			mainGroup = 352F43352DC0EC0500A71FC5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				352F43502DC0EC2B00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */,
+				352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 352F433F2DC0EC0500A71FC5 /* Products */;
@@ -352,15 +360,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		352F43502DC0EC2B00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */ = {
+		352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../CorbadoIOSPackage;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		352F43512DC0EC2B00A71FC5 /* CorbadoIOS */ = {
+		352F43612DC10E7500A71FC5 /* CorbadoIOS */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */;
 			productName = CorbadoIOS;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -1,13 +1,5 @@
 # CorbadoIOSPAckage
 
-A simple Swift Package Manager (SwiftPM) library that provides a `Printer` struct with a `sayHello()` function to print a friendly greeting message. Perfect for integrating into any Swift or iOS project as a runtime utility.
-
-## Features
-
-- Exposes a `Printer.sayHello()` method that prints “👋 Hello from CorbadoIOSPAckage!”
-- Lightweight, zero dependencies
-- SwiftPM-native; supports iOS and other Swift platforms
-
 ## Requirements
 
 - Swift 5.7 or later
