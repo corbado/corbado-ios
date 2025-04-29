@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ProjectId</key>
+	<string>pro-1045460453059053120</string>
+	<key>FrontendApiUrlSuffix</key>
+	<string>frontendapi.cloud.corbado-staging.io</string>
+</dict>
+</plist> 

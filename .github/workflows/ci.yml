@@ -1,0 +1,36 @@
+#name: Swift CI
+#
+#on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+#
+#jobs:
+#  build_and_test_example_app:
+#    runs-on: macOS-15
+#    env:
+#      SWIFT_VERSION: 6.0
+#    name: Build and Test Example App
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Select Xcode 16.0
+#        uses: maxim-lobanov/setup-xcode@v1
+#        with:
+#          xcode-version: '16.0'
+#
+#      - name: Install Swift
+#        uses: swift-actions/setup-swift@v2
+#        with:
+#          swift-version: ${{ env.SWIFT_VERSION }}
+#
+#      - name: Get swift version
+#        run: swift --version
+#
+#      - name: Get xcode version
+#        run: xcodebuild -version
+#
+#      - name: Run ConnectExample UI Tests
+#        run: xcodebuild test -scheme ConnectExample -project ConnectExample/ConnectExample.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.5'
