@@ -1,0 +1,69 @@
+{
+  "originHash" : "ac7439ef6e211b020a2cf0fce95d2080bfaa57c86c791bd33ffc85482994d172",
+  "pins" : [
+    {
+      "identity" : "amplify-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aws-amplify/amplify-swift",
+      "state" : {
+        "revision" : "90da8ffe1bc09c022f793a8e27dac8e851cfe8cf",
+        "version" : "2.47.0"
+      }
+    },
+    {
+      "identity" : "amplify-swift-utils-notifications",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aws-amplify/amplify-swift-utils-notifications.git",
+      "state" : {
+        "revision" : "959eec669ba97c7d923b963c3e66ca8a0b2737f6",
+        "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "aws-crt-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/aws-crt-swift",
+      "state" : {
+        "revision" : "74d970dde8a0d6b2fe1d8374767ca9793088ce2c",
+        "version" : "0.48.0"
+      }
+    },
+    {
+      "identity" : "aws-sdk-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/aws-sdk-swift",
+      "state" : {
+        "revision" : "104958a898543582bb01102616bf5d61ed237352",
+        "version" : "1.2.59"
+      }
+    },
+    {
+      "identity" : "smithy-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smithy-lang/smithy-swift",
+      "state" : {
+        "revision" : "755367ae4e10004f8b5a94fbfdf3f638a1f225bc",
+        "version" : "0.125.0"
+      }
+    },
+    {
+      "identity" : "sqlite.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stephencelis/SQLite.swift.git",
+      "state" : {
+        "revision" : "a95fc6df17d108bd99210db5e8a9bac90fe984b8",
+        "version" : "0.15.3"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "3d8596ed08bd13520157f0355e35caed215ffbfa",
+        "version" : "1.6.3"
+      }
+    }
+  ],
+  "version" : 3
+}
