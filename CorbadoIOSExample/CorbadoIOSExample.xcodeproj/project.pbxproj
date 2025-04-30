@@ -109,7 +109,7 @@
 			mainGroup = 352F43352DC0EC0500A71FC5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */,
+				352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 352F433F2DC0EC0500A71FC5 /* Products */;
@@ -362,16 +362,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */ = {
+		352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../CorbadoIOSPackage;
+			relativePath = ../;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		352F43612DC10E7500A71FC5 /* CorbadoIOS */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../../CorbadoIOSPackage" */;
+			package = 352F435F2DC1099E00A71FC5 /* XCLocalSwiftPackageReference "../" */;
 			productName = CorbadoIOS;
 		};
 /* End XCSwiftPackageProductDependency section */
