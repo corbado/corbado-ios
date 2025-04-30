@@ -1,6 +1,6 @@
 import Foundation
 
-typealias Flags = [String: String]
+public typealias Flags = [String: String]
 
 public struct ConnectLoginInitData: Codable {
     public let loginAllowed: Bool
@@ -8,7 +8,7 @@ public struct ConnectLoginInitData: Codable {
     public let flags: Flags
     public let expiresAt: TimeInterval?
 
-    public init(
+    init(
         loginAllowed: Bool,
         conditionalUIChallenge: String? = nil,
         flags: Flags = [:],
@@ -42,6 +42,10 @@ public struct ConnectLoginProcess: Codable {
 
     private static func storageKey(for projectId: String) -> String {
         return "cbo_connect_login-\(projectId)"
+    }
+    
+    private func isValid() -> Bool {
+        return true
     }
 
     public func validLoginData() -> ConnectLoginInitData? {
