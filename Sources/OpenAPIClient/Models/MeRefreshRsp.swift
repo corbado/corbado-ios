@@ -9,14 +9,18 @@ import Foundation
 
 public struct MeRefreshRsp: Sendable, Codable, ParameterConvertible, Hashable {
 
+    @available(*, deprecated, message: "This property is deprecated.")
     public var shortSession: String
+    public var sessionToken: String
 
-    public init(shortSession: String) {
+    public init(shortSession: String, sessionToken: String) {
         self.shortSession = shortSession
+        self.sessionToken = sessionToken
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case shortSession
+        case sessionToken
     }
 
     // Encodable protocol methods
@@ -24,6 +28,7 @@ public struct MeRefreshRsp: Sendable, Codable, ParameterConvertible, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(shortSession, forKey: .shortSession)
+        try container.encode(sessionToken, forKey: .sessionToken)
     }
 }
 

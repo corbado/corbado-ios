@@ -22,12 +22,14 @@ public struct PasskeyOperation: Sendable, Codable, ParameterConvertible, Hashabl
     public var identifierValue: String
     public var identifierType: LoginIdentifierType
     public var ceremonyType: CeremonyType
+    public var aaguidDetails: AaguidDetails?
 
-    public init(operationType: OperationType, identifierValue: String, identifierType: LoginIdentifierType, ceremonyType: CeremonyType) {
+    public init(operationType: OperationType, identifierValue: String, identifierType: LoginIdentifierType, ceremonyType: CeremonyType, aaguidDetails: AaguidDetails? = nil) {
         self.operationType = operationType
         self.identifierValue = identifierValue
         self.identifierType = identifierType
         self.ceremonyType = ceremonyType
+        self.aaguidDetails = aaguidDetails
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -35,6 +37,7 @@ public struct PasskeyOperation: Sendable, Codable, ParameterConvertible, Hashabl
         case identifierValue
         case identifierType
         case ceremonyType
+        case aaguidDetails
     }
 
     // Encodable protocol methods
@@ -45,6 +48,7 @@ public struct PasskeyOperation: Sendable, Codable, ParameterConvertible, Hashabl
         try container.encode(identifierValue, forKey: .identifierValue)
         try container.encode(identifierType, forKey: .identifierType)
         try container.encode(ceremonyType, forKey: .ceremonyType)
+        try container.encodeIfPresent(aaguidDetails, forKey: .aaguidDetails)
     }
 }
 

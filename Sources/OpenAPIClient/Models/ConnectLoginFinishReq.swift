@@ -11,15 +11,18 @@ public struct ConnectLoginFinishReq: Sendable, Codable, ParameterConvertible, Ha
 
     public var isConditionalUI: Bool
     public var assertionResponse: String
+    public var loadedMs: Int64?
 
-    public init(isConditionalUI: Bool, assertionResponse: String) {
+    public init(isConditionalUI: Bool, assertionResponse: String, loadedMs: Int64? = nil) {
         self.isConditionalUI = isConditionalUI
         self.assertionResponse = assertionResponse
+        self.loadedMs = loadedMs
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case isConditionalUI
         case assertionResponse
+        case loadedMs
     }
 
     // Encodable protocol methods
@@ -28,6 +31,7 @@ public struct ConnectLoginFinishReq: Sendable, Codable, ParameterConvertible, Ha
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(isConditionalUI, forKey: .isConditionalUI)
         try container.encode(assertionResponse, forKey: .assertionResponse)
+        try container.encodeIfPresent(loadedMs, forKey: .loadedMs)
     }
 }
 

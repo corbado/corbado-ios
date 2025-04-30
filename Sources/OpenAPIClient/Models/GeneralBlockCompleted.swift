@@ -10,22 +10,31 @@ import Foundation
 public struct GeneralBlockCompleted: Sendable, Codable, ParameterConvertible, Hashable {
 
     public var blockType: String
-    /** Only given when project environment is dev */
+    /** This is only set if the project environment is set to 'dev'. If set the UI components will set the longSession in local storage because the cookie dropping will not work in Safari for example (\"third-party cookie\"). */
+    @available(*, deprecated, message: "This property is deprecated.")
     public var longSession: String?
+    /** This is only set if the project environment is set to 'dev'. If set the UI components will set the longSession in local storage because the cookie dropping will not work in Safari for example (\"third-party cookie\"). */
+    public var refreshToken: String?
+    @available(*, deprecated, message: "This property is deprecated.")
     public var shortSession: String
+    public var sessionToken: String
     public var passkeyOperation: PasskeyOperation?
 
-    public init(blockType: String, longSession: String? = nil, shortSession: String, passkeyOperation: PasskeyOperation? = nil) {
+    public init(blockType: String, longSession: String? = nil, refreshToken: String? = nil, shortSession: String, sessionToken: String, passkeyOperation: PasskeyOperation? = nil) {
         self.blockType = blockType
         self.longSession = longSession
+        self.refreshToken = refreshToken
         self.shortSession = shortSession
+        self.sessionToken = sessionToken
         self.passkeyOperation = passkeyOperation
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case blockType
         case longSession
+        case refreshToken
         case shortSession
+        case sessionToken
         case passkeyOperation
     }
 
@@ -35,7 +44,9 @@ public struct GeneralBlockCompleted: Sendable, Codable, ParameterConvertible, Ha
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(blockType, forKey: .blockType)
         try container.encodeIfPresent(longSession, forKey: .longSession)
+        try container.encodeIfPresent(refreshToken, forKey: .refreshToken)
         try container.encode(shortSession, forKey: .shortSession)
+        try container.encode(sessionToken, forKey: .sessionToken)
         try container.encodeIfPresent(passkeyOperation, forKey: .passkeyOperation)
     }
 }

@@ -10,18 +10,22 @@ import Foundation
 public struct SessionConfigRsp: Sendable, Codable, ParameterConvertible, Hashable {
 
     public var useSessionManagement: Bool
+    @available(*, deprecated, message: "This property is deprecated.")
     public var shortSessionCookieConfig: ShortSessionCookieConfig?
+    public var sessionTokenCookieConfig: SessionTokenCookieConfig?
     public var frontendApiUrl: String?
 
-    public init(useSessionManagement: Bool, shortSessionCookieConfig: ShortSessionCookieConfig? = nil, frontendApiUrl: String? = nil) {
+    public init(useSessionManagement: Bool, shortSessionCookieConfig: ShortSessionCookieConfig? = nil, sessionTokenCookieConfig: SessionTokenCookieConfig? = nil, frontendApiUrl: String? = nil) {
         self.useSessionManagement = useSessionManagement
         self.shortSessionCookieConfig = shortSessionCookieConfig
+        self.sessionTokenCookieConfig = sessionTokenCookieConfig
         self.frontendApiUrl = frontendApiUrl
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case useSessionManagement
         case shortSessionCookieConfig
+        case sessionTokenCookieConfig
         case frontendApiUrl
     }
 
@@ -31,6 +35,7 @@ public struct SessionConfigRsp: Sendable, Codable, ParameterConvertible, Hashabl
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(useSessionManagement, forKey: .useSessionManagement)
         try container.encodeIfPresent(shortSessionCookieConfig, forKey: .shortSessionCookieConfig)
+        try container.encodeIfPresent(sessionTokenCookieConfig, forKey: .sessionTokenCookieConfig)
         try container.encodeIfPresent(frontendApiUrl, forKey: .frontendApiUrl)
     }
 }

@@ -18,17 +18,26 @@ public struct ConnectLoginStartReq: Sendable, Codable, ParameterConvertible, Has
     public var identifier: String
     public var source: Source
     public var loadedMs: Int64
+    public var loginConnectToken: String?
+    public var identifierHintAvailable: Bool?
+    public var oneTapMeta: ClientStateMeta?
 
-    public init(identifier: String, source: Source, loadedMs: Int64) {
+    public init(identifier: String, source: Source, loadedMs: Int64, loginConnectToken: String? = nil, identifierHintAvailable: Bool? = nil, oneTapMeta: ClientStateMeta? = nil) {
         self.identifier = identifier
         self.source = source
         self.loadedMs = loadedMs
+        self.loginConnectToken = loginConnectToken
+        self.identifierHintAvailable = identifierHintAvailable
+        self.oneTapMeta = oneTapMeta
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case identifier
         case source
         case loadedMs
+        case loginConnectToken
+        case identifierHintAvailable
+        case oneTapMeta
     }
 
     // Encodable protocol methods
@@ -38,6 +47,9 @@ public struct ConnectLoginStartReq: Sendable, Codable, ParameterConvertible, Has
         try container.encode(identifier, forKey: .identifier)
         try container.encode(source, forKey: .source)
         try container.encode(loadedMs, forKey: .loadedMs)
+        try container.encodeIfPresent(loginConnectToken, forKey: .loginConnectToken)
+        try container.encodeIfPresent(identifierHintAvailable, forKey: .identifierHintAvailable)
+        try container.encodeIfPresent(oneTapMeta, forKey: .oneTapMeta)
     }
 }
 

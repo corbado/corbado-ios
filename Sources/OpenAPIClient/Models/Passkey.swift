@@ -36,8 +36,9 @@ public struct Passkey: Sendable, Codable, ParameterConvertible, Hashable {
     public var created: String
     /** Status */
     public var status: Status
+    public var aaguidDetails: AaguidDetails
 
-    public init(id: String, credentialID: String, attestationType: String, transport: [Transport], backupEligible: Bool, backupState: Bool, authenticatorAAGUID: String, sourceOS: String, sourceBrowser: String, lastUsed: String, created: String, status: Status) {
+    public init(id: String, credentialID: String, attestationType: String, transport: [Transport], backupEligible: Bool, backupState: Bool, authenticatorAAGUID: String, sourceOS: String, sourceBrowser: String, lastUsed: String, created: String, status: Status, aaguidDetails: AaguidDetails) {
         self.id = id
         self.credentialID = credentialID
         self.attestationType = attestationType
@@ -50,6 +51,7 @@ public struct Passkey: Sendable, Codable, ParameterConvertible, Hashable {
         self.lastUsed = lastUsed
         self.created = created
         self.status = status
+        self.aaguidDetails = aaguidDetails
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -65,6 +67,7 @@ public struct Passkey: Sendable, Codable, ParameterConvertible, Hashable {
         case lastUsed
         case created
         case status
+        case aaguidDetails
     }
 
     // Encodable protocol methods
@@ -83,6 +86,7 @@ public struct Passkey: Sendable, Codable, ParameterConvertible, Hashable {
         try container.encode(lastUsed, forKey: .lastUsed)
         try container.encode(created, forKey: .created)
         try container.encode(status, forKey: .status)
+        try container.encode(aaguidDetails, forKey: .aaguidDetails)
     }
 }
 

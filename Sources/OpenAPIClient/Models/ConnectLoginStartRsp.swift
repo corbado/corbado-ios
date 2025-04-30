@@ -11,15 +11,18 @@ public struct ConnectLoginStartRsp: Sendable, Codable, ParameterConvertible, Has
 
     public var assertionOptions: String
     public var isCDA: Bool
+    public var fallbackOperationError: FallbackOperationError
 
-    public init(assertionOptions: String, isCDA: Bool) {
+    public init(assertionOptions: String, isCDA: Bool, fallbackOperationError: FallbackOperationError) {
         self.assertionOptions = assertionOptions
         self.isCDA = isCDA
+        self.fallbackOperationError = fallbackOperationError
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case assertionOptions
         case isCDA
+        case fallbackOperationError
     }
 
     // Encodable protocol methods
@@ -28,6 +31,7 @@ public struct ConnectLoginStartRsp: Sendable, Codable, ParameterConvertible, Has
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(assertionOptions, forKey: .assertionOptions)
         try container.encode(isCDA, forKey: .isCDA)
+        try container.encode(fallbackOperationError, forKey: .fallbackOperationError)
     }
 }
 

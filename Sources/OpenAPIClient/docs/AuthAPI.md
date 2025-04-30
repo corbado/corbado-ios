@@ -85,7 +85,7 @@ Creates a new user generated complete event.
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let eventCreateReq = eventCreateReq(eventType: passkeyEventType()) // EventCreateReq | 
+let eventCreateReq = eventCreateReq(eventType: passkeyEventType(), challenge: "challenge_example") // EventCreateReq | 
 
 AuthAPI.eventCreate(eventCreateReq: eventCreateReq) { (response, error) in
     guard error == nil else {
@@ -424,7 +424,7 @@ tbd
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let passkeyAppendStartReq = passkeyAppendStartReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false)) // PasskeyAppendStartReq | 
+let passkeyAppendStartReq = passkeyAppendStartReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false, webdriver: false, privateMode: false, clientEnvHandleMeta: clientStateMeta(ts: 123, source: "source_example"))) // PasskeyAppendStartReq | 
 
 AuthAPI.passkeyAppendStart(passkeyAppendStartReq: passkeyAppendStartReq) { (response, error) in
     guard error == nil else {
@@ -522,7 +522,7 @@ tbd
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let passkeyLoginStartReq = passkeyLoginStartReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false)) // PasskeyLoginStartReq | 
+let passkeyLoginStartReq = passkeyLoginStartReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false, webdriver: false, privateMode: false, clientEnvHandleMeta: clientStateMeta(ts: 123, source: "source_example"))) // PasskeyLoginStartReq | 
 
 AuthAPI.passkeyLoginStart(passkeyLoginStartReq: passkeyLoginStartReq) { (response, error) in
     guard error == nil else {
@@ -714,7 +714,7 @@ tbd
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let processInitReq = processInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false), passkeyAppendShown: 123, optOutOfPasskeyAppendAfterHybrid: false, preferredBlock: blockType()) // ProcessInitReq | 
+let processInitReq = processInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false, webdriver: false, privateMode: false, clientEnvHandleMeta: clientStateMeta(ts: 123, source: "source_example")), passkeyAppendShown: 123, optOutOfPasskeyAppendAfterHybrid: false, preferredBlock: blockType()) // ProcessInitReq | 
 
 AuthAPI.processInit(processInitReq: processInitReq) { (response, error) in
     guard error == nil else {

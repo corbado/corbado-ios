@@ -10,13 +10,16 @@ import Foundation
 public struct EventCreateReq: Sendable, Codable, ParameterConvertible, Hashable {
 
     public var eventType: PasskeyEventType
+    public var challenge: String?
 
-    public init(eventType: PasskeyEventType) {
+    public init(eventType: PasskeyEventType, challenge: String? = nil) {
         self.eventType = eventType
+        self.challenge = challenge
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case eventType
+        case challenge
     }
 
     // Encodable protocol methods
@@ -24,6 +27,7 @@ public struct EventCreateReq: Sendable, Codable, ParameterConvertible, Hashable 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(eventType, forKey: .eventType)
+        try container.encodeIfPresent(challenge, forKey: .challenge)
     }
 }
 

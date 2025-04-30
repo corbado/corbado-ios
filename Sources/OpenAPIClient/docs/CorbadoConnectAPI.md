@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**connectManageDelete**](CorbadoConnectAPI.md#connectmanagedelete) | **POST** /v2/connect/manage/delete | 
 [**connectManageInit**](CorbadoConnectAPI.md#connectmanageinit) | **POST** /v2/connect/manage/init | 
 [**connectManageList**](CorbadoConnectAPI.md#connectmanagelist) | **POST** /v2/connect/manage/list | 
+[**connectProcessClear**](CorbadoConnectAPI.md#connectprocessclear) | **POST** /v2/connect/process/clear | 
 
 
 # **connectAppendFinish**
@@ -79,7 +80,7 @@ Initializes a connect process for passkey append.
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let connectAppendInitReq = connectAppendInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false), flags: "TODO") // ConnectAppendInitReq | 
+let connectAppendInitReq = connectAppendInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false, webdriver: false, privateMode: false, clientEnvHandleMeta: clientStateMeta(ts: 123, source: "source_example")), flags: "TODO", invitationToken: "invitationToken_example") // ConnectAppendInitReq | 
 
 CorbadoConnectAPI.connectAppendInit(connectAppendInitReq: connectAppendInitReq) { (response, error) in
     guard error == nil else {
@@ -177,7 +178,7 @@ Creates a new user generated connect event.
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let connectEventCreateReq = connectEventCreateReq(eventType: passkeyEventType()) // ConnectEventCreateReq | 
+let connectEventCreateReq = connectEventCreateReq(eventType: passkeyEventType(), message: "message_example", challenge: "challenge_example") // ConnectEventCreateReq | 
 
 CorbadoConnectAPI.connectEventCreate(connectEventCreateReq: connectEventCreateReq) { (response, error) in
     guard error == nil else {
@@ -226,7 +227,7 @@ Finishes an initialized connect login process.
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let connectLoginFinishReq = connectLoginFinishReq(isConditionalUI: false, assertionResponse: "assertionResponse_example") // ConnectLoginFinishReq | 
+let connectLoginFinishReq = connectLoginFinishReq(isConditionalUI: false, assertionResponse: "assertionResponse_example", loadedMs: 123) // ConnectLoginFinishReq | 
 
 CorbadoConnectAPI.connectLoginFinish(connectLoginFinishReq: connectLoginFinishReq) { (response, error) in
     guard error == nil else {
@@ -275,7 +276,7 @@ Initializes a connect process for login.
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let connectLoginInitReq = connectLoginInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false), flags: "TODO") // ConnectLoginInitReq | 
+let connectLoginInitReq = connectLoginInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false, webdriver: false, privateMode: false, clientEnvHandleMeta: clientStateMeta(ts: 123, source: "source_example")), flags: "TODO", invitationToken: "invitationToken_example") // ConnectLoginInitReq | 
 
 CorbadoConnectAPI.connectLoginInit(connectLoginInitReq: connectLoginInitReq) { (response, error) in
     guard error == nil else {
@@ -324,7 +325,7 @@ Starts an initialized connect login process.
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let connectLoginStartReq = connectLoginStartReq(identifier: "identifier_example", source: "source_example", loadedMs: 123) // ConnectLoginStartReq | 
+let connectLoginStartReq = connectLoginStartReq(identifier: "identifier_example", source: "source_example", loadedMs: 123, loginConnectToken: "loginConnectToken_example", identifierHintAvailable: false, oneTapMeta: clientStateMeta(ts: 123, source: "source_example")) // ConnectLoginStartReq | 
 
 CorbadoConnectAPI.connectLoginStart(connectLoginStartReq: connectLoginStartReq) { (response, error) in
     guard error == nil else {
@@ -422,7 +423,7 @@ Initializes a connect process for passkey management.
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
 import OpenAPIClient
 
-let connectManageInitReq = connectManageInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false), flags: "TODO") // ConnectManageInitReq | 
+let connectManageInitReq = connectManageInitReq(clientInformation: clientInformation(bluetoothAvailable: false, clientEnvHandle: "clientEnvHandle_example", visitorId: "visitorId_example", canUsePasskeys: false, isUserVerifyingPlatformAuthenticatorAvailable: false, isConditionalMediationAvailable: false, clientCapabilities: clientCapabilities(conditionalCreate: false, conditionalMediation: false, hybridTransport: false, passkeyPlatformAuthenticator: false, userVerifyingPlatformAuthenticator: false), javaScriptHighEntropy: javaScriptHighEntropy(platform: "platform_example", platformVersion: "platformVersion_example", mobile: false), isNative: false, webdriver: false, privateMode: false, clientEnvHandleMeta: clientStateMeta(ts: 123, source: "source_example")), flags: "TODO", invitationToken: "invitationToken_example") // ConnectManageInitReq | 
 
 CorbadoConnectAPI.connectManageInit(connectManageInitReq: connectManageInitReq) { (response, error) in
     guard error == nil else {
@@ -494,6 +495,55 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ConnectManageListRsp**](ConnectManageListRsp.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth), [projectID](../README.md#projectID)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **connectProcessClear**
+```swift
+    open class func connectProcessClear(connectProcessClearReq: ConnectProcessClearReq, completion: @escaping (_ data: ConnectProcessClearRsp?, _ error: Error?) -> Void)
+```
+
+
+
+Remove process state for a connect process.
+
+### Example
+```swift
+// The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
+import OpenAPIClient
+
+let connectProcessClearReq = connectProcessClearReq(processId: "processId_example") // ConnectProcessClearReq | 
+
+CorbadoConnectAPI.connectProcessClear(connectProcessClearReq: connectProcessClearReq) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
+    }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **connectProcessClearReq** | [**ConnectProcessClearReq**](ConnectProcessClearReq.md) |  | 
+
+### Return type
+
+[**ConnectProcessClearRsp**](ConnectProcessClearRsp.md)
 
 ### Authorization
 

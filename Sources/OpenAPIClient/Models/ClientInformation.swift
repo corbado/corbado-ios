@@ -19,8 +19,11 @@ public struct ClientInformation: Sendable, Codable, ParameterConvertible, Hashab
     public var clientCapabilities: ClientCapabilities?
     public var javaScriptHighEntropy: JavaScriptHighEntropy?
     public var isNative: Bool?
+    public var webdriver: Bool?
+    public var privateMode: Bool?
+    public var clientEnvHandleMeta: ClientStateMeta?
 
-    public init(bluetoothAvailable: Bool? = nil, clientEnvHandle: String? = nil, visitorId: String? = nil, canUsePasskeys: Bool? = nil, isUserVerifyingPlatformAuthenticatorAvailable: Bool? = nil, isConditionalMediationAvailable: Bool? = nil, clientCapabilities: ClientCapabilities? = nil, javaScriptHighEntropy: JavaScriptHighEntropy? = nil, isNative: Bool? = nil) {
+    public init(bluetoothAvailable: Bool? = nil, clientEnvHandle: String? = nil, visitorId: String? = nil, canUsePasskeys: Bool? = nil, isUserVerifyingPlatformAuthenticatorAvailable: Bool? = nil, isConditionalMediationAvailable: Bool? = nil, clientCapabilities: ClientCapabilities? = nil, javaScriptHighEntropy: JavaScriptHighEntropy? = nil, isNative: Bool? = nil, webdriver: Bool? = nil, privateMode: Bool? = nil, clientEnvHandleMeta: ClientStateMeta? = nil) {
         self.bluetoothAvailable = bluetoothAvailable
         self.clientEnvHandle = clientEnvHandle
         self.visitorId = visitorId
@@ -30,6 +33,9 @@ public struct ClientInformation: Sendable, Codable, ParameterConvertible, Hashab
         self.clientCapabilities = clientCapabilities
         self.javaScriptHighEntropy = javaScriptHighEntropy
         self.isNative = isNative
+        self.webdriver = webdriver
+        self.privateMode = privateMode
+        self.clientEnvHandleMeta = clientEnvHandleMeta
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -42,6 +48,9 @@ public struct ClientInformation: Sendable, Codable, ParameterConvertible, Hashab
         case clientCapabilities
         case javaScriptHighEntropy
         case isNative
+        case webdriver
+        case privateMode
+        case clientEnvHandleMeta
     }
 
     // Encodable protocol methods
@@ -57,6 +66,9 @@ public struct ClientInformation: Sendable, Codable, ParameterConvertible, Hashab
         try container.encodeIfPresent(clientCapabilities, forKey: .clientCapabilities)
         try container.encodeIfPresent(javaScriptHighEntropy, forKey: .javaScriptHighEntropy)
         try container.encodeIfPresent(isNative, forKey: .isNative)
+        try container.encodeIfPresent(webdriver, forKey: .webdriver)
+        try container.encodeIfPresent(privateMode, forKey: .privateMode)
+        try container.encodeIfPresent(clientEnvHandleMeta, forKey: .clientEnvHandleMeta)
     }
 }
 

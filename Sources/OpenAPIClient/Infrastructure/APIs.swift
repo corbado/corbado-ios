@@ -25,7 +25,7 @@ open class OpenAPIClientAPIConfiguration: @unchecked Sendable {
     public var interceptor: OpenAPIInterceptor
 
     public init(
-        basePath: String = "https://<Project ID>.frontendapi.corbado.io",
+        basePath: String = "https://<project ID>.frontendapi.corbado.io",
         customHeaders: [String: String] = [:],
         credential: URLCredential? = nil,
         requestBuilderFactory: RequestBuilderFactory = URLSessionRequestBuilderFactory(),

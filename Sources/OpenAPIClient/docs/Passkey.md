@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **lastUsed** | **String** | Timestamp of when the passkey was last used in yyyy-MM-dd&#39;T&#39;HH:mm:ss format | 
 **created** | **String** | Timestamp of when the entity was created in yyyy-MM-dd&#39;T&#39;HH:mm:ss format | 
 **status** | **String** | Status | 
+**aaguidDetails** | [**AaguidDetails**](AaguidDetails.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

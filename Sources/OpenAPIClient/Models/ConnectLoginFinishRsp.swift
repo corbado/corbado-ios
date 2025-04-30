@@ -11,15 +11,21 @@ public struct ConnectLoginFinishRsp: Sendable, Codable, ParameterConvertible, Ha
 
     public var passkeyOperation: PasskeyOperation
     public var session: String
+    public var signedPasskeyData: String
+    public var fallbackOperationError: FallbackOperationError?
 
-    public init(passkeyOperation: PasskeyOperation, session: String) {
+    public init(passkeyOperation: PasskeyOperation, session: String, signedPasskeyData: String, fallbackOperationError: FallbackOperationError? = nil) {
         self.passkeyOperation = passkeyOperation
         self.session = session
+        self.signedPasskeyData = signedPasskeyData
+        self.fallbackOperationError = fallbackOperationError
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case passkeyOperation
         case session
+        case signedPasskeyData
+        case fallbackOperationError
     }
 
     // Encodable protocol methods
@@ -28,6 +34,8 @@ public struct ConnectLoginFinishRsp: Sendable, Codable, ParameterConvertible, Ha
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(passkeyOperation, forKey: .passkeyOperation)
         try container.encode(session, forKey: .session)
+        try container.encode(signedPasskeyData, forKey: .signedPasskeyData)
+        try container.encodeIfPresent(fallbackOperationError, forKey: .fallbackOperationError)
     }
 }
 

@@ -428,4 +428,46 @@ open class CorbadoConnectAPI {
 
         return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
+
+    /**
+
+     - parameter connectProcessClearReq: (body)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: ConnectProcessClearRsp
+     */
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    open class func connectProcessClear(connectProcessClearReq: ConnectProcessClearReq, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> ConnectProcessClearRsp {
+        return try await connectProcessClearWithRequestBuilder(connectProcessClearReq: connectProcessClearReq, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     - POST /v2/connect/process/clear
+     - Remove process state for a connect process.
+     - Bearer Token:
+       - type: http
+       - name: bearerAuth
+     - API Key:
+       - type: apiKey X-Corbado-ProjectID (HEADER)
+       - name: projectID
+     - parameter connectProcessClearReq: (body)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<ConnectProcessClearRsp> 
+     */
+    open class func connectProcessClearWithRequestBuilder(connectProcessClearReq: ConnectProcessClearReq, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<ConnectProcessClearRsp> {
+        let localVariablePath = "/v2/connect/process/clear"
+        let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: connectProcessClearReq, codableHelper: apiConfiguration.codableHelper)
+
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            "Content-Type": "application/json",
+        ]
+
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<ConnectProcessClearRsp>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    }
 }
