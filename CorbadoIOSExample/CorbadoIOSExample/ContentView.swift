@@ -1,20 +1,25 @@
 import SwiftUI
-import CorbadoIOS
 
 struct ContentView: View {
-    @State private var greeting: String = "Loading…"
-    
+    @State private var isLoggedIn = false
+    @State private var username = ""
+
     var body: some View {
-        VStack {
-            Text(greeting)
-                .font(.subheadline)
+        Group {
+            if isLoggedIn {
+                ProfileView(username: username) {
+                    // Logout callback
+                    isLoggedIn = false
+                    username = ""
+                }
+            } else {
+                LoginView(username: $username) {
+                    // Login callback
+                    isLoggedIn = true
+                }
+            }
         }
-        .padding()
-        // Kick off the async call when this view appears
-        .task {
-            // Call your async API wrapper
-            greeting = await CorbadoIOS.sayHello()
-        }
+        .animation(.easeInOut, value: isLoggedIn)
     }
 }
 
