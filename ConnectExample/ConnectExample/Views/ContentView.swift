@@ -14,8 +14,8 @@ struct ContentView: View {
     var body: some View {
         Group {
             switch viewModel.currentAuthState {
-            case .unknown, .checking:                
-                ProgressView()
+            case .unknown, .checking:
+                Text("Loading...")
             case .signedOut:
                 NavigationView {
                     LoginView()

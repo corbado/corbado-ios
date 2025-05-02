@@ -18,21 +18,25 @@ enum AuthState {
     case requiresTOTPSetup        // User needs to set up TOTP during signup
 }
 
+@MainActor
 class AuthViewModel: ObservableObject {
     private let authManager: AuthManager;
     private var cancellables = Set<AnyCancellable>()
     
     @Published var email = ""
+    @Published var phoneNumber = ""
     @Published var password = ""
     @Published var totpCode = ""
     
-    @Published var currentAuthState: AuthState = .unknown
+    @Published var currentAuthState: AuthState = .signedOut
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-
-    init(authManager: AuthManager) {
-        self.authManager = authManager
+    
+    init() {
+        self.authManager = AuthManager()
+        
+        listenToAuthEvents()
     }
     
     func signIn() {
@@ -44,13 +48,13 @@ class AuthViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         totpCode = ""
-
+        
         Task {
             do {
                 let signInResult = try await authManager.signIn(email: email, password: password)
-
+                
                 print("Sign In Result: \(signInResult.nextStep)")
-
+                
                 switch signInResult.nextStep {
                 case .confirmSignInWithTOTPCode:
                     currentAuthState = .requiresTOTPConfirmation // Update state to show TOTP view
@@ -60,28 +64,113 @@ class AuthViewModel: ObservableObject {
                     print("Sign in successful.")
                     clearCredentials()
                 case .confirmSignUp:
-                     errorMessage = "Please confirm your sign up first." // Or navigate to confirmation view
-                     currentAuthState = .signedOut
+                    errorMessage = "Please confirm your sign up first." // Or navigate to confirmation view
+                    currentAuthState = .signedOut
                 case .resetPassword:
-                     errorMessage = "Please reset your password." // Or navigate to reset password view
-                     currentAuthState = .signedOut
-                 case .confirmSignInWithCustomChallenge, .confirmSignInWithNewPassword, .confirmSignInWithSMSMFACode:
-                     errorMessage = "Unexpected sign in step encountered: \(signInResult.nextStep)"
-                     currentAuthState = .signedOut
+                    errorMessage = "Please reset your password." // Or navigate to reset password view
+                    currentAuthState = .signedOut
+                case .confirmSignInWithCustomChallenge, .confirmSignInWithNewPassword, .confirmSignInWithSMSMFACode:
+                    errorMessage = "Unexpected sign in step encountered: \(signInResult.nextStep)"
+                    currentAuthState = .signedOut
                 default:
                     break
                 }
             } catch let authError as AuthError {
-                 handleAuthError(authError)
-                 currentAuthState = .signedOut
-             } catch {
-                 errorMessage = "An unexpected error occurred during sign in: \(error.localizedDescription)"
-                 currentAuthState = .signedOut
+                handleAuthError(authError)
+                currentAuthState = .signedOut
+            } catch {
+                errorMessage = "An unexpected error occurred during sign in: \(error.localizedDescription)"
+                currentAuthState = .signedOut
             }
             isLoading = false
         }
     }
-
+    
+    func signUp() {
+        guard !email.isEmpty, !password.isEmpty, !phoneNumber.isEmpty else {
+            errorMessage = "Please enter email, phone and password."
+            return
+        }
+        
+        Task  {
+            do {
+                let res = try await authManager.signUp(email: email, password: password, phoneNumber: phoneNumber)
+                
+                if case .completeAutoSignIn(let session) = res.nextStep {
+                    let autoSignInResult = try await Amplify.Auth.autoSignIn()
+                    print("Auto sign in result: \(autoSignInResult.isSignedIn)")
+                } else {
+                    print("Confirm sign up result completed: \(res.isSignUpComplete)")
+                }
+            } catch let authError as AuthError {
+                handleAuthError(authError)
+                currentAuthState = .signedOut
+            }
+        }
+    }
+    
+    func verifyTOTP() {
+        isLoading = true
+        errorMessage = nil
+        
+        guard !totpCode.isEmpty, totpCode.count == 6 else {
+            errorMessage = "Please provide your TOTP code."
+            return
+        }
+        
+        Task {
+            do {
+                try await authManager.verifyTOTPSignIn(code: totpCode)
+            } catch let authError as AuthError {
+                handleAuthError(authError)
+            } catch {
+                errorMessage = "An unexpected error occurred during TOTP verification: \(error.localizedDescription)"
+                currentAuthState = .signedOut
+            }
+            isLoading = false
+        }
+    }
+    
+    func initSetupTOTP() async -> TOTPSetupDetails? {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let details = try await self.authManager.setUpTOTP()
+            isLoading = false
+            
+            return details
+        } catch {
+            errorMessage = "TOTP could not be initialized. Try again later."
+            isLoading = false
+            
+            return nil
+        }
+    }
+    
+    func completeSetupTOTP() async {
+        isLoading = true
+        errorMessage = nil
+        
+        guard !totpCode.isEmpty, totpCode.count == 6 else {
+            errorMessage = "Please provide your TOTP code."
+            return
+        }
+        
+        Task {
+            do {
+                try await authManager.verifyTOTPSetup(code: totpCode)
+            } catch let authError as AuthError {
+                handleAuthError(authError)
+            } catch {
+                errorMessage = "An unexpected error occurred during TOTP verification: \(error.localizedDescription)"
+                currentAuthState = .signedOut
+            }
+            
+            isLoading = false
+        }
+    }
+    
     
     func signOut() {
         isLoading = true
@@ -98,7 +187,7 @@ class AuthViewModel: ObservableObject {
         currentAuthState = .checking
         isLoading = true
         errorMessage = nil
-
+        
         Task {
             do {
                 let session = try await authManager.fetchCurrentAuthSession()
@@ -153,12 +242,13 @@ class AuthViewModel: ObservableObject {
             currentAuthState = .signedOut // Force sign out state
         }
     }
-
+    
     
     private func clearCredentials() {
         email = ""
+        phoneNumber = ""
         password = ""
-        errorMessage = ""
+        errorMessage = nil
         totpCode = ""
     }
     
@@ -169,11 +259,20 @@ class AuthViewModel: ObservableObject {
                 guard let self = self else { return }
                 
                 switch payload.eventName {
-                case HubPayload.EventName.Auth.signedIn:
+                case HubPayload.EventName.Auth.signedIn, HubPayload.EventName.Auth.autoSignInAPI:
                     print("User signed in")
                     if self.currentAuthState != .signedIn {
-                        self.currentAuthState = .signedIn
-                        self.clearCredentials()
+                        Task {
+                            self.clearCredentials()
+                            
+                            let hasMFA = try await self.authManager.getMFAPreference()
+                            if !hasMFA {
+                                self.currentAuthState = .requiresTOTPSetup
+                                return
+                            }
+                            
+                            self.currentAuthState = .signedIn
+                        }
                     }
                     
                 case HubPayload.EventName.Auth.signedOut:

@@ -11,30 +11,28 @@ import AWSCognitoAuthPlugin
 
 @main
 struct ConnectExampleApp: App {
-    let authManager: AuthManager;
-    @StateObject var authViewModel: AuthViewModel
+    @StateObject var authViewModel: AuthViewModel = AuthViewModel()
     
     init() {
-        let manager = AuthManager()
-        self.authManager = manager
-        
-        _authViewModel = StateObject(wrappedValue: AuthViewModel(authManager: manager))
-        configureAmplify()
-        authViewModel.checkAuthState()
+        configureAmplify()        
     }
     
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(authViewModel)
+                .onAppear {
+                    authViewModel.checkAuthState()
+                }
         }
     }
     
     private func configureAmplify() {
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            try Amplify.configure(with: .amplifyOutputs)
+            try Amplify.configure()
         } catch {
             print("Failed to configure Amplify: \(error)")
         }
     }
 }
+

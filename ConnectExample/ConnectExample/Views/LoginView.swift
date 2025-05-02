@@ -12,9 +12,7 @@ struct LoginView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Welcome Back!").font(.largeTitle)
-            
+        VStack(spacing: 20) {                    
             TextField("Email", text: $authViewModel.email)
                 .keyboardType(.emailAddress)
                 .textContentType(.emailAddress)
