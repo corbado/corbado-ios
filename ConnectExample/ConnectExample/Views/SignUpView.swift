@@ -33,29 +33,35 @@ struct SignUpView: View {
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
-            
-            Button("Submit") {
+                        
+            Button() {
                 authViewModel.signUp()
+            } label: {
+                Text("Submit")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(Color.white)
+                    .cornerRadius(8)
+                
             }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(Color.white)
-            .cornerRadius(8)
             .disabled(authViewModel.isLoading)
-            
-            Button("Autofill") {
-                let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                let randomChars = (0..<10).compactMap { _ in letters.randomElement() }
-                authViewModel.email = "integration-test+\(String(randomChars))@corbado.com"
-                authViewModel.phoneNumber = "+4915121609839"
-                authViewModel.password = "asdfasdf"
+                        
+            Button() {
+                    let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                    let randomChars = (0..<10).compactMap { _ in letters.randomElement() }
+                    authViewModel.email = "integration-test+\(String(randomChars))@corbado.com"
+                    authViewModel.phoneNumber = "+4915121609839"
+                    authViewModel.password = "asdfasdf"
+            } label: {
+                Text("Autofill")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(Color.white)
+                    .cornerRadius(8)
+                
             }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(Color.white)
-            .cornerRadius(8)
             .disabled(authViewModel.isLoading)
             
             NavigationLink("Log in instead", destination: LoginView())

@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    // Access the shared AuthViewModel from the environment
+struct ContentView: View {    
     @EnvironmentObject var viewModel: AuthViewModel
 
     var body: some View {
@@ -31,6 +30,10 @@ struct ContentView: View {
             case .requiresTOTPSetup:
                 NavigationView {
                     TOTPSetupView()
+                }
+            case .checkingPKSetup:
+                NavigationView {
+                    PostLoginView()
                 }
             }
         }

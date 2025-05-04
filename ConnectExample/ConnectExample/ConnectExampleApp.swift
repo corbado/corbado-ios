@@ -12,14 +12,17 @@ import AWSCognitoAuthPlugin
 @main
 struct ConnectExampleApp: App {
     @StateObject var authViewModel: AuthViewModel = AuthViewModel()
+    @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
     
     init() {
-        configureAmplify()        
+        configureAmplify()
     }
     
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(authViewModel)
+            ContentView()
+                .environmentObject(authViewModel)
+                .environmentObject(profileViewModel)
                 .onAppear {
                     authViewModel.checkAuthState()
                 }

@@ -7,32 +7,90 @@
 
 import SwiftUI
 
+
 struct ProfileView: View {
     // Access the shared AuthViewModel
-    @EnvironmentObject var authViewModel: AuthViewModel
-
+    @EnvironmentObject var viewModel: ProfileViewModel
+    @State private var safariURLItem: URL? = nil
+    
+    
     var body: some View {
-        VStack(spacing: 30) {
-            Text("Profile")
-                .font(.title)
-
-            Text("You are logged in!")
-
-            Button("Log Out") {
-                print("Logout button tapped")
-                authViewModel.signOut()
-                // ContentView will automatically switch back to LoginView
+        VStack(alignment: .leading, spacing: 30) {
+            if viewModel.isLoading {
+                ProgressView()
+            } else {
+                Divider()
+                
+                HStack() {
+                    Text("Email:")
+                        .fontWeight(.medium)
+                    Spacer()
+                    Text(viewModel.email)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .foregroundColor(.secondary)
+                }
+                
+                HStack {
+                    Text("Phone:")
+                        .fontWeight(.medium)
+                    Spacer()
+                    Text(viewModel.phoneNumber)
+                        .foregroundColor(.secondary)
+                }
+                
+                Button() {
+                    viewModel.signOut()
+                } label: {
+                    Text("Logout")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(Color.white)
+                        .cornerRadius(8)
+                }
+                
+                Button() {
+                    Task {
+                        guard let idToken = await viewModel.getIdToken() else {
+                            return
+                        }
+                        
+                        guard let url = URL(string: "https://feature-wv.connect-next.playground.corbado.io/redirect?token=\(idToken)&redirectUrl=%2Fpasskey-list-wv") else {
+                            return
+                        }
+                        
+                        safariURLItem = url
+                    }
+                } label: {
+                    Text("Passkeys")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(Color.white)
+                        .cornerRadius(8)
+                }
+                
+                Spacer()
             }
-            .buttonStyle(.bordered)
-            .tint(.red)
-
-            Spacer() // Push content to the top
         }
         .padding()
-        // Set the title for the Navigation Bar
         .navigationTitle("Profile")
-        .navigationBarTitleDisplayMode(.inline) // Or .large
-        // Hide the default back button if coming from Login (optional)
-        // .navigationBarBackButtonHidden(true)
+        .onAppear {
+            Task {
+                await viewModel.fetchUserData()
+            }
+        }
+        .sheet(item: $safariURLItem) { url in
+            SafariView(url: url)
+        }
     }
+}
+
+extension URL: Identifiable {
+    public var id: URL { return self }
+}
+
+#Preview {
+    ProfileView().environmentObject(ProfileViewModel())
 }

@@ -72,12 +72,14 @@ struct TOTPSetupView: View {
                             .frame(maxWidth: .infinity)
                     } else {
                         Text("Complete")
+                            .padding()
                             .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(Color.white)
+                            .cornerRadius(8)
                     }
-                }
-                .buttonStyle(.borderedProminent)                
+                }                
                 .disabled(authViewModel.isLoading || authViewModel.totpCode.count != 6)
-                
                 
                 Spacer() // Push content to the top
             }

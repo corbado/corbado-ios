@@ -14,10 +14,10 @@ struct LoginView: View {
     var body: some View {
         VStack(spacing: 20) {                    
             TextField("Email", text: $authViewModel.email)
+                .padding()
                 .keyboardType(.emailAddress)
                 .textContentType(.emailAddress)
                 .autocapitalization(.none)
-                .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
             
@@ -26,15 +26,18 @@ struct LoginView: View {
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
-            
-            Button("Login") {
+                                
+            Button() {
                 authViewModel.signIn()
+            } label: {
+                Text("Login")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(Color.white)
+                    .cornerRadius(8)
+                
             }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(Color.white)
-            .cornerRadius(8)
             .disabled(authViewModel.isLoading)
             
             NavigationLink("Don't have an account? Sign Up", destination: SignUpView())
@@ -42,7 +45,6 @@ struct LoginView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Login")
-        .disabled(authViewModel.isLoading)
+        .navigationTitle("Login")        
     }
 }

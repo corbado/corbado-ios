@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import Amplify
+import AWSPluginsCore
 
 enum AuthState {
     case unknown      // Initial state
@@ -16,12 +17,14 @@ enum AuthState {
     case signedIn     // User is definitively signed in
     case requiresTOTPConfirmation // User needs to enter TOTP code for login
     case requiresTOTPSetup        // User needs to set up TOTP during signup
+    case checkingPKSetup
 }
 
 @MainActor
 class AuthViewModel: ObservableObject {
     private let authManager: AuthManager;
     private var cancellables = Set<AnyCancellable>()
+    private var pkSetupChecked = false
     
     @Published var email = ""
     @Published var phoneNumber = ""
@@ -100,7 +103,8 @@ class AuthViewModel: ObservableObject {
                     let autoSignInResult = try await Amplify.Auth.autoSignIn()
                     print("Auto sign in result: \(autoSignInResult.isSignedIn)")
                 } else {
-                    print("Confirm sign up result completed: \(res.isSignUpComplete)")
+                    let res = try await authManager.signIn(email: email, password: password)
+                    print("Confirm sign up result completed: \(res.isSignedIn)")
                 }
             } catch let authError as AuthError {
                 handleAuthError(authError)
@@ -171,14 +175,17 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    
-    func signOut() {
-        isLoading = true
-        errorMessage = nil
-        
-        Task {
-            await authManager.signOut()
-            isLoading = false
+    func getIdToken() async -> String? {
+        do {
+            let session = try await authManager.fetchCurrentAuthSession()
+            if let cognitoTokenProvider = session as? AuthCognitoTokensProvider {
+                let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+                return tokens.idToken
+            }
+            
+            return nil
+        } catch {
+            return nil
         }
     }
     
@@ -203,6 +210,22 @@ class AuthViewModel: ObservableObject {
                 // You might want more specific error handling here
             }
             isLoading = false
+        }
+    }
+    
+    func completePKSetupChecking() {
+        pkSetupChecked = true
+        
+        Task {
+            self.clearCredentials()
+            
+            let hasMFA = try await self.authManager.getMFAPreference()
+            if !hasMFA {
+                self.currentAuthState = .requiresTOTPSetup
+                return
+            }
+            
+            self.currentAuthState = .signedIn
         }
     }
     
@@ -243,7 +266,6 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    
     private func clearCredentials() {
         email = ""
         phoneNumber = ""
@@ -259,21 +281,33 @@ class AuthViewModel: ObservableObject {
                 guard let self = self else { return }
                 
                 switch payload.eventName {
-                case HubPayload.EventName.Auth.signedIn, HubPayload.EventName.Auth.autoSignInAPI:
-                    print("User signed in")
-                    if self.currentAuthState != .signedIn {
-                        Task {
-                            self.clearCredentials()
-                            
-                            let hasMFA = try await self.authManager.getMFAPreference()
-                            if !hasMFA {
-                                self.currentAuthState = .requiresTOTPSetup
-                                return
-                            }
-                            
-                            self.currentAuthState = .signedIn
-                        }
+                case HubPayload.EventName.Auth.updateMFAPreferenceAPI:
+                    if !self.pkSetupChecked {
+                        self.currentAuthState = .checkingPKSetup
                     }
+                    
+                    self.clearCredentials()
+                    self.currentAuthState = .signedIn
+                    
+                    
+                case HubPayload.EventName.Auth.signedIn, HubPayload.EventName.Auth.autoSignInAPI:
+                    if !self.pkSetupChecked {
+                        self.currentAuthState = .checkingPKSetup
+                    }
+                    /*
+                     if self.currentAuthState != .signedIn {
+                     Task {
+                     self.clearCredentials()
+                     
+                     let hasMFA = try await self.authManager.getMFAPreference()
+                     if !hasMFA {
+                     self.currentAuthState = .requiresTOTPSetup
+                     return
+                     }
+                     
+                     self.currentAuthState = .signedIn
+                     }
+                     }*/
                     
                 case HubPayload.EventName.Auth.signedOut:
                     print("User signed out")

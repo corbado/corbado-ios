@@ -171,10 +171,4 @@ class AuthManager {
             throw AuthError.amplifyError(error)
         }
     }
-
-    // Sign Out
-    func signOut() async {
-        _ = await Amplify.Auth.signOut() // Doesn't typically throw for simple sign out
-    }
-
 }

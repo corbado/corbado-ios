@@ -22,19 +22,26 @@ struct TOTPConfirmationView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
             
-            Button("Submit") {
+            Button() {
                 authViewModel.verifyTOTP()
+            } label: {
+                Text("Submit")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(Color.white)
+                    .cornerRadius(8)
+                
             }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(Color.white)
-            .cornerRadius(8)
             .disabled(authViewModel.isLoading)
         }
+        .padding()
     }
 }
 
 #Preview {
+    let vm = AuthViewModel()
+    
     TOTPConfirmationView()
+        .environmentObject(vm)
 }

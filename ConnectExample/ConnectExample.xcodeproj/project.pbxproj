@@ -35,9 +35,22 @@
 		6173917C2DC2705400D4481F /* ConnectExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		612091022DC7892E00C72623 /* Exceptions for "ConnectExample" folder in "ConnectExample" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 617391612DC2705300D4481F /* ConnectExample */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		617391642DC2705300D4481F /* ConnectExample */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				612091022DC7892E00C72623 /* Exceptions for "ConnectExample" folder in "ConnectExample" target */,
+			);
 			path = ConnectExample;
 			sourceTree = "<group>";
 		};
@@ -414,6 +427,7 @@
 				DEVELOPMENT_TEAM = T9A667JL6T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ConnectExample/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -443,6 +457,7 @@
 				DEVELOPMENT_TEAM = T9A667JL6T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ConnectExample/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
