@@ -9,6 +9,8 @@ import Foundation
 import Combine
 import Amplify
 import AWSPluginsCore
+import CorbadoIOS
+import AWSCognitoAuthPlugin
 
 enum AuthState {
     case unknown      // Initial state
@@ -26,6 +28,7 @@ class AuthViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var pkSetupChecked = false
     
+    let corbado: CorbadoIOS;
     @Published var email = ""
     @Published var phoneNumber = ""
     @Published var password = ""
@@ -38,6 +41,7 @@ class AuthViewModel: ObservableObject {
     
     init() {
         self.authManager = AuthManager()
+        self.corbado = CorbadoIOS(projectId: "pro-1045460453059053120", frontendApiUrlSuffix: "frontendapi.cloud.corbado-staging.io", isDebug: nil)
         
         listenToAuthEvents()
     }
@@ -86,6 +90,26 @@ class AuthViewModel: ObservableObject {
                 currentAuthState = .signedOut
             }
             isLoading = false
+        }
+    }
+    
+    func handoverSessionToAmplify(session: String) async {
+        let decoded = decodeJwt(token: session)
+        guard let username = decoded?["webauthnId"] as? String else {
+            print("decoding error")
+            
+            return
+        }
+        
+        let option = AWSAuthSignInOptions(authFlowType: .customWithoutSRP)
+        do {
+            let signInResult = try await Amplify.Auth.signIn(username: username as String, options: AuthSignInRequest.Options(pluginOptions: option));
+            if case .confirmSignInWithCustomChallenge(_) = signInResult.nextStep {
+                _ = try await Amplify.Auth.confirmSignIn(challengeResponse: session)
+                print("Confirm sign in succeeded")
+            }
+        } catch let error {
+            print("handover error")
         }
     }
     
@@ -321,4 +345,39 @@ class AuthViewModel: ObservableObject {
                 }
             }.store(in: &cancellables)
     }
+    
+    private func decodeJwt(token: String) -> [String: Any]? {
+        let segments = token.components(separatedBy: ".")
+        
+        
+        guard segments.count >= 2 else {
+            print("Error: JWT token is not valid, not enough segments.")
+            return nil
+        }
+        
+        
+        var payloadBase64UrlString = segments[1]
+        
+        payloadBase64UrlString = payloadBase64UrlString.replacingOccurrences(of: "-", with: "+")
+        payloadBase64UrlString = payloadBase64UrlString.replacingOccurrences(of: "_", with: "/")
+        
+        let requiredPadding = payloadBase64UrlString.count % 4
+        if requiredPadding > 0 {
+            payloadBase64UrlString += String(repeating: "=", count: 4 - requiredPadding)
+        }
+        
+        guard let payloadData = Data(base64Encoded: payloadBase64UrlString) else {
+            print("Error: Could not decode base64 payload string.")
+            return nil
+        }
+        
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: payloadData, options: [])
+            return jsonObject as? [String: Any]
+        } catch {
+            print("Error: Could not parse JSON from payload data. \(error)")
+            return nil
+        }
+    }
+    
 }

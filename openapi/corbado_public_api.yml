@@ -668,6 +668,8 @@ paths:
                 $ref: '#/components/schemas/connectLoginStartRsp'
         '404':
           description: No user was found for the identifier
+        '400':
+          description: Bad Request - client error          
 
   /v2/connect/login/finish:
     post:

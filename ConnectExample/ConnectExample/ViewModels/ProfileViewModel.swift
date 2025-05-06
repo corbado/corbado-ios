@@ -54,12 +54,8 @@ class ProfileViewModel: ObservableObject {
     }
     
     func signOut() {
-        isLoading = true
-        errorMessage = nil
-        
         Task {
-            _ = await Amplify.Auth.signOut()
-            isLoading = false
+            _ = await Amplify.Auth.signOut()            
         }
     }
 }
