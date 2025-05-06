@@ -10,7 +10,8 @@ import CoreImage.CIFilterBuiltins
 import Amplify
 
 struct TOTPSetupView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var appRouter: AppRouter
+    @StateObject var viewModel = TOTPSetupViewModel()
     
     @State private var setupDetails: TOTPSetupDetails? = nil
     
@@ -20,7 +21,7 @@ struct TOTPSetupView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            if authViewModel.isLoading {
+            if viewModel.isLoading {
                 ProgressView("Fetching setup details...")
             } else if setupDetails != nil {
                 InstructionsView()
@@ -54,32 +55,16 @@ struct TOTPSetupView: View {
                 }
                 .padding(.horizontal)
                 
-                TextField("Enter 6-digit code", text: $authViewModel.totpCode)
+                TextField("Enter 6-digit code", text: $viewModel.totpCode)
                     .keyboardType(.numberPad)
                     .textContentType(.oneTimeCode)
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(8)                    
                 
-                Button {
-                    Task {
-                        await authViewModel.completeSetupTOTP()
-                    }
-                } label: {
-                    if authViewModel.isLoading {
-                        ProgressView()
-                            .tint(.white)
-                            .frame(maxWidth: .infinity)
-                    } else {
-                        Text("Complete")
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .foregroundColor(Color.white)
-                            .cornerRadius(8)
-                    }
-                }                
-                .disabled(authViewModel.isLoading || authViewModel.totpCode.count != 6)
+                AnimatedButton(label: "Complete", isLoading: viewModel.isLoading) {
+                    await viewModel.completeSetupTOTP(appRouter: appRouter)
+                }
                 
                 Spacer() // Push content to the top
             }
@@ -90,7 +75,7 @@ struct TOTPSetupView: View {
         .onAppear {
             if setupDetails == nil {
                 Task {
-                    setupDetails = await authViewModel.initSetupTOTP()
+                    setupDetails = await viewModel.initSetupTOTP()
                 }
             }
         }
@@ -122,7 +107,6 @@ struct TOTPSetupView: View {
     }
 }
 
-// MARK: - Helper Subview for Instructions
 struct InstructionsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

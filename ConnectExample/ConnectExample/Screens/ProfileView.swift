@@ -1,12 +1,12 @@
 import SwiftUI
-// No need for SafariView or URL: Identifiable if only used here
 
 struct ProfileView: View {
-    @EnvironmentObject var viewModel: ProfileViewModel // Assuming ProfileViewModel exists and has getIdToken() and fetchUserData()
-
-    // State for controlling the AuthWebView presentation    
+    @EnvironmentObject var appRouter: AppRouter
+    
+    @StateObject var viewModel = ProfileViewModel()
+    
     @State private var passkeyWebViewURL: URL?
-    @State private var webViewError: Error? // To potentially show errors after dismissal
+    @State private var webViewError: Error?
 
     private let passkeyCallbackScheme = "auth" // << EXAMPLE - CHANGE IF NEEDED
 
@@ -48,7 +48,7 @@ struct ProfileView: View {
 
                 // --- Buttons ---
                 Button() {
-                    viewModel.signOut()
+                    viewModel.signOut(appRouter: appRouter)
                 } label: {
                     Text("Logout")
                         .padding()

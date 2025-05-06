@@ -53,9 +53,10 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    func signOut() {
+    func signOut(appRouter: AppRouter) {
         Task {
-            _ = await Amplify.Auth.signOut()            
+            _ = await Amplify.Auth.signOut()
+            appRouter.navigateTo(.login)
         }
     }
 }

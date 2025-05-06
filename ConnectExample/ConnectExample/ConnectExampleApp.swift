@@ -8,23 +8,32 @@
 import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
+import CorbadoIOS
 
 @main
 struct ConnectExampleApp: App {
-    @StateObject var authViewModel: AuthViewModel = AuthViewModel()
-    @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
+    @StateObject private var appRouter = AppRouter()
     
     init() {
         configureAmplify()
+        CorbadoIOS.shared.configure(projectId: "pro-1045460453059053120", frontendApiUrlSuffix: "frontendapi.cloud.corbado-staging.io", isDebug: nil)
     }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(authViewModel)
-                .environmentObject(profileViewModel)
+                .environmentObject(appRouter)
                 .onAppear {
-                    authViewModel.checkAuthState()
+                    Task {
+                        do {
+                            let session = try await Amplify.Auth.fetchAuthSession()
+                            if session.isSignedIn {
+                                appRouter.replace(.home)
+                            }
+                        } catch {
+                            print("error")
+                        }
+                    }
                 }
         }
     }

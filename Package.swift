@@ -14,12 +14,18 @@ let package = Package(
             name: "CorbadoIOS",
             targets: ["CorbadoIOS"]),
     ],
+    dependencies: [
+      .package(url: "https://github.com/hmlongco/Factory", from: "2.0.0")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "CorbadoIOS",
-            dependencies: ["OpenAPIClient"]
+            dependencies: [
+                "OpenAPIClient",
+                .product(name: "Factory", package: "Factory"),
+            ]
         ),
         .testTarget(
             name: "CorbadoIOSTests",

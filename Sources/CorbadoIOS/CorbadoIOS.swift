@@ -1,47 +1,67 @@
 import Foundation
 import OpenAPIClient
 import AuthenticationServices
+import Factory
 
-public class CorbadoIOS {
-    private var projectId: String
-    private var frontendApiUrlSuffix: String
-    private var isDebug: Bool
-    private var apiConfig: OpenAPIClientAPIConfiguration
-    private var clientStateService: ClientStateService
+@MainActor
+final public class CorbadoIOS {
+    private var projectId: String = ""
+    private var frontendApiUrlSuffix: String = ""
+    private var isDebug: Bool = false
+    private var apiConfig: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared
+    private var clientStateService: ClientStateService = ClientStateService()
+    private var configured = false
     
     private var process: ConnectProcess?
     private var loginInitCompleted: Date?
+        
+    public static let shared = Container.shared.corbado()
     
-    public init(projectId: String, frontendApiUrlSuffix: String?, isDebug: Bool?) {
+    nonisolated init() {}
+    
+    public func configure(
+        projectId: String,
+        frontendApiUrlSuffix: String?,
+        isDebug: Bool?
+    ) {
         self.projectId = projectId;
         self.frontendApiUrlSuffix = frontendApiUrlSuffix ?? "frontendapi.cloud.corbado.io"
         self.isDebug = isDebug ?? false
         
-        let apiConfig = OpenAPIClientAPIConfiguration.shared
         apiConfig.basePath = "https://\(self.projectId).\(self.frontendApiUrlSuffix)"
-        apiConfig.interceptor = CustomOpenAPIInterceptor()
         apiConfig.customHeaders["X-Corbado-Force-Debug"] = "dummy"
-        self.apiConfig = apiConfig
         
-        self.clientStateService = ClientStateService()
+        configured = true
     }
     
     public func isLoginAllowed() async -> ConnectLoginStep {
         let maybeValidLoginData = process?.validLoginData()
         if maybeValidLoginData != nil {
             apiConfig.customHeaders["x-corbado-process-id"] = process!.id
-            return getConnectLoginStepLoginInit(loginAllowed: maybeValidLoginData!.loginAllowed)
+            return getConnectLoginStepLoginInit(
+                loginAllowed: maybeValidLoginData!.loginAllowed
+            )
         }
         
         do {
             let res = try await loginInit()
             
             // TODO: clientEnvHandle, flags
-            let loginData = ConnectLoginInitData(loginAllowed: res.loginAllowed, conditionalUIChallenge: res.conditionalUIChallenge, expiresAt: TimeInterval(res.expiresAt))
-            process = ConnectProcess(id: res.token, frontendApiUrl: res.frontendApiUrl, loginData: loginData)
+            let loginData = ConnectLoginInitData(
+                loginAllowed: res.loginAllowed,
+                conditionalUIChallenge: res.conditionalUIChallenge,
+                expiresAt: TimeInterval(res.expiresAt)
+            )
+            process = ConnectProcess(
+                id: res.token,
+                frontendApiUrl: res.frontendApiUrl,
+                loginData: loginData
+            )
             apiConfig.customHeaders["x-corbado-process-id"] = process!.id
             
-            return getConnectLoginStepLoginInit(loginAllowed: loginData.loginAllowed)
+            return getConnectLoginStepLoginInit(
+                loginAllowed: loginData.loginAllowed
+            )
         } catch {
             return .InitFallback()
         }
@@ -56,14 +76,31 @@ public class CorbadoIOS {
         
         // TODO: track ClientStateMeta
         do {
-            let reqStart = ConnectLoginStartReq(identifier: identifier, source: .textField, loadedMs: loadedMs)
-            let rspStart = try await CorbadoConnectAPI.connectLoginStart(connectLoginStartReq: reqStart, apiConfiguration: self.apiConfig)
+            let reqStart = ConnectLoginStartReq(
+                identifier: identifier,
+                source: .textField,
+                loadedMs: loadedMs
+            )
+            let rspStart = try await CorbadoConnectAPI.connectLoginStart(
+                connectLoginStartReq: reqStart,
+                apiConfiguration: self.apiConfig
+            )
             
             let plugin = PasskeysPlugin()
-            let rspAuthenticate = try await plugin.authenticate(assertionOptions: rspStart.assertionOptions, conditionalUI: false, preferImmediatelyAvailableCredentials: false)
+            let rspAuthenticate = try await plugin.authenticate(
+                assertionOptions: rspStart.assertionOptions,
+                conditionalUI: false,
+                preferImmediatelyAvailableCredentials: false
+            )
             
-            let reqFinish = ConnectLoginFinishReq(isConditionalUI: false, assertionResponse: rspAuthenticate)
-            let rspFinish = try await CorbadoConnectAPI.connectLoginFinish(connectLoginFinishReq: reqFinish, apiConfiguration: self.apiConfig)
+            let reqFinish = ConnectLoginFinishReq(
+                isConditionalUI: false,
+                assertionResponse: rspAuthenticate
+            )
+            let rspFinish = try await CorbadoConnectAPI.connectLoginFinish(
+                connectLoginFinishReq: reqFinish,
+                apiConfiguration: self.apiConfig
+            )
             
             return .Done(rspFinish.signedPasskeyData)
         } catch let e as ErrorResponse {
@@ -100,46 +137,21 @@ public class CorbadoIOS {
             isConditionalMediationAvailable: true,
             isNative: true
         )
-        let req = ConnectLoginInitReq(clientInformation: clientInfo, flags: [:], invitationToken: "inv-token-correct")
-        let rsp = try await CorbadoConnectAPI.connectLoginInit(connectLoginInitReq: req, apiConfiguration: self.apiConfig)
+        let req = ConnectLoginInitReq(
+            clientInformation: clientInfo,
+            flags: [:],
+            invitationToken: "inv-token-correct"
+        )
+        let rsp = try await CorbadoConnectAPI.connectLoginInit(
+            connectLoginInitReq: req,
+            apiConfiguration: self.apiConfig
+        )
         return rsp
     }
 }
 
-public class CustomOpenAPIInterceptor: OpenAPIInterceptor {
-    public init() {}
-    
-    public func intercept<T>(urlRequest: URLRequest, urlSession: URLSessionProtocol, requestBuilder: RequestBuilder<T>, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
-        completion(.success(urlRequest))
-    }
-    
-    public func retry<T>(
-        urlRequest: URLRequest,
-        urlSession: URLSessionProtocol,
-        requestBuilder: RequestBuilder<T>,
-        data: Data?,
-        response: URLResponse?,
-        error: any Error,
-        completion: @escaping (OpenAPIInterceptorRetry) -> Void
-    ) {
-        print("⬇️ Received Error Response or Network Error:")
-        print("   For Request URL: \(urlRequest.url?.absoluteString ?? "N/A")")
-        print("   Error: \(error.localizedDescription)")
-
-        if let httpResponse = response as? HTTPURLResponse {
-            print("   Status Code: \(httpResponse.statusCode)")
-            print("   Headers: \(httpResponse.allHeaderFields)")
-        }
-
-        if let responseData = data, let responseString = String(data: responseData, encoding: .utf8) {
-            print("   Response Body (if any): \(responseString)")
-        } else if data != nil {
-            print("   Response Body (if any): Non-UTF8 data, length \(data!.count) bytes")
-        }
-
-
-        // For logging purposes, we usually don't want to retry unless there's a specific strategy.
-        // If you just want to log, always call .dontRetry (or .dontRetryWithError if you transform the error)
-        completion(.dontRetry)
+extension Container {
+    var corbado: Factory<CorbadoIOS> {
+        self { CorbadoIOS() }.singleton
     }
 }
