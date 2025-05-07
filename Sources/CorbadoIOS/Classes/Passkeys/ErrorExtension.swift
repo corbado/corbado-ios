@@ -8,3 +8,10 @@ enum LoginError: Error {
     case unexpectedAuthorizationResponse
     case unknown
 }
+
+enum CreateError: Error {
+    case decoding
+    case encoding
+    case cancelled
+    case unknown
+}

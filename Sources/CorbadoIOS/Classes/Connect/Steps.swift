@@ -24,3 +24,20 @@ public struct ConnectLoginResult {
         self.nextStep = nextStep
     }
 }
+
+public typealias autoAppend = Bool
+
+public enum AppendVariant {
+    case Default
+}
+
+public enum ConnectAppendStep {
+    case AskUserForAppend(autoAppend = false, AppendVariant = .Default)
+    case Skip
+}
+
+public enum ConnectAppendStatus {
+    case Completed
+    case Cancelled
+    case Error
+}

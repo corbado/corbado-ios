@@ -24,7 +24,7 @@ struct ContentView: View {
                     case .home:
                         ProfileView()
                     case .postLogin:
-                        PostLoginView(appRouter: appRouter)
+                        NativePostLoginView(appRouter: appRouter)
                     case .setupTOTP:
                         TOTPSetupView()
                     }

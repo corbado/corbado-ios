@@ -23,6 +23,8 @@ struct LoginView: View {
                 FallbackTOTPView(viewModel: viewModel, appRouter: appRouter)
             case .passkeyTextField:
                 PasskeyTextFieldView(viewModel: viewModel, appRouter: appRouter)
+            case .passkeyOneTap:
+                PasskeyOneTapView(viewModel: viewModel, appRouter: appRouter)
             }
             
             Spacer()
@@ -58,7 +60,7 @@ struct FallbackLoginView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
             
-            AnimatedButton(label: "Login", isLoading: viewModel.isLoading) {
+            AnimatedButton(label: "Login", isLoading: viewModel.primaryLoading) {
                 await viewModel.loginWithEmailAndPassword(appRouter: appRouter)
             }
             
@@ -81,8 +83,8 @@ struct PasskeyTextFieldView: View {
                 .autocapitalization(.none)
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
-                
-            AnimatedButton(label: "Login", isLoading: viewModel.isLoading) {
+            
+            AnimatedButton(label: "Login", isLoading: viewModel.primaryLoading) {
                 await viewModel.loginWithPasskeyTextField(appRouter: appRouter)
             }
             
@@ -94,7 +96,7 @@ struct PasskeyTextFieldView: View {
 struct FallbackTOTPView: View {
     @StateObject var viewModel: LoginViewModel
     var appRouter: AppRouter
-
+    
     @State private var code = ""
     
     var body: some View {
@@ -109,10 +111,29 @@ struct FallbackTOTPView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
             
-            AnimatedButton(label: "Submit", isLoading: viewModel.isLoading) {
+            AnimatedButton(label: "Submit", isLoading: viewModel.primaryLoading) {
                 viewModel.verifyTOTP(code: code, appRouter: appRouter)
             }
         }
         .padding()
+    }
+}
+
+struct PasskeyOneTapView: View {
+    @StateObject var viewModel: LoginViewModel
+    var appRouter: AppRouter
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            AnimatedButton(label: "Login as \(viewModel.email)", isLoading: viewModel.primaryLoading) {
+                await viewModel.loginWithPasskeyOneTap(appRouter: appRouter)
+            }
+            
+            AnimatedButton(label: "Switch account", isLoading: false) {
+                await viewModel.discardPasskeyOneTap()
+            }
+            
+            NavigationLink("Don't have an account? Sign Up", destination: SignUpView())
+        }
     }
 }

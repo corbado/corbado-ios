@@ -232,6 +232,7 @@
 			packageReferences = (
 				617391AD2DC290CA00D4481F /* XCRemoteSwiftPackageReference "amplify-swift" */,
 				615F20312DC9296A00C232C2 /* XCLocalSwiftPackageReference "../../corbado-ios-sdk" */,
+				616982442DCB939A00579C25 /* XCLocalSwiftPackageReference "../../corbado-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 617391632DC2705300D4481F /* Products */;
@@ -605,6 +606,10 @@
 		615F20312DC9296A00C232C2 /* XCLocalSwiftPackageReference "../../corbado-ios-sdk" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../../corbado-ios-sdk";
+		};
+		616982442DCB939A00579C25 /* XCLocalSwiftPackageReference "../../corbado-ios" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../corbado-ios";
 		};
 /* End XCLocalSwiftPackageReference section */
 

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OpenAPIClient
 
 enum LoginIdentifierType: String, Codable {
     case email = "email"
@@ -24,6 +25,23 @@ struct LastLogin: Codable, Equatable {
     let identifierValue: String
     let ceremonyType: PasskeyCeremonyType
     let operationType: String
+    
+    static func from(passkeyOperation: PasskeyOperation) -> LastLogin? {
+        guard let ceremonyType = PasskeyCeremonyType(rawValue: passkeyOperation.ceremonyType.rawValue) else {
+            return nil
+        }
+        
+        guard let identifierType = LoginIdentifierType(rawValue: passkeyOperation.identifierType.rawValue) else {
+            return nil
+        }
+                
+        return LastLogin(
+            identifierType: identifierType,
+            identifierValue: passkeyOperation.identifierValue,
+            ceremonyType: ceremonyType,
+            operationType: passkeyOperation.operationType.rawValue
+        )
+    }
 }
 
 enum Source: String, Codable {
@@ -53,12 +71,17 @@ struct CombinedData: Codable {
 
 struct ClientStateService {
     private let userDefaults = UserDefaults.standard
+    private let projectId: String
     
-    private func getStorageKeyClientHandle(projectId: String) -> String {
+    init(projectId: String) {
+        self.projectId = projectId
+    }
+    
+    private func getStorageKeyClientHandle() -> String {
         return "cbo_client_handle-\(projectId)"
     }
     
-    private func getStorageKeyLastLogin(projectId: String) -> String {
+    private func getStorageKeyLastLogin() -> String {
         return "cbo_connect_last_login-\(projectId)"
     }
     
@@ -84,52 +107,44 @@ struct ClientStateService {
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(entry)
-            userDefaults.set(entry, forKey: key)
+            userDefaults.set(data, forKey: key)
         } catch {
             print("Error encoding ClientStateEntry for key '\(key)': \(error)")
         }
     }
     
-    func getLastLogin(projectId: String) -> ClientStateEntry<LastLogin>? {
-        // Directly get the entry using the standard key
-        return getEntry(forKey: getStorageKeyLastLogin(projectId: projectId))
+    func getLastLogin() -> ClientStateEntry<LastLogin>? {
+        return getEntry(forKey: getStorageKeyLastLogin())
     }
     
-    func setLastLogin(projectId: String, lastLogin: LastLogin) {
-        // Calls the private setter with localStorage source and current time
-        setLastLogin(
-            projectId: projectId,
-            data: lastLogin,
-            source: .localStorage,
-            ts: Date().timeIntervalSince1970 // Current timestamp in seconds
-        )
+    func setLastLogin(lastLogin: LastLogin) {
+        let entry = ClientStateEntry<LastLogin>(data: lastLogin, source: .native, ts: Date().timeIntervalSince1970)
+        setEntry(entry, forKey: getStorageKeyLastLogin())
     }
     
     /// Private setter for LastLogin, allowing control over source and timestamp.
-    private func setLastLogin(projectId: String, data: LastLogin?, source: Source, ts: TimeInterval) {
+    private func setLastLogin(data: LastLogin?, source: Source, ts: TimeInterval) {
         let entry = ClientStateEntry<LastLogin>(data: data, source: source, ts: ts)
-        setEntry(entry, forKey: getStorageKeyLastLogin(projectId: projectId))
+        setEntry(entry, forKey: getStorageKeyLastLogin())
     }
     
-    func clearLastLogin(projectId: String) {
+    func clearLastLogin() {
         // Sets the data to nil using the private setter
         setLastLogin(
-            projectId: projectId,
             data: nil,
             source: .localStorage,
             ts: Date().timeIntervalSince1970
         )
     }
     
-    func getClientEnvHandle(projectId: String) -> ClientStateEntry<String>? {
-        return getEntry(forKey: getStorageKeyClientHandle(projectId: projectId))
+    func getClientEnvHandle() -> ClientStateEntry<String>? {
+        return getEntry(forKey: getStorageKeyClientHandle())
         // Note: Omitted the compatibility check for `cbo_client_handle` key.
         // Add similar fallback logic as for getLastLogin if needed.
     }
     
-    func setClientEnvHandle(projectId: String, clientEnvHandle: String) {
+    func setClientEnvHandle(clientEnvHandle: String) {
         setClientEnvHandle(
-            projectId: projectId,
             data: clientEnvHandle,
             source: .localStorage,
             ts: Date().timeIntervalSince1970
@@ -137,9 +152,9 @@ struct ClientStateService {
     }
     
     /// Private setter for ClientEnvHandle.
-    private func setClientEnvHandle(projectId: String, data: String?, source: Source, ts: TimeInterval) {
+    private func setClientEnvHandle(data: String?, source: Source, ts: TimeInterval) {
         let entry = ClientStateEntry<String>(data: data, source: source, ts: ts)
-        setEntry(entry, forKey: getStorageKeyClientHandle(projectId: projectId))
+        setEntry(entry, forKey: getStorageKeyClientHandle())
     }
     
     // Note: parseClientStateSource functionality is included in the Source enum's `metaSource` computed property.

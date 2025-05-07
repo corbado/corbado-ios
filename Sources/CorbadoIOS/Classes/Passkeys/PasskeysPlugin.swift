@@ -7,6 +7,7 @@
 
 import UIKit
 import AuthenticationServices
+import VirtualAuthenticationServices
 import LocalAuthentication
 import Foundation
 import Combine
@@ -14,37 +15,6 @@ import Combine
 @MainActor
 protocol Cancellable {
     func cancel()
-}
-
-struct AllowedCredential: Codable {
-    var type: String
-    var id: String
-    var transports: [String?]
-}
-
-struct AssertionRequest: Codable {
-    var publicKey: AssertionRequestPublicKey
-}
-
-struct AssertionRequestPublicKey: Codable {
-    var challenge: String
-    var rpId: String
-    var userVerification: String
-    var allowCredentials: [AllowedCredential]
-}
-
-struct AuthenticateResponse: Codable {
-    var id: String
-    var rawId: String
-    var type: String
-    var response: AuthenticatorAssertionResponse
-}
-
-struct AuthenticatorAssertionResponse: Codable {
-    var clientDataJSON: String
-    var authenticatorData: String
-    var signature: String
-    var userHandle: String
 }
 
 @available(iOS 16.0, *)
@@ -76,35 +46,97 @@ public class PasskeysPlugin: NSObject {
             platformRequest.allowedCredentials = parseCredentials(credentials: decoded.publicKey.allowCredentials)
             requests.append(platformRequest)
             
-            let result = try await withCheckedThrowingContinuation{ (continuation: CheckedContinuation<AuthenticateResponse, Error>) in
-                let controller = LoginViewController { result in
-                    switch result {
-                    case .success(let resp):   continuation.resume(returning: resp)
-                    case .failure(let err):    continuation.resume(throwing: err)
-                    }
-                }
-                inFlightController = controller
-                
-                DispatchQueue.main.async {
-                    controller.run(
-                        requests: requests,
-                        conditionalUI: false,
-                        preferImmediatelyAvailableCredentials: false
+            let controller = RealAuthorizationController()
+            let result = try await controller.authorize(requests: requests)
+            switch result.credential {
+            case let typed as PasskeyAssertionCredential:
+                let response = AuthenticateResponse(
+                    id: typed.credentialID.toBase64URL(),
+                    rawId: typed.credentialID.toBase64URL(),
+                    type: "public-key",
+                    response: AuthenticatorAssertionResponse(
+                        clientDataJSON: typed.rawClientDataJSON.toBase64URL(),
+                        authenticatorData: typed.rawAuthenticatorData.toBase64URL(),
+                        signature: typed.signature.toBase64URL(),
+                        userHandle: typed.userID.toBase64URL()
                     )
+                )
+                
+                let encoder = JSONEncoder()
+                let encoded = try encoder.encode(response)
+                
+                guard let jsonString = String(data: encoded, encoding: .utf8) else {
+                    throw LoginError.encoding
                 }
+                
+                return jsonString
+            default:
+                throw LoginError.unknown
             }
-            
-            let encoder = JSONEncoder()
-            let encoded = try encoder.encode(result)
-            
-            guard let jsonString = String(data: encoded, encoding: .utf8) else {
-                throw LoginError.encoding
-            }
-            
-            return jsonString
         } catch {
             throw LoginError.unknown
         }
+    }
+    
+    func create(attestationOptions: String) async throws(CreateError) -> String {
+        guard let jsonData = attestationOptions.data(using: .utf8) else {
+            fatalError("Failed to convert string to data")
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            let decoded = try decoder.decode(AttestationRequest.self, from: jsonData)
+            
+            guard let decodedChallenge = Data.fromBase64Url(decoded.publicKey.challenge) else {
+                throw LoginError.decoding
+            }
+            
+            guard let decodedUserId = Data.fromBase64Url(decoded.publicKey.user.id) else {
+                throw LoginError.decoding
+            }
+            
+            // Create a platform (on‑device) registration request.
+            let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: decoded.publicKey.rp.id)
+            let platformRequest = platformProvider.createCredentialRegistrationRequest(
+                challenge: decodedChallenge,
+                name: decoded.publicKey.user.name,
+                userID: decodedUserId
+            )
+            
+            if #available(iOS 17.4, *) {
+                let excluded = parseCredentials(credentials: decoded.publicKey.excludeCredentials ?? [])
+                platformRequest.excludedCredentials = excluded
+            }
+                                    
+            let controller = RealAuthorizationController()
+            let result = try await controller.create(requests: [platformRequest])
+            switch result.credential {
+            case let typed as PasskeyRegistrationCredential:
+                let response = AttestationResponse (
+                    id: typed.credentialID.toBase64URL(),
+                    rawId: typed.credentialID.toBase64URL(),
+                    response: AuthenticatorAttestationResponse(
+                        clientDataJSON: typed.rawClientDataJSON.toBase64URL(),
+                        attestationObject: typed.rawAttestationObject.toBase64URL(),
+                        transports: typed.transports.compactMap { $0.toBase64URL() }
+                    )
+                )
+                
+                let encoder = JSONEncoder()
+                let encoded = try encoder.encode(response)
+                
+                guard let jsonString = String(data: encoded, encoding: .utf8) else {
+                    throw CreateError.encoding
+                }
+                
+                return jsonString
+            default:
+                throw CreateError.unknown
+            }
+        } catch {
+            throw .unknown
+        }
+
     }
     
     @MainActor
@@ -113,7 +145,7 @@ public class PasskeysPlugin: NSObject {
         completion(.success(()))
     }
     
-    private func parseCredentials(credentials: [AllowedCredential]) -> [ASAuthorizationPlatformPublicKeyCredentialDescriptor] {
+    private func parseCredentials(credentials: [CredentialWithTransports]) -> [ASAuthorizationPlatformPublicKeyCredentialDescriptor] {
         return credentials.compactMap { credential in
             guard let credentialData = Data.fromBase64Url(credential.id) else {
                 return nil

@@ -15,7 +15,8 @@ let package = Package(
             targets: ["CorbadoIOS"]),
     ],
     dependencies: [
-      .package(url: "https://github.com/hmlongco/Factory", from: "2.0.0")
+        .package(url: "https://github.com/hmlongco/Factory", from: "2.0.0"),
+        .package(name: "VirtualAuthenticationServices", path: "../corbado-ios"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -25,6 +26,7 @@ let package = Package(
             dependencies: [
                 "OpenAPIClient",
                 .product(name: "Factory", package: "Factory"),
+                .product(name: "VirtualAuthenticationServices", package: "VirtualAuthenticationServices")
             ]
         ),
         .testTarget(

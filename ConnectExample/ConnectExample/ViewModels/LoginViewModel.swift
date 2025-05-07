@@ -15,6 +15,7 @@ enum LoginStatus {
     case fallbackFirst
     case fallbackSecondTOTP
     case passkeyTextField
+    case passkeyOneTap
 }
 
 @MainActor
@@ -22,7 +23,7 @@ class LoginViewModel: ObservableObject {
     @Published var status: LoginStatus = .loading
     @Published var email = ""
     @Published var password = ""
-    @Published var isLoading = false
+    @Published var primaryLoading = false
     @Published var errorMessage: String? = nil
     
     private var corbado: CorbadoIOS = CorbadoIOS.shared
@@ -33,7 +34,8 @@ class LoginViewModel: ObservableObject {
         case .InitTextField(let cuiChallenge):
             status = .passkeyTextField
         case .InitOneTap(let email):
-            status = .passkeyTextField
+            self.email = email
+            status = .passkeyOneTap
         case .InitFallback(let email, let errorMessage):
             status = .fallbackFirst
         default:
@@ -48,9 +50,9 @@ class LoginViewModel: ObservableObject {
         }
         
         errorMessage = nil
-        isLoading = true
+        primaryLoading = true
         defer {
-            isLoading = false
+            primaryLoading = false
         }
         
         do {
@@ -77,12 +79,54 @@ class LoginViewModel: ObservableObject {
     }
     
     func loginWithPasskeyTextField(appRouter: AppRouter) async {
-        isLoading = true
+        primaryLoading = true
         defer {
-            isLoading = false
+            primaryLoading = false
         }
         
-        let nextStep = await corbado.loginWithTextField(identifier: "integration-test+Cd7MUL53wR@corbado.com")
+        let nextStep = await corbado.loginWithTextField(identifier: email)
+        await completePasskeyLogin(nextStep: nextStep, appRouter: appRouter)
+    }
+    
+    func loginWithPasskeyOneTap(appRouter: AppRouter) async {
+        primaryLoading = true
+        defer {
+            primaryLoading = false
+        }
+        
+        let nextStep = await corbado.loginWithOneTap()
+        await completePasskeyLogin(nextStep: nextStep, appRouter: appRouter)
+    }
+
+    
+    func verifyTOTP(code: String, appRouter: AppRouter) {
+        primaryLoading = true
+        errorMessage = nil
+        
+        guard code.count == 6 else {
+            errorMessage = "Please provide your TOTP code."
+            return
+        }
+        
+        Task {
+            do {
+                let result = try await Amplify.Auth.confirmSignIn(challengeResponse: code)
+                appRouter.navigateTo(.postLogin)
+            } catch let amplifyError as AmplifyError {
+                errorMessage = amplifyError.localizedDescription
+            } catch {
+                errorMessage = "An unexpected error occurred during TOTP verification: \(error.localizedDescription)"
+            }
+            primaryLoading = false
+        }
+    }
+
+    func discardPasskeyOneTap() {
+        email = ""
+        status = .passkeyTextField
+    }
+    
+    private func completePasskeyLogin(nextStep: ConnectLoginStep, appRouter: AppRouter) async {
         switch nextStep {
         case .Done(let session):
             let decoded = decodeJwt(token: session)
@@ -116,29 +160,6 @@ class LoginViewModel: ObservableObject {
             break
         }
     }
-    
-    func verifyTOTP(code: String, appRouter: AppRouter) {
-        isLoading = true
-        errorMessage = nil
-        
-        guard code.count == 6 else {
-            errorMessage = "Please provide your TOTP code."
-            return
-        }
-        
-        Task {
-            do {
-                let result = try await Amplify.Auth.confirmSignIn(challengeResponse: code)
-                appRouter.navigateTo(.postLogin)
-            } catch let amplifyError as AmplifyError {
-                errorMessage = amplifyError.localizedDescription
-            } catch {
-                errorMessage = "An unexpected error occurred during TOTP verification: \(error.localizedDescription)"
-            }
-            isLoading = false
-        }
-    }
-
     
     private func decodeJwt(token: String) -> [String: Any]? {
         let segments = token.components(separatedBy: ".")
