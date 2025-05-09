@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		613DC00E2DCA058D00F16F9F /* CorbadoIOS in Frameworks */ = {isa = PBXBuildFile; productRef = 613DC00D2DCA058D00F16F9F /* CorbadoIOS */; };
+		610152FF2DCE4DEF009E2543 /* CorbadoConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 610152FE2DCE4DEF009E2543 /* CorbadoConnect */; };
+		613DC00E2DCA058D00F16F9F /* CorbadoConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 613DC00D2DCA058D00F16F9F /* CorbadoConnect */; };
 		614BCC972DC293B30009A4AD /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 614BCC962DC293B30009A4AD /* AWSCognitoAuthPlugin */; };
 		614BCC992DC293B30009A4AD /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 614BCC982DC293B30009A4AD /* AWSPluginsCore */; };
 		614BCC9B2DC293B30009A4AD /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 614BCC9A2DC293B30009A4AD /* Amplify */; };
-		615F20332DC9296A00C232C2 /* CorbadoIOS in Frameworks */ = {isa = PBXBuildFile; productRef = 615F20322DC9296A00C232C2 /* CorbadoIOS */; };
-		615F20352DC929B200C232C2 /* CorbadoIOS in Frameworks */ = {isa = PBXBuildFile; productRef = 615F20342DC929B200C232C2 /* CorbadoIOS */; };
+		615F20352DC929B200C232C2 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,11 +75,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				614BCC9B2DC293B30009A4AD /* Amplify in Frameworks */,
-				613DC00E2DCA058D00F16F9F /* CorbadoIOS in Frameworks */,
+				613DC00E2DCA058D00F16F9F /* CorbadoConnect in Frameworks */,
+				610152FF2DCE4DEF009E2543 /* CorbadoConnect in Frameworks */,
 				614BCC992DC293B30009A4AD /* AWSPluginsCore in Frameworks */,
 				614BCC972DC293B30009A4AD /* AWSCognitoAuthPlugin in Frameworks */,
-				615F20352DC929B200C232C2 /* CorbadoIOS in Frameworks */,
-				615F20332DC9296A00C232C2 /* CorbadoIOS in Frameworks */,
+				615F20352DC929B200C232C2 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,9 +143,8 @@
 				614BCC962DC293B30009A4AD /* AWSCognitoAuthPlugin */,
 				614BCC982DC293B30009A4AD /* AWSPluginsCore */,
 				614BCC9A2DC293B30009A4AD /* Amplify */,
-				615F20322DC9296A00C232C2 /* CorbadoIOS */,
-				615F20342DC929B200C232C2 /* CorbadoIOS */,
-				613DC00D2DCA058D00F16F9F /* CorbadoIOS */,
+				613DC00D2DCA058D00F16F9F /* CorbadoConnect */,
+				610152FE2DCE4DEF009E2543 /* CorbadoConnect */,
 			);
 			productName = ConnectExample;
 			productReference = 617391622DC2705300D4481F /* ConnectExample.app */;
@@ -231,8 +230,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				617391AD2DC290CA00D4481F /* XCRemoteSwiftPackageReference "amplify-swift" */,
-				615F20312DC9296A00C232C2 /* XCLocalSwiftPackageReference "../../corbado-ios-sdk" */,
-				616982442DCB939A00579C25 /* XCLocalSwiftPackageReference "../../corbado-ios" */,
+				610152FD2DCE4DEF009E2543 /* XCLocalSwiftPackageReference "../../corbado-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 617391632DC2705300D4481F /* Products */;
@@ -603,11 +601,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		615F20312DC9296A00C232C2 /* XCLocalSwiftPackageReference "../../corbado-ios-sdk" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../corbado-ios-sdk";
-		};
-		616982442DCB939A00579C25 /* XCLocalSwiftPackageReference "../../corbado-ios" */ = {
+		610152FD2DCE4DEF009E2543 /* XCLocalSwiftPackageReference "../../corbado-ios" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../../corbado-ios";
 		};
@@ -625,9 +619,13 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		613DC00D2DCA058D00F16F9F /* CorbadoIOS */ = {
+		610152FE2DCE4DEF009E2543 /* CorbadoConnect */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = CorbadoIOS;
+			productName = CorbadoConnect;
+		};
+		613DC00D2DCA058D00F16F9F /* CorbadoConnect */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CorbadoConnect;
 		};
 		614BCC962DC293B30009A4AD /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -643,14 +641,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 617391AD2DC290CA00D4481F /* XCRemoteSwiftPackageReference "amplify-swift" */;
 			productName = Amplify;
-		};
-		615F20322DC9296A00C232C2 /* CorbadoIOS */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CorbadoIOS;
-		};
-		615F20342DC929B200C232C2 /* CorbadoIOS */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CorbadoIOS;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

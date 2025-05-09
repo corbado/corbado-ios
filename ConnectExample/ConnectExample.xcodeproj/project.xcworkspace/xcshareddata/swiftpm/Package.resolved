@@ -1,5 +1,5 @@
 {
-  "originHash" : "761c3dffc2f24c9b064197ee71fd47d3bed3b3eecdac16c878a640c2d727eaa0",
+  "originHash" : "b05252bc3bbf178d5112a26d0e03b0cb216347dd0d8ed079c4939c5161f47405",
   "pins" : [
     {
       "identity" : "amplify-swift",
@@ -38,12 +38,30 @@
       }
     },
     {
+      "identity" : "cborcoding",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SomeRandomiOSDev/CBORCoding.git",
+      "state" : {
+        "revision" : "6fbd643c64cf6ef7a98391820c372d05fa9ed9ab",
+        "version" : "1.4.0"
+      }
+    },
+    {
       "identity" : "factory",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hmlongco/Factory",
       "state" : {
         "revision" : "98e965ba52769132a298769894f9741f8c291509",
         "version" : "2.4.11"
+      }
+    },
+    {
+      "identity" : "half",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SomeRandomiOSDev/Half",
+      "state" : {
+        "revision" : "14b1ab35ffdf62c999ef1016ec0f8e745a6feed5",
+        "version" : "1.4.2"
       }
     },
     {

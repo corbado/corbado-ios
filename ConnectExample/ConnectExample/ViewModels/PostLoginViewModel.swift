@@ -9,12 +9,12 @@ import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
-import CorbadoIOS
+import CorbadoConnect
 
 @MainActor
 class PostLoginViewModel: ObservableObject {
     private let appRouter: AppRouter
-    private var corbado: CorbadoIOS = CorbadoIOS.shared
+    private var corbado: Corbado = Corbado.shared
     
     @Published var webViewURL: URL?
     @Published var authError: Error?

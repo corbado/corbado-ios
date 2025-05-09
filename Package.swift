@@ -4,34 +4,31 @@
 import PackageDescription
 
 let package = Package(
-    name: "CorbadoIOS",
+    name: "CorbadoConnect",
     platforms: [
             .iOS(.v16)
         ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "CorbadoIOS",
-            targets: ["CorbadoIOS"]),
+            name: "CorbadoConnect",
+            targets: ["CorbadoConnect"]),
     ],
     dependencies: [
         .package(url: "https://github.com/hmlongco/Factory", from: "2.0.0"),
-        .package(name: "VirtualAuthenticationServices", path: "../corbado-ios"),
+        .package(name: "SimpleAuthenticationServices", path: "../SimpleAuthenticationServices"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "CorbadoIOS",
+            name: "CorbadoConnect",
             dependencies: [
                 "OpenAPIClient",
                 .product(name: "Factory", package: "Factory"),
-                .product(name: "VirtualAuthenticationServices", package: "VirtualAuthenticationServices")
+                .product(name: "SimpleAuthenticationServices", package: "SimpleAuthenticationServices")
             ]
         ),
         .testTarget(
-            name: "CorbadoIOSTests",
-            dependencies: ["CorbadoIOS"]
+            name: "CorbadoConnectTests",
+            dependencies: ["CorbadoConnect"]
         ),
         .target(
             name: "OpenAPIClient"

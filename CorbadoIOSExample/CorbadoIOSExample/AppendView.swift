@@ -1,10 +1,3 @@
-//
-//  AppendView.swift
-//  CorbadoIOSExample
-//
-//  Created by Martin on 30/4/2025.
-//
-
 import UIKit
 import SafariServices
 

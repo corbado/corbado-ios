@@ -8,7 +8,7 @@
 import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
-import CorbadoIOS
+import CorbadoConnect
 
 @main
 struct ConnectExampleApp: App {
@@ -16,7 +16,7 @@ struct ConnectExampleApp: App {
     
     init() {
         configureAmplify()
-        CorbadoIOS.shared.configure(projectId: "pro-1045460453059053120", frontendApiUrlSuffix: "frontendapi.cloud.corbado-staging.io", isDebug: nil)
+        Corbado.shared.configure(projectId: "pro-1045460453059053120", frontendApiUrlSuffix: "frontendapi.cloud.corbado-staging.io", isDebug: nil)
     }
     
     var body: some Scene {

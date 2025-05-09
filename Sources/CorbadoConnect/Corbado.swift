@@ -4,21 +4,20 @@ import AuthenticationServices
 import Factory
 
 @MainActor
-final public class CorbadoIOS {
+final public class Corbado {
     private var projectId: String = ""
     private var frontendApiUrlSuffix: String = ""
     private var isDebug: Bool = false
     private var apiConfig: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared
     private var clientStateService: ClientStateService?
     private var configured = false
+    private var passkeysPlugin: PasskeysPlugin = PasskeysPlugin()
     
     private var process: ConnectProcess?
     private var loginInitCompleted: Date?
     private var appendInitLoaded: Date?
         
     public static let shared = Container.shared.corbado()
-    
-    nonisolated init() {}
     
     public func configure(
         projectId: String,
@@ -30,7 +29,7 @@ final public class CorbadoIOS {
         self.isDebug = isDebug ?? false
         
         apiConfig.basePath = "https://\(self.projectId).\(self.frontendApiUrlSuffix)"
-        apiConfig.customHeaders["X-Corbado-Force-Debug"] = "dummy"
+        apiConfig.customHeaders["X-Corbado-Force-Debug"] = "x3UulJbjOAK6a9eZ"
         
         clientStateService = ClientStateService(projectId: projectId)
         
@@ -99,8 +98,7 @@ final public class CorbadoIOS {
         }
         
         do {
-            let plugin = PasskeysPlugin()
-            let rspAuthenticate = try await plugin.create(attestationOptions: attestationOptions)
+            let rspAuthenticate = try await passkeysPlugin.create(attestationOptions: attestationOptions)
 
             let resFinish = try await appendFinish(attestationResponse: rspAuthenticate)
             
@@ -148,8 +146,7 @@ final public class CorbadoIOS {
                 apiConfiguration: self.apiConfig
             )
             
-            let plugin = PasskeysPlugin()
-            let rspAuthenticate = try await plugin.authenticate(
+            let rspAuthenticate = try await passkeysPlugin.authenticate(
                 assertionOptions: rspStart.assertionOptions,
                 conditionalUI: false,
                 preferImmediatelyAvailableCredentials: false
@@ -292,7 +289,9 @@ final public class CorbadoIOS {
 }
 
 extension Container {
-    var corbado: Factory<CorbadoIOS> {
-        self { CorbadoIOS() }.singleton
+    var corbado: Factory<Corbado> {
+        self { @MainActor () -> Corbado in
+            Corbado()
+        }
     }
 }

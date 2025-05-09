@@ -1,10 +1,3 @@
-//
-//  ConnectStorage.swift
-//  CorbadoIOS
-//
-//  Created by Martin on 5/5/2025.
-//
-
 import Foundation
 import OpenAPIClient
 

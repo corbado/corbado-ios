@@ -46,7 +46,6 @@ struct ProfileView: View {
                  }
 
 
-                // --- Buttons ---
                 Button() {
                     viewModel.signOut(appRouter: appRouter)
                 } label: {
@@ -56,6 +55,10 @@ struct ProfileView: View {
                         .background(Color.blue)
                         .foregroundColor(Color.white)
                         .cornerRadius(8)
+                }
+                
+                AnimatedButton(label: "Passkey append", isLoading: false) {
+                    appRouter.navigateTo(.postLogin)
                 }
 
                 if let url = passkeyWebViewURL {

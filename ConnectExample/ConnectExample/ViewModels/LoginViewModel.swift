@@ -7,8 +7,8 @@
 
 import SwiftUI
 import Amplify
-import CorbadoIOS
 import AWSCognitoAuthPlugin
+import CorbadoConnect
 
 enum LoginStatus {
     case loading
@@ -26,7 +26,7 @@ class LoginViewModel: ObservableObject {
     @Published var primaryLoading = false
     @Published var errorMessage: String? = nil
     
-    private var corbado: CorbadoIOS = CorbadoIOS.shared
+    private var corbado: Corbado = Corbado.shared
     
     func loadInitialStep() async {
         let nextStep = await corbado.isLoginAllowed()

@@ -1,28 +1,23 @@
-//
-//  Passkeys.swift
-//  CorbadoIOS
-//
-//  Created by Martin on 6/5/2025.
-//
-
 import UIKit
 import AuthenticationServices
-import VirtualAuthenticationServices
+import SimpleAuthenticationServices
 import LocalAuthentication
 import Foundation
 import Combine
 
-@MainActor
 protocol Cancellable {
     func cancel()
 }
 
-@available(iOS 16.0, *)
 @MainActor
-public class PasskeysPlugin: NSObject {
+@available(iOS 16.0, *)
+public class PasskeysPlugin {
     var inFlightController: Cancellable?
-    let lock = NSLock()
+    let controller: AuthorizationControllerProtocol = VirtualAuthorizationController()
     
+    public init() {}
+    
+    @MainActor
     func authenticate(
         assertionOptions: String,
         conditionalUI: Bool,
@@ -46,7 +41,6 @@ public class PasskeysPlugin: NSObject {
             platformRequest.allowedCredentials = parseCredentials(credentials: decoded.publicKey.allowCredentials)
             requests.append(platformRequest)
             
-            let controller = RealAuthorizationController()
             let result = try await controller.authorize(requests: requests)
             switch result.credential {
             case let typed as PasskeyAssertionCredential:
@@ -78,6 +72,7 @@ public class PasskeysPlugin: NSObject {
         }
     }
     
+    @MainActor
     func create(attestationOptions: String) async throws(CreateError) -> String {
         guard let jsonData = attestationOptions.data(using: .utf8) else {
             fatalError("Failed to convert string to data")
@@ -108,7 +103,6 @@ public class PasskeysPlugin: NSObject {
                 platformRequest.excludedCredentials = excluded
             }
                                     
-            let controller = RealAuthorizationController()
             let result = try await controller.create(requests: [platformRequest])
             switch result.credential {
             case let typed as PasskeyRegistrationCredential:

@@ -22,7 +22,7 @@ class SignUpViewModel: ObservableObject {
         
         self.email = "integration-test+\(String(randomChars))@corbado.com"
         self.phoneNumber = "+4915121609839"
-        // self.password = "asdfasdf"
+        self.password = "asdfasdf"
     }
     
     func signUp(appRouter: AppRouter) async {
