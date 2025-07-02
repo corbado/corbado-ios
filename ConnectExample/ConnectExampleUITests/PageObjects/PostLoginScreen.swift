@@ -13,14 +13,14 @@ class PostLoginScreen: BaseScreen {
             appendButton.waitAndTap()
         }
         
-        continueButton.waitAndTap(timeout: 10)
+        continueButton.waitAndTap(timeout: defaultTimeout)
         
         return ProfileScreen(app: app)
     }
     
     func appendAndCancel() -> Bool {
         appendButton.waitAndTap()
-        return errorMessage.waitForExistence(timeout: 5)
+        return errorMessage.waitForExistence(timeout: defaultTimeout)
     }
     
     @discardableResult

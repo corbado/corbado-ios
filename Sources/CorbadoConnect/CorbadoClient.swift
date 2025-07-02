@@ -79,11 +79,63 @@ struct Exception {
     }
 }
 
+/// Custom RequestBuilderFactory that supports configurable timeouts
+public class TimeoutRequestBuilderFactory: RequestBuilderFactory {
+    private let timeoutInterval: TimeInterval
+    
+    public init(timeoutInterval: TimeInterval = 30.0) {
+        self.timeoutInterval = timeoutInterval
+    }
+    
+    public func getNonDecodableBuilder<T>() -> RequestBuilder<T>.Type {
+        return TimeoutURLSessionRequestBuilder<T>.self
+    }
+    
+    public func getBuilder<T: Decodable>() -> RequestBuilder<T>.Type {
+        return TimeoutURLSessionDecodableRequestBuilder<T>.self
+    }
+    
+    fileprivate func createURLSessionWithTimeout() -> URLSession {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = timeoutInterval
+        configuration.timeoutIntervalForResource = timeoutInterval * 2 // Allow longer for resource timeout
+        return URLSession(configuration: configuration)
+    }
+}
+
+/// Custom URLSessionRequestBuilder that uses timeout configuration
+public class TimeoutURLSessionRequestBuilder<T>: URLSessionRequestBuilder<T> {
+    
+    override open func createURLSession() -> URLSessionProtocol {
+        if let factory = apiConfiguration.requestBuilderFactory as? TimeoutRequestBuilderFactory {
+            return factory.createURLSessionWithTimeout()
+        }
+        return super.createURLSession()
+    }
+}
+
+/// Custom URLSessionDecodableRequestBuilder that uses timeout configuration
+public class TimeoutURLSessionDecodableRequestBuilder<T: Decodable>: URLSessionDecodableRequestBuilder<T> {
+    
+    override open func createURLSession() -> URLSessionProtocol {
+        if let factory = apiConfiguration.requestBuilderFactory as? TimeoutRequestBuilderFactory {
+            return factory.createURLSessionWithTimeout()
+        }
+        return super.createURLSession()
+    }
+}
+
 struct CorbadoClient {
     let apiConfig: OpenAPIClientAPIConfiguration
     
     init(apiConfig: OpenAPIClientAPIConfiguration) {
         self.apiConfig = apiConfig;
+    }
+    
+    /// Convenience initializer with timeout configuration
+    init(apiConfig: OpenAPIClientAPIConfiguration, timeoutInterval: TimeInterval) {
+        self.apiConfig = apiConfig
+        self.apiConfig.requestBuilderFactory = TimeoutRequestBuilderFactory(timeoutInterval: timeoutInterval)
     }
     
     func loginInit(clientInfo: ClientInformation, invitationToken: String?) async throws(ErrorResponse) -> ConnectLoginInitRsp {
@@ -296,7 +348,7 @@ struct CorbadoClient {
         }
     }
     
-    func copyWith(interceptor: OpenAPIInterceptor? = nil, processId: String? = nil) -> CorbadoClient {
+    func copyWith(interceptor: OpenAPIInterceptor? = nil, processId: String? = nil, timeoutInterval: TimeInterval? = nil) -> CorbadoClient {
         let apiConfig = self.apiConfig
         
         if let interceptor = interceptor {
@@ -305,6 +357,10 @@ struct CorbadoClient {
         
         if let processId = processId {
             apiConfig.customHeaders["x-corbado-process-id"] = processId
+        }
+        
+        if let timeoutInterval = timeoutInterval {
+            apiConfig.requestBuilderFactory = TimeoutRequestBuilderFactory(timeoutInterval: timeoutInterval)
         }
         
         return CorbadoClient(apiConfig: apiConfig)
@@ -336,7 +392,6 @@ public class BlockingOpenAPIInterceptor: OpenAPIInterceptor {
         completion(OpenAPIInterceptorRetry.dontRetry)
     }
 }
-
 
 extension ErrorResponse {
     var statusCode: Int? {

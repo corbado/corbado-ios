@@ -168,15 +168,10 @@ public extension Corbado {
         guard #available(iOS 16.0, *) else {
             return .initSilentFallback(username: identifier, developerDetails: "passkey login requires at least iOS 16")
         }
-        
-        var loadedMs: Int64 = 0
-        if let loginInitCompleted = await loginInitCompleted {
-            loadedMs = Int64(loginInitCompleted.timeIntervalSince1970)
-        }
-        
+                
         let (assertionOptions, effectivePreferImmediatelyAvailableCredentials): (String, Bool)
         do {
-            let rspStart = try await client.loginStart(identifier: identifier, source: .textField, loadedMs: loadedMs)
+            let rspStart = try await client.loginStart(identifier: identifier, source: .textField, loadedMs: 0)
             if let handled = Corbado.handleFallbackOperationErrorForLoginWithIdentifier(rspStart.fallbackOperationError) {
                 return handled
             }

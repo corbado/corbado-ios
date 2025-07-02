@@ -92,6 +92,8 @@ class ProfileViewModel: ObservableObject {
     }
     
     func appendPasskey() async {
+        errorMessage = nil
+        
         let appendStatus = await corbado.completePasskeyListAppend(connectTokenProvider: connectTokenProvider)
         switch appendStatus {
         case .done(let passkeys):
@@ -135,6 +137,8 @@ class ProfileViewModel: ObservableObject {
     
     @MainActor
     func deletePasskey(passkey: Passkey) async {
+        errorMessage = nil
+        
         let deleteStatus = await corbado.deletePasskey(connectTokenProvider: connectTokenProvider, passkeyId: passkey.id)
         switch deleteStatus {
         case .done(let passkeys):
@@ -156,13 +160,13 @@ class ProfileViewModel: ObservableObject {
     private func connectTokenProvider(connectTokenType: ConnectTokenType) async throws -> String {
         let idToken = await getIdToken()
         guard let idToken = idToken else {
-            throw ConnectTokenError()
+            throw ConnectTokenError(message: "")
         }
         
         do {
             return try await AppBackend.getConnectToken(connectTokenType: connectTokenType, idToken: idToken)
         } catch {
-            throw ConnectTokenError()
+            throw ConnectTokenError(message: "")
         }
     }
 }

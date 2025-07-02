@@ -39,6 +39,7 @@ class UITestSetup {
             await corbado.clearLocalState()
         }
         
+        await corbado.setInvitationToken(token: "inv-token-correct")
         if arguments.contains(LaunchArgument.filteredByGradualRollout.rawValue) {
             await corbado.setInvitationToken(token: "inv-token-negative")
         }

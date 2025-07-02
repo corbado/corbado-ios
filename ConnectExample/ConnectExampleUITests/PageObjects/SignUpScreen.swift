@@ -20,7 +20,7 @@ class SignUpScreen: BaseScreen {
         passwordTextField.typeText(password)
                      
         submitButton.waitAndTap()
-        passwordSaveNotNowButton.waitAndTapWithRetry(timeout: 5.0)
+        passwordSaveNotNowButton.waitAndTapWithRetry(timeout: defaultTimeout)
         
         return PostLoginScreen(app: app)
     }

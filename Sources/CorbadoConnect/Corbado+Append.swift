@@ -23,14 +23,9 @@ public extension Corbado {
         }
         
         do {
-            var loadedMs: Int64 = 0
-            if appendInitLoaded != nil {
-                loadedMs = Int64(appendInitLoaded!.timeIntervalSince1970)
-            }
-            
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyAppend)
             
-            let resStart = try await client.appendStart(connectToken: connectToken, forcePasskeyAppend: false, loadedMs: loadedMs)
+            let resStart = try await client.appendStart(connectToken: connectToken, forcePasskeyAppend: false, loadedMs: 0)
             if resStart.attestationOptions.count == 0 {
                 return .skip(developerDetails: "append not allowed by passkey intel")
             }
@@ -140,8 +135,6 @@ public extension Corbado {
     }
     
     internal func appendAllowedStep1() async -> Bool {
-        appendInitLoaded = Date()
-        
         do {
             let clientInfo = await buildClientInfo()
             let invitationToken = await clientStateService.getInvitationToken()?.data

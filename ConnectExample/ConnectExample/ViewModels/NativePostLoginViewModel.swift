@@ -43,7 +43,7 @@ class NativePostLoginViewModel: ObservableObject {
             return
         }
         
-        let nextStep = await corbado.isAppendAllowed {
+        let nextStep = await corbado.isAppendAllowed { _ in
             return try await getConnectToken()
         }
         

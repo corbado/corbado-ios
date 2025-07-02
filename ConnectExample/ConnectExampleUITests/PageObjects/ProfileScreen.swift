@@ -13,7 +13,7 @@ class ProfileScreen: BaseScreen {
     private lazy var errorMessage = app.staticTexts["profileScreen.errorMessage"]
     private lazy var listMessage = app.staticTexts["profileScreen.listMessage"]
     
-    func visible(timeout: TimeInterval = 10.0) -> Bool {
+    func visible(timeout: TimeInterval = defaultTimeout) -> Bool {
         return headline.waitForExistence(timeout: timeout)
     }
     
@@ -27,7 +27,7 @@ class ProfileScreen: BaseScreen {
     }
 
     func getErrorMessage() -> String? {
-        if !errorMessage.waitForExistence(timeout: 2) {
+        if !errorMessage.waitForExistence(timeout: defaultTimeout) {
             return nil
         }
         
@@ -35,7 +35,7 @@ class ProfileScreen: BaseScreen {
     }
     
     func getListMessage() -> String? {
-        if !listMessage.waitForExistence(timeout: 2) {
+        if !listMessage.waitForExistence(timeout: defaultTimeout) {
             return nil
         }
         
@@ -46,7 +46,7 @@ class ProfileScreen: BaseScreen {
     func countNumberOfPasskeys() -> Int {
         let predicate = NSPredicate(format: "identifier BEGINSWITH %@", "passkeyListEntry")
         let allMatchingElementsQuery = app.descendants(matching: .any).matching(predicate)
-        _ = allMatchingElementsQuery.firstMatch.waitForExistence(timeout: 2)
+        _ = allMatchingElementsQuery.firstMatch.waitForExistence(timeout: defaultTimeout)
         
         return allMatchingElementsQuery.count
     }
@@ -54,7 +54,7 @@ class ProfileScreen: BaseScreen {
     func getPasskeyIds() -> [String] {
         let predicate = NSPredicate(format: "identifier BEGINSWITH %@", "passkeyListEntry")
         let allMatchingElementsQuery = app.descendants(matching: .any).matching(predicate)
-        _ = allMatchingElementsQuery.firstMatch.waitForExistence(timeout: 2)
+        _ = allMatchingElementsQuery.firstMatch.waitForExistence(timeout: defaultTimeout)
         
         return allMatchingElementsQuery.allElementsBoundByIndex.map { $0.identifier }
             .filter { $0.hasPrefix("passkeyListEntry_") }
@@ -62,7 +62,7 @@ class ProfileScreen: BaseScreen {
     }
     
     func passkeyAppendPossible() -> Bool {
-        return passkeyAppendButton.waitForExistence(timeout: 2)
+        return passkeyAppendButton.waitForExistence(timeout: defaultTimeout)
     }
     
     @discardableResult

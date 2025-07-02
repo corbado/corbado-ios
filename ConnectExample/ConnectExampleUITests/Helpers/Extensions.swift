@@ -61,7 +61,7 @@ extension XCTestCase {
     /// - Throws: An error if the timeout is reached before the condition is met.
     func waitForCondition(
         _ description: String = "Wait for condition",
-        timeout: TimeInterval,
+        timeout: TimeInterval = 10.0,
         pollingInterval: TimeInterval = 0.25, // How often to check
         condition: @escaping () -> Bool
     ) throws {

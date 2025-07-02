@@ -8,7 +8,7 @@ class TOTPSetupScreen: BaseScreen {
     lazy var setupKey = app.staticTexts["totpSetupScreen.setupKey"]
     
     func setupTOTP(authenticatorApp: AuthenticatorApp) async throws -> (ProfileScreen, String) {
-        _ = setupKey.waitForExistence(timeout: 2)
+        _ = setupKey.waitForExistence(timeout: defaultTimeout)
         let setupKeyValue = setupKey.label
         let code = await authenticatorApp.addBySetupKey(setupKeyValue)
         guard let code = code else {

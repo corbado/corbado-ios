@@ -51,13 +51,8 @@ public extension Corbado {
         
         let attestationOptions: String
         do {
-            var loadedMs: Int64 = 0
-            if let appendInitLoaded = await appendInitLoaded {
-                loadedMs = Int64(appendInitLoaded.timeIntervalSince1970)
-            }
-            
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyAppend)
-            let resStart = try await client.appendStart(connectToken: connectToken, forcePasskeyAppend: true, loadedMs: loadedMs)
+            let resStart = try await client.appendStart(connectToken: connectToken, forcePasskeyAppend: true, loadedMs: 0)
             
             attestationOptions = resStart.attestationOptions
         } catch let errorResponse as ErrorResponse {

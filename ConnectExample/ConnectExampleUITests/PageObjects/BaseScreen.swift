@@ -1,5 +1,7 @@
 import XCTest
 
+let defaultTimeout = 15.0
+
 @MainActor
 class BaseScreen {
     let app: XCUIApplication

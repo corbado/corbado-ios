@@ -21,7 +21,6 @@ public actor Corbado {
     
     internal var process: ConnectProcess?
     internal var loginInitCompleted: Date?
-    internal var appendInitLoaded: Date?
     
     /// Initializes a new instance of the Corbado SDK.
     ///
@@ -29,10 +28,12 @@ public actor Corbado {
     ///   - projectId: Your Corbado project ID.
     ///   - frontendApiUrlSuffix: The suffix of the frontend API URL. Defaults to "frontendapi.cloud.corbado.io".
     ///   - useOneTap: A boolean indicating whether to use one-tap login. Defaults to true.
+    ///   - timeoutInterval: The timeout interval for network requests in seconds. Defaults to 30.0 seconds.
     public init(
         projectId: String,
         frontendApiUrlSuffix: String?,
-        useOneTap: Bool = true
+        useOneTap: Bool = true,
+        timeoutInterval: TimeInterval = 10.0
     ) {
         self.projectId = projectId;
         self.frontendApiUrlSuffix = frontendApiUrlSuffix ?? "frontendapi.cloud.corbado.io"
@@ -40,7 +41,8 @@ public actor Corbado {
         
         let apiConfig = OpenAPIClientAPIConfiguration.shared
         apiConfig.basePath = "https://\(self.projectId).\(self.frontendApiUrlSuffix)"
-        client = CorbadoClient(apiConfig: apiConfig)
+        
+        client = CorbadoClient(apiConfig: apiConfig, timeoutInterval: timeoutInterval)
         
         clientStateService = ClientStateService(projectId: projectId)
         passkeysPlugin = PasskeyPlugin()

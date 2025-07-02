@@ -38,7 +38,7 @@ class LoginScreen: BaseScreen {
         switchAccountButton.waitAndTap()
     }
     
-    func awaitState(loginStatus: LoginStatus, errorMessage: String? = nil, timeout: TimeInterval = TimeInterval(5)) -> Bool {
+    func awaitState(loginStatus: LoginStatus, errorMessage: String? = nil, timeout: TimeInterval = defaultTimeout) -> Bool {
         var errorMessageMatches = true
         var loginStatusMatches = true
         
@@ -122,7 +122,7 @@ class LoginScreen: BaseScreen {
             passkeyEmailTextField.typeText(email)
 
             loginPasskeyButton.waitAndTap()
-            if !awaitState(loginStatus: .fallbackFirst, timeout: 5) {
+            if !awaitState(loginStatus: .fallbackFirst, timeout: defaultTimeout) {
                 throw XCTestError(.failureWhileWaiting)
             }
                         
@@ -131,7 +131,7 @@ class LoginScreen: BaseScreen {
             loginConventionalButton.waitAndTap()
         }
         
-        passwordSaveNotNowButton.waitAndTapWithRetry(timeout: 5.0)
+        passwordSaveNotNowButton.waitAndTapWithRetry(timeout: defaultTimeout)
     }
     
     @discardableResult
