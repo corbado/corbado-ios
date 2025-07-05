@@ -18,6 +18,7 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
     public var platformVersion: String
     public var name: String?
     public var version: String?
+    public var displayName: String
     public var build: String?
     public var deviceOwnerAuth: DeviceOwnerAuth?
     public var isBluetoothAvailable: Bool?
@@ -26,11 +27,12 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
     public var isDeviceSecure: Bool?
     public var error: String?
 
-    public init(platform: String, platformVersion: String, name: String? = nil, version: String? = nil, build: String? = nil, deviceOwnerAuth: DeviceOwnerAuth? = nil, isBluetoothAvailable: Bool? = nil, isBluetoothOn: Bool? = nil, isGooglePlayServices: Bool? = nil, isDeviceSecure: Bool? = nil, error: String? = nil) {
+    public init(platform: String, platformVersion: String, name: String? = nil, version: String? = nil, displayName: String, build: String? = nil, deviceOwnerAuth: DeviceOwnerAuth? = nil, isBluetoothAvailable: Bool? = nil, isBluetoothOn: Bool? = nil, isGooglePlayServices: Bool? = nil, isDeviceSecure: Bool? = nil, error: String? = nil) {
         self.platform = platform
         self.platformVersion = platformVersion
         self.name = name
         self.version = version
+        self.displayName = displayName
         self.build = build
         self.deviceOwnerAuth = deviceOwnerAuth
         self.isBluetoothAvailable = isBluetoothAvailable
@@ -45,6 +47,7 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         case platformVersion
         case name
         case version
+        case displayName
         case build
         case deviceOwnerAuth
         case isBluetoothAvailable
@@ -62,6 +65,7 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         try container.encode(platformVersion, forKey: .platformVersion)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(version, forKey: .version)
+        try container.encode(displayName, forKey: .displayName)
         try container.encodeIfPresent(build, forKey: .build)
         try container.encodeIfPresent(deviceOwnerAuth, forKey: .deviceOwnerAuth)
         try container.encodeIfPresent(isBluetoothAvailable, forKey: .isBluetoothAvailable)

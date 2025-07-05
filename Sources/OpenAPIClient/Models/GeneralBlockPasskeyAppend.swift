@@ -13,6 +13,7 @@ public struct GeneralBlockPasskeyAppend: Sendable, Codable, ParameterConvertible
         case _default = "default"
         case afterHybrid = "after-hybrid"
         case afterError = "after-error"
+        case afterNoCredential = "after-no-credential"
     }
     public var blockType: String
     public var challenge: String
