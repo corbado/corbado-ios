@@ -32,8 +32,8 @@ class ProfileViewModel: ObservableObject {
     private var initialized = false
     
     func setupPreview() {
-        email = "john.doe@corbado.com"
-        phoneNumber = "+4915121609839"
+        email = "test@example.com"
+        phoneNumber = "+4915112345678"
         passkeyAppendAllowed = true
         passkeys = [
             /*

@@ -1,7 +1,7 @@
 import Foundation
 
 struct TestDataFactory {
-    static let phoneNumber = "+4915121609839"
+    static let phoneNumber = "+4915112345678"
     static let password = "asdfasdf"
 
     static func createEmail() -> String {

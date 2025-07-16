@@ -20,8 +20,8 @@ class SignUpViewModel: ObservableObject {
     func autoFill() {
         let randomChars = randomString(10)
         
-        self.email = "integration-test+\(String(randomChars))@corbado.com"
-        self.phoneNumber = "+4915121609839"
+        self.email = "test@example.com"
+        self.phoneNumber = "+4915112345678"
         self.password = "asdfasdf"
     }
     
