@@ -113,20 +113,6 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    func getIdToken() async -> String? {
-        do {
-            let session = try await Amplify.Auth.fetchAuthSession()
-            if let cognitoTokenProvider = session as? AuthCognitoTokensProvider {
-                let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                return tokens.idToken
-            }
-            
-            return nil
-        } catch {
-            return nil
-        }
-    }
-    
     func signOut(appRouter: AppRouter) {
         Task {
             await corbado.clearProcess()
@@ -158,7 +144,7 @@ class ProfileViewModel: ObservableObject {
     
     @Sendable
     private func connectTokenProvider(connectTokenType: ConnectTokenType) async throws -> String {
-        let idToken = await getIdToken()
+        let idToken = await AppBackend.getIdToken()
         guard let idToken = idToken else {
             throw ConnectTokenError(message: "")
         }

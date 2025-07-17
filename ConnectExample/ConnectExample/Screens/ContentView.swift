@@ -19,9 +19,9 @@ struct ContentView: View {
         case .signUp:
             SignUpView()
         case .home:
-            NativeProfileView()
+            ProfileView()
         case .postLogin:
-            NativePostLoginView(appRouter: appRouter)
+            PostLoginView(appRouter: appRouter)
         case .setupTOTP:
             TOTPSetupView()
         default:

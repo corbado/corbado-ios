@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct NativePostLoginView: View {
+struct PostLoginView: View {
     @EnvironmentObject var appRouter: AppRouter
     
-    @StateObject var viewModel: NativePostLoginViewModel
+    @StateObject var viewModel: PostLoginViewModel
 
     init(appRouter: AppRouter) {
-        _viewModel = StateObject(wrappedValue: NativePostLoginViewModel(appRouter: appRouter))
+        _viewModel = StateObject(wrappedValue: PostLoginViewModel(appRouter: appRouter))
     }
     
-    init(viewModel: NativePostLoginViewModel) {
+    init(viewModel: PostLoginViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
@@ -80,8 +80,8 @@ struct NativePostLoginView: View {
 }
 
 #Preview {
-    let viewModel = NativePostLoginViewModel(appRouter: AppRouter())
+    let viewModel = PostLoginViewModel(appRouter: AppRouter())
     viewModel.setupPreview()
     
-    return NativePostLoginView(viewModel: viewModel)
+    return PostLoginView(viewModel: viewModel)
 }

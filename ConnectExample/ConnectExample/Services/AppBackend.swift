@@ -7,6 +7,9 @@
 
 import CorbadoConnect
 import Foundation
+import Amplify
+import AWSCognitoAuthPlugin
+import AWSPluginsCore
 
 class AppBackend {
     static func getConnectToken(connectTokenType: ConnectTokenType, idToken: String) async throws -> String {
@@ -54,6 +57,20 @@ class AppBackend {
                 print("Raw response string: \(responseString)")
             }
             throw error // Re-throw decoding error
+        }
+    }
+    
+    static func getIdToken() async -> String? {
+        do {
+            let session = try await Amplify.Auth.fetchAuthSession()
+            if let cognitoTokenProvider = session as? AuthCognitoTokensProvider {
+                let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+                return tokens.idToken
+            }
+            
+            return nil
+        } catch {
+            return nil
         }
     }
 }

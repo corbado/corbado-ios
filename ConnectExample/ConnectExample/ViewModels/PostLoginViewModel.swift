@@ -19,7 +19,7 @@ enum Status {
 }
 
 @MainActor
-class NativePostLoginViewModel: ObservableObject {
+class PostLoginViewModel: ObservableObject {
     @Injected(\.corbadoService) private var corbado: Corbado
     
     private let appRouter: AppRouter
@@ -100,22 +100,8 @@ class NativePostLoginViewModel: ObservableObject {
     }
     
     private func getConnectToken() async throws -> String {
-        let idToken = await getIdToken()
+        let idToken = await AppBackend.getIdToken()
         return try await AppBackend.getConnectToken(connectTokenType: ConnectTokenType.PasskeyAppend, idToken: idToken!)
-    }
-    
-    private func getIdToken() async -> String? {
-        do {
-            let session = try await Amplify.Auth.fetchAuthSession()
-            if let cognitoTokenProvider = session as? AuthCognitoTokensProvider {
-                let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                return tokens.idToken
-            }
-            
-            return nil
-        } catch {
-            return nil
-        }
     }
     
     private func hasMFA() async -> Bool {

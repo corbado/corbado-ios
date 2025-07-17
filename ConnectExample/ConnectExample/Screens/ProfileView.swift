@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct NativeProfileView: View {
+struct ProfileView: View {
     @EnvironmentObject var appRouter: AppRouter
     @StateObject var viewModel: ProfileViewModel
     @State var showingDeleteConfirmation = false
@@ -130,5 +130,5 @@ struct NativeProfileView: View {
     let viewModel = ProfileViewModel()
     viewModel.setupPreview()
     
-    return NativeProfileView(viewModel: viewModel)
+    return ProfileView(viewModel: viewModel)
 }
