@@ -1,5 +1,5 @@
 {
-  "originHash" : "53b5b2ea336529227e6e074dc3b6d547b60407578aaf007afae3422c9442971b",
+  "originHash" : "03c3f254f989d942d20f16dbb70474f875602cfa780fa2ee6a9b7c5ef66a5475",
   "pins" : [
     {
       "identity" : "cborcoding",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "14b1ab35ffdf62c999ef1016ec0f8e745a6feed5",
         "version" : "1.4.2"
+      }
+    },
+    {
+      "identity" : "simpleauthenticationservices",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/corbado/SimpleAuthenticationServices.git",
+      "state" : {
+        "revision" : "9ecf088095f6998ef2451f41c75190ea6d06ec3a",
+        "version" : "1.1.1"
       }
     },
     {

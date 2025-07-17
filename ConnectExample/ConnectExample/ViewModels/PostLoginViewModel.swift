@@ -137,13 +137,3 @@ extension URL {
         return queryItems.first(where: { $0.name == name })?.value
     }
 }
-
-struct ConnectTokenRequest: Codable {
-    let connectTokenType: String
-    let idToken: String
-}
-
-struct ConnectTokenResponse: Codable {
-    let token: String
-}
-

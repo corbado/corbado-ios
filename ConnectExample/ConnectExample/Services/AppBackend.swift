@@ -57,3 +57,12 @@ class AppBackend {
         }
     }
 }
+
+struct ConnectTokenRequest: Codable {
+    let connectTokenType: String
+    let idToken: String
+}
+
+struct ConnectTokenResponse: Codable {
+    let token: String
+}
