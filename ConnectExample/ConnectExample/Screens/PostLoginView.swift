@@ -1,5 +1,5 @@
 //
-//  NativePostLoginView.swift
+//  PostLoginView.swift
 //  ConnectExample
 //
 //  Created by Martin on 7/5/2025.
