@@ -34,7 +34,7 @@ class PostLoginViewModel: ObservableObject {
     }
     
     func setupPreview() {
-        state = .passkeyAppended
+        state = .passkeyAppend
         initialized = true
     }
     
