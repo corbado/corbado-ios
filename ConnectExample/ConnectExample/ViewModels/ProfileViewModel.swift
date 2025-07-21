@@ -70,14 +70,16 @@ class ProfileViewModel: ObservableObject {
             errorMessage = "Could not fetch userAttributes: \(error)"
         }
         
-        let manageStep = await corbado.isManageAppendAllowed(connectTokenProvider: connectTokenProvider)
-        switch manageStep {
+        let nextStep = await corbado.isManageAppendAllowed(connectTokenProvider: connectTokenProvider)
+        switch nextStep {
             case .allowed(let passkeys):
                 self.passkeys = passkeys
                 passkeyAppendAllowed = true
+            
             case .notAllowed(let passkeys):
                 self.passkeys = passkeys
                 passkeyAppendAllowed = false
+            
             case .error(let error):
                 errorMessage = "Unable to access passkeys. Check your connection and try again."
         }
@@ -94,14 +96,17 @@ class ProfileViewModel: ObservableObject {
     func appendPasskey() async {
         errorMessage = nil
         
-        let appendStatus = await corbado.completePasskeyListAppend(connectTokenProvider: connectTokenProvider)
-        switch appendStatus {
+        let status = await corbado.completePasskeyListAppend(connectTokenProvider: connectTokenProvider)
+        switch status {
         case .done(let passkeys):
             self.passkeys = passkeys
+            
         case .passkeyOperationCancelled:
             errorMessage = "Passkey append cancelled."
+            
         case .error(_):
             errorMessage = "Passkey creation failed. Please try again later."
+            
         case .passkeyOperationExcludeCredentialsMatch:
             errorMessage = "You already have a passkey that can be used on this device."
         }
@@ -125,12 +130,14 @@ class ProfileViewModel: ObservableObject {
     func deletePasskey(passkey: Passkey) async {
         errorMessage = nil
         
-        let deleteStatus = await corbado.deletePasskey(connectTokenProvider: connectTokenProvider, passkeyId: passkey.id)
-        switch deleteStatus {
+        let status = await corbado.deletePasskey(connectTokenProvider: connectTokenProvider, passkeyId: passkey.id)
+        switch status {
         case .done(let passkeys):
             self.passkeys = passkeys
+            
         case .error(let error):
             errorMessage = "Passkey deletion failed. Please try again later."
+            
         default:
             errorMessage = "Unexpected delete passkey status"
         }
