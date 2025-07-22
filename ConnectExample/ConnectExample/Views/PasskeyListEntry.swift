@@ -69,17 +69,25 @@ struct PasskeyListEntry: View {
             }
             
             // Info Text: Created
-            Text("Created: \(passkey.createdMs) with \(passkey.sourceBrowser) on \(passkey.sourceOS)")
+            Text("Created: \(formattedDate(from: passkey.createdMs)) with \(passkey.sourceBrowser) on \(passkey.sourceOS)")
                 .font(.footnote)
                 .foregroundColor(.secondary) // Grayish text
             
             // Info Text: Last Used
-            Text("Last used: \(passkey.lastUsedMs)")
+            Text("Last used: \(formattedDate(from: passkey.lastUsedMs))")
                 .font(.footnote)
                 .foregroundColor(.secondary) // Grayish text
         }
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("passkeyListEntry_\(passkey.id)")
+    }
+    
+    func formattedDate(from milliseconds: Int64) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        
+        return formatter.string(from: date)
     }
 }
 

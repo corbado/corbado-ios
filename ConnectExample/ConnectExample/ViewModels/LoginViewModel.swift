@@ -218,8 +218,8 @@ class LoginViewModel: ObservableObject {
         }
         
         switch nextStep {
-        case .done(let session, let username):
-            await signInWithCustomToken(session: session, username: username)
+        case .done(let signedPasskeyData, let username):
+            await signInWithCustomToken(signedPasskeyData: signedPasskeyData, username: username)
             
         case .ignore(_):
             // we could start CUI here
@@ -257,8 +257,8 @@ class LoginViewModel: ObservableObject {
         }
         
         switch nextStep {
-        case .done(let session, let username):
-            await signInWithCustomToken(session: session, username: username)
+        case .done(let signedPasskeyData, let username):
+            await signInWithCustomToken(signedPasskeyData: signedPasskeyData, username: username)
         case .initSilentFallback(let email, _):
             if let email = email {
                 self.email = email
@@ -297,12 +297,12 @@ class LoginViewModel: ObservableObject {
         }
     }
     
-    private func signInWithCustomToken(session: String, username: String) async {
+    private func signInWithCustomToken(signedPasskeyData: String, username: String) async {
         do {
             let option = AWSAuthSignInOptions(authFlowType: .customWithoutSRP)
             let signInResult = try await Amplify.Auth.signIn(username: username, options: AuthSignInRequest.Options(pluginOptions: option));
             if case .confirmSignInWithCustomChallenge(_) = signInResult.nextStep {
-                _ = try await Amplify.Auth.confirmSignIn(challengeResponse: session)
+                _ = try await Amplify.Auth.confirmSignIn(challengeResponse: signedPasskeyData)
                 appRouter.navigateTo(.home)
             }
         } catch let error {

@@ -1,5 +1,5 @@
 {
-  "originHash" : "376289dc7993d9b322912528cb49e587b38ed12653adffb9cb8ef0a2a32f2892",
+  "originHash" : "c7a08729b7a9ad4ab4d8b3118c94977ca6b975d9765787881a0d653e2e06a2f2",
   "pins" : [
     {
       "identity" : "amplify-swift",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/corbado/SimpleAuthenticationServices.git",
       "state" : {
-        "revision" : "81b0e78cea5143d23794ee4993c59a9506c1a6f7",
-        "version" : "1.0.0"
+        "revision" : "9ecf088095f6998ef2451f41c75190ea6d06ec3a",
+        "version" : "1.1.1"
       }
     },
     {

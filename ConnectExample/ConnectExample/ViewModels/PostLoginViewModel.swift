@@ -12,105 +12,96 @@ import AWSPluginsCore
 import CorbadoConnect
 import Factory
 
+enum Status {
+    case loading
+    case passkeyAppend
+    case passkeyAppended
+}
+
 @MainActor
 class PostLoginViewModel: ObservableObject {
     @Injected(\.corbadoService) private var corbado: Corbado
     
     private let appRouter: AppRouter
+    private var initialized = false
     
-    @Published var webViewURL: URL?
-    @Published var authError: Error?
-    @Published var isLoading = true
+    @Published var state: Status = .loading
     @Published var primaryLoading = false
-    @Published var isAuthComplete = false
+    @Published var errorMessage: String?
     
     init(appRouter: AppRouter) {
         self.appRouter = appRouter
     }
-        
-    // WEB VIEW ONLY
-    func prepareAndLoadAuthWebView() async {
-        guard isLoading else { return }
-        
-        authError = nil
-        isAuthComplete = false
-        webViewURL = nil
-        
-        guard let idToken = await getIdToken() else {
-            print("Error: Could not get idToken")
-            authError = URLError(.userAuthenticationRequired)
-            isLoading = false
+    
+    func setupPreview() {
+        state = .passkeyAppend
+        initialized = true
+    }
+    
+    func loadInitialStep() async {
+        if initialized {
             return
         }
         
-        var components = URLComponents(string: "https://feature-wv.connect-next.playground.corbado.io/redirect")
-        components?.queryItems = [
-            URLQueryItem(name: "token", value: idToken),
-            URLQueryItem(name: "redirectUrl", value: "/post-login-wv")
-        ]
-        
-        guard let url = components?.url else {
-            print("Error: Could not construct the URL")
-            authError = URLError(.badURL)
-            isLoading = false
-            return
+        let nextStep = await corbado.isAppendAllowed { _ in
+            return try await getConnectToken()
         }
         
-        print("Constructed URL: \(url.absoluteString)")
+        switch nextStep {
+        case .askUserForAppend(let autoAppend, _):
+            state = .passkeyAppend
+            
+            if autoAppend {
+                await createPasskey(autoAppend: true)
+            }
+            
+        case .skip:
+            await skipPasskeyCreation()
+        }
         
-        // Set the URL state and stop initial loading indicator
-        self.webViewURL = url
-        self.isLoading = false
+        initialized = true
     }
     
-    func handleAuthCompletion(_ result: Result<URL, Error>) {
-        isLoading = false
-        
-        switch result {
-        case .success(let receivedURL):
-            print("Authentication successful! Callback URL: \(receivedURL.absoluteString)")
-            isAuthComplete = true
-            authError = nil
-            
-            guard let status = receivedURL.queryParameterValue(forName: "status") else {
-                return
-            }
-            
-            switch status {
-            case "complete", "complete-noop":
-                appRouter.navigateTo(.home)
-            default:
-                Task {
-                    let hasMFA = await hasMFA()
-                    if !hasMFA {
-                        appRouter.navigateTo(.setupTOTP)
-                    } else {
-                        appRouter.navigateTo(.home)
-                    }
-                }
-            }
-            
-        case .failure(let error):
-            print("Authentication failed with error: \(error.localizedDescription)")
-            authError = error
-            isAuthComplete = false // Ensure completion flag is false on error
+    func createPasskey(autoAppend: Bool = false) async {
+        primaryLoading = true
+        defer {
+            primaryLoading = false
         }
         
-        webViewURL = nil
+        
+        let rsp = await corbado.completeAppend()
+        switch rsp {
+        case .completed:
+            state = .passkeyAppended
+        case .cancelled:
+            if !autoAppend {
+                errorMessage = "You have cancelled setting up your passkey. Please try again."
+            }
+            
+            // if the append has been initiated automatically, we don't show an error message
+        case .excludeCredentialsMatch:
+            appRouter.navigateTo(.home)
+        case .error:
+            appRouter.navigateTo(.home)
+        }
     }
     
-    private func getIdToken() async -> String? {
-        do {
-            let session = try await Amplify.Auth.fetchAuthSession()
-            if let cognitoTokenProvider = session as? AuthCognitoTokensProvider {
-                let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                return tokens.idToken
-            }
-            
-            return nil
-        } catch {
-            return nil
+    func navigateAfterPasskeyAppend() {
+        appRouter.navigateTo(.home)
+    }
+    
+    func skipPasskeyCreation() async {
+        let hasMFA = await hasMFA()
+        if !hasMFA {
+            appRouter.navigateTo(.setupTOTP)
+        } else {
+            appRouter.navigateTo(.home)
         }
+    }
+    
+    private func getConnectToken() async throws -> String {
+        let idToken = await AppBackend.getIdToken()
+        return try await AppBackend.getConnectToken(connectTokenType: ConnectTokenType.PasskeyAppend, idToken: idToken!)
     }
     
     private func hasMFA() async -> Bool {
@@ -123,27 +114,3 @@ class PostLoginViewModel: ObservableObject {
         }
     }
 }
-
-extension URL {
-    func queryParameterValue(forName name: String) -> String? {
-        guard let urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
-            return nil
-        }
-        
-        guard let queryItems = urlComponents.queryItems else {
-            return nil
-        }
-        
-        return queryItems.first(where: { $0.name == name })?.value
-    }
-}
-
-struct ConnectTokenRequest: Codable {
-    let connectTokenType: String
-    let idToken: String
-}
-
-struct ConnectTokenResponse: Codable {
-    let token: String
-}
-

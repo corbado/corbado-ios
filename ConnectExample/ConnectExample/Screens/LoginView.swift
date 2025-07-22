@@ -323,6 +323,7 @@ struct LoginView_Previews: PreviewProvider {
         ForEach(previewConfigs) { config in
             let viewModel = LoginViewModel(appRouter: appRouter)
             viewModel.setupPreview(status: config.status)
+            //viewModel.email = "jane@doe.com"
 
             return LoginView(viewModel: viewModel)
                 .previewDisplayName(config.displayName)
