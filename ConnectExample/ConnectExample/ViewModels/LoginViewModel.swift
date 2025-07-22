@@ -218,8 +218,8 @@ class LoginViewModel: ObservableObject {
         }
         
         switch nextStep {
-        case .done(let session, let username):
-            await signInWithCustomToken(signedPasskeyData: session, username: username)
+        case .done(let signedPasskeyData, let username):
+            await signInWithCustomToken(signedPasskeyData: signedPasskeyData, username: username)
             
         case .ignore(_):
             // we could start CUI here
