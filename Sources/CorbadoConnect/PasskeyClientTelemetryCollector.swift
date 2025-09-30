@@ -18,6 +18,10 @@ struct PasskeyClientTelemetryData {
     let appBuildNumber: String?
     let appDisplayName: String
     let deviceOwnerAuth: DeviceOwnerAuth?
+    let brand: String
+    let model: String
+    let locale: String
+    let screen: ScreenNativeMeta
     let error: String?
     
     func toNativeMeta() -> NativeMeta {
@@ -34,7 +38,11 @@ struct PasskeyClientTelemetryData {
             displayName: appDisplayName,
             build: appBuildNumber,
             deviceOwnerAuth: backendDeviceOwnerAuth,
-            error: error
+            error: error,
+            brand: brand,
+            model: model,
+            locale: locale,
+            screen: NativeMetaScreen(widthPoints: screen.widthPoints, heightPoints: screen.heightPoints, scale: screen.scale)
         )
     }
 }
@@ -45,12 +53,21 @@ enum DeviceOwnerAuth: String {
     case none = "none"
 }
 
+struct ScreenNativeMeta {
+    let widthPoints: Double
+    let heightPoints: Double
+    let scale: Double
+}
+
 class PasskeyClientTelemetryCollector {
     static func collectData() async -> PasskeyClientTelemetryData {
         let (deviceOwnerAuth, error) = getDeviceOwnerAuthType()
         let appDisplayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
             ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
         
+        let bounds = UIScreen.main.bounds
+        let scale = UIScreen.main.scale
+
         return await MainActor.run {
             return PasskeyClientTelemetryData(
                 osName: UIDevice.current.systemName,
@@ -60,6 +77,10 @@ class PasskeyClientTelemetryCollector {
                 appBuildNumber: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
                 appDisplayName: appDisplayName,
                 deviceOwnerAuth: deviceOwnerAuth,
+                brand: "apple",
+                model: modelIdentifier(),
+                locale: Locale.current.identifier,
+                screen: ScreenNativeMeta(widthPoints: bounds.size.width, heightPoints: bounds.size.height, scale: scale),
                 error: error
             )
         }
@@ -82,4 +103,17 @@ class PasskeyClientTelemetryCollector {
         
         return (DeviceOwnerAuth.none, nil)
     }
-} 
+    
+    private static func modelIdentifier() -> String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let mirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = mirror.children.reduce(into: "") { acc, elem in
+            if let value = elem.value as? Int8, value != 0 {
+                acc.append(Character(UnicodeScalar(UInt8(value))))
+            }
+        }
+        
+        return identifier
+    }
+}

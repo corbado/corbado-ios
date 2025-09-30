@@ -10,13 +10,16 @@ import Foundation
 public struct ConnectAppendFinishReq: Sendable, Codable, ParameterConvertible, Hashable {
 
     public var attestationResponse: String
+    public var completionType: AppendCompletionType
 
-    public init(attestationResponse: String) {
+    public init(attestationResponse: String, completionType: AppendCompletionType) {
         self.attestationResponse = attestationResponse
+        self.completionType = completionType
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case attestationResponse
+        case completionType
     }
 
     // Encodable protocol methods
@@ -24,6 +27,7 @@ public struct ConnectAppendFinishReq: Sendable, Codable, ParameterConvertible, H
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(attestationResponse, forKey: .attestationResponse)
+        try container.encode(completionType, forKey: .completionType)
     }
 }
 

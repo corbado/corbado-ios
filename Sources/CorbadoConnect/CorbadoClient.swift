@@ -195,8 +195,9 @@ struct CorbadoClient {
         return try await CorbadoConnectAPI.connectAppendStart(connectAppendStartReq: req, apiConfiguration: self.apiConfig)
     }
     
-    func appendFinish(attestationResponse: String) async throws(ErrorResponse) -> ConnectAppendFinishRsp {
-        let req = ConnectAppendFinishReq(attestationResponse: attestationResponse)
+    func appendFinish(attestationResponse: String, completionType: AppendCompletionType) async throws(ErrorResponse) -> ConnectAppendFinishRsp {
+        let completionType = OpenAPIClient.AppendCompletionType(rawValue: completionType.rawValue) ?? OpenAPIClient.AppendCompletionType.manual
+        let req = ConnectAppendFinishReq(attestationResponse: attestationResponse, completionType: completionType)
         
         return try await CorbadoConnectAPI.connectAppendFinish(connectAppendFinishReq: req, apiConfiguration: self.apiConfig)
     }
@@ -211,15 +212,16 @@ struct CorbadoClient {
         return try await CorbadoConnectAPI.connectManageInit(connectManageInitReq: req, apiConfiguration: self.apiConfig)
     }
     
-    func manageList(connectToken: String) async throws(ErrorResponse) -> ([Passkey], String, String) {
-        let req = ConnectManageListReq(connectToken: connectToken)
+    func manageList(connectToken: String, mode: PasskeyListMode) async throws(ErrorResponse) -> ([Passkey], String, String, Bool) {
+        let mode = OpenAPIClient.ConnectManageListReq.Mode(rawValue: mode.rawValue) ?? OpenAPIClient.ConnectManageListReq.Mode._default
+        let req = ConnectManageListReq(connectToken: connectToken, mode: mode)
         
         let res = try await CorbadoConnectAPI.connectManageList(connectManageListReq: req, apiConfiguration: self.apiConfig)
         let passkeys = res.passkeys.map { item in
-            return Passkey(id: item.id, tags: item.tags, sourceOS: item.sourceOS, sourceBrowser: item.sourceBrowser, lastUsedMs: item.lastUsedMs, createdMs: item.createdMs, aaguidDetails: item.aaguidDetails)
+            return Passkey(id: item.id, credentialID: item.credentialID, tags: item.tags, sourceOS: item.sourceOS, sourceBrowser: item.sourceBrowser, lastUsedMs: item.lastUsedMs, createdMs: item.createdMs, aaguidDetails: item.aaguidDetails)
         }
         
-        return (passkeys, res.rpID, res.userID)
+        return (passkeys, res.rpID, res.userID, res.signalAllAcceptedCredentials)
     }
     
     func manageDelete(connectToken: String, passkeyId: String) async throws(ErrorResponse) -> ConnectManageDeleteRsp {

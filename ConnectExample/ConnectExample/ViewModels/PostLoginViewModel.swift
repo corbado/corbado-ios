@@ -24,6 +24,7 @@ class PostLoginViewModel: ObservableObject {
     
     private let appRouter: AppRouter
     private var initialized = false
+    private var retryCount = 0
     
     @Published var state: Status = .loading
     @Published var primaryLoading = false
@@ -48,12 +49,8 @@ class PostLoginViewModel: ObservableObject {
         }
         
         switch nextStep {
-        case .askUserForAppend(let autoAppend, _):
-            state = .passkeyAppend
-            
-            if autoAppend {
-                await createPasskey(autoAppend: true)
-            }
+        case .askUserForAppend(let autoAppend, _, let conditionalAppend):
+            await triggerPasskeyOperations(autoAppend: autoAppend, conditionalAppend: conditionalAppend)
             
         case .skip:
             await skipPasskeyCreation()
@@ -62,14 +59,52 @@ class PostLoginViewModel: ObservableObject {
         initialized = true
     }
     
+    func triggerPasskeyOperations(autoAppend: Bool, conditionalAppend: Bool) async {
+        if conditionalAppend {
+            let handled = await createPasskeyConditional()
+            if handled {
+                return
+            }
+        }
+        
+        state = .passkeyAppend
+        if autoAppend {
+            await createPasskey(autoAppend: true)
+        }
+    }
+    
+    func createPasskeyConditional() async -> Bool {
+        let rsp = await corbado.completeAppend(completionType: .Conditional)
+        switch rsp {
+        case .completed:
+            state = .passkeyAppended
+            return true
+            
+        default:
+            return false
+        }
+    }
+    
     func createPasskey(autoAppend: Bool = false) async {
         primaryLoading = true
         defer {
             primaryLoading = false
         }
         
+        var completionType: AppendCompletionType
+        if autoAppend {
+            completionType = .Auto
+        } else if retryCount > 0 {
+            completionType = .ManualRetry
+        } else {
+            completionType = .Manual
+        }
         
-        let rsp = await corbado.completeAppend()
+        if !autoAppend {
+            retryCount+=1
+        }
+        
+        let rsp = await corbado.completeAppend(completionType: completionType)
         switch rsp {
         case .completed:
             state = .passkeyAppended
