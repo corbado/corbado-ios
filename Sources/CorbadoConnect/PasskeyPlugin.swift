@@ -147,6 +147,7 @@ public actor PasskeyPlugin {
         await controller.cancel()
     }
     
+    @MainActor
     private func parseCredentials(credentials: [CredentialWithTransports]) -> [ASAuthorizationPlatformPublicKeyCredentialDescriptor] {
         return credentials.compactMap { credential in
             guard let credentialData = Data.fromBase64Url(credential.id) else {
