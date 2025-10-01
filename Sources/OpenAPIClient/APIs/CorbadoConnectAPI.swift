@@ -10,7 +10,7 @@ import Foundation
 open class CorbadoConnectAPI {
 
     /**
-     Finish Connect Append
+     Finish connect append
      
      - parameter connectAppendFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -22,9 +22,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Finish Connect Append
+     Finish connect append
      - POST /v2/connect/append/finish
-     - Finishes an initialized connect passkey append process
+     - Finishes an initialized [Corbado Connect](https://docs.corbado.com/corbado-connect) passkey append process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -54,7 +54,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Initialize Connect Append
+     Initialize connect append
      
      - parameter connectAppendInitReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -66,9 +66,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Initialize Connect Append
+     Initialize connect append
      - POST /v2/connect/append/init
-     - Initializes a connect process for passkey append
+     - Initializes a [Corbado Connect](https://docs.corbado.com/corbado-connect) process for passkey append.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -98,7 +98,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Start Connect Append
+     Start connect append
      
      - parameter connectAppendStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -110,9 +110,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Start Connect Append
+     Start connect append
      - POST /v2/connect/append/start
-     - Starts an initialized connect passkey append process
+     - Starts an initialized [Corbado Connect](https://docs.corbado.com/corbado-connect) passkey append process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -142,7 +142,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Create Connect Event
+     Create connect event
      
      - parameter connectEventCreateReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -154,9 +154,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Create Connect Event
+     Create connect event
      - POST /v2/connect/events
-     - Creates a new user generated connect event
+     - Creates a new user generated [Corbado Connect](https://docs.corbado.com/corbado-connect) event.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -186,7 +186,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Finish Connect Login
+     Finish connect login
      
      - parameter connectLoginFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -198,9 +198,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Finish Connect Login
+     Finish connect login
      - POST /v2/connect/login/finish
-     - Finishes an initialized connect login process
+     - Finishes an initialized [Corbado Connect](https://docs.corbado.com/corbado-connect) login process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -230,7 +230,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Initialize Connect Login
+     Initialize connect login
      
      - parameter connectLoginInitReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -242,9 +242,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Initialize Connect Login
+     Initialize connect login
      - POST /v2/connect/login/init
-     - Initializes a connect process for login
+     - Initializes a [Corbado Connect](https://docs.corbado.com/corbado-connect) process for login.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -274,7 +274,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Start Connect Login
+     Start connect login
      
      - parameter connectLoginStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -286,9 +286,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Start Connect Login
+     Start connect login
      - POST /v2/connect/login/start
-     - Starts an initialized connect login process
+     - Starts an initialized [Corbado Connect](https://docs.corbado.com/corbado-connect) login process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -318,7 +318,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Delete Connect Passkey
+     Delete connect passkey
      
      - parameter connectManageDeleteReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -330,9 +330,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Delete Connect Passkey
+     Delete connect passkey
      - POST /v2/connect/manage/delete
-     - Deletes a passkey for a user identified by a connect token
+     - Deletes a passkey for a user identified by a [Corbado Connect](https://docs.corbado.com/corbado-connect) token.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -362,7 +362,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Initialize Connect Management
+     Initialize connect management
      
      - parameter connectManageInitReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -374,9 +374,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Initialize Connect Management
+     Initialize connect management
      - POST /v2/connect/manage/init
-     - Initializes a connect process for passkey management
+     - Initializes a [Corbado Connect](https://docs.corbado.com/corbado-connect) process for passkey management.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -406,7 +406,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     List Connect Passkeys
+     List connect passkeys
      
      - parameter connectManageListReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -418,9 +418,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     List Connect Passkeys
+     List connect passkeys
      - POST /v2/connect/manage/list
-     - Lists all passkeys for a user identifier by a connect token
+     - Lists all passkeys for a user identifier by a [Corbado Connect](https://docs.corbado.com/corbado-connect) token.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -450,7 +450,7 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Clear Connect Process
+     Clear connect process
      
      - parameter connectProcessClearReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -462,9 +462,9 @@ open class CorbadoConnectAPI {
     }
 
     /**
-     Clear Connect Process
+     Clear connect process
      - POST /v2/connect/process/clear
-     - Remove process state for a connect process
+     - Remove process state for a [Corbado Connect](https://docs.corbado.com/corbado-connect) process.
      - Bearer Token:
        - type: http
        - name: bearerAuth

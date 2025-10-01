@@ -33,7 +33,7 @@ public extension Corbado {
             self.process = process?.copyWith(attestationOptions: resStart.attestationOptions)
             
             // for now, we only support default
-            return .askUserForAppend(resStart.autoAppend, appendType: .defaultAppend)
+            return .askUserForAppend(resStart.autoAppend, appendType: .defaultAppend, resStart.conditionalAppend)
         } catch let errorMessage as ErrorResponse {
             let message = errorMessage.serializeToString()
             await client.recordAppendEvent(
@@ -58,7 +58,7 @@ public extension Corbado {
     /// This should be called after `isAppendAllowed` has returned `.askUserForAppend` and the user has confirmed they want to create a passkey.
     /// - Returns: A `ConnectAppendStatus` indicating the result of the append operation.
     @MainActor
-    func completeAppend() async -> ConnectAppendStatus {
+    func completeAppend(completionType: AppendCompletionType = .Manual) async -> ConnectAppendStatus {
         guard #available(iOS 16.0, *) else {
             return .error(developerDetails: "passkey append requires at least iOS 16")
         }
@@ -68,9 +68,9 @@ public extension Corbado {
         }
         
         do {
-            let rspAuthenticate = try await passkeysPlugin.create(attestationOptions: attestationOptions)
+            let rspAuthenticate = try await passkeysPlugin.create(attestationOptions: attestationOptions, completionType: completionType)
             
-            let resFinish = try await client.appendFinish(attestationResponse: rspAuthenticate)
+            let resFinish = try await client.appendFinish(attestationResponse: rspAuthenticate, completionType: completionType)
             
             if let lastLogin = LastLogin.from(passkeyOperation: resFinish.passkeyOperation) {
                 await self.clientStateService.setLastLogin(lastLogin: lastLogin)
@@ -139,6 +139,9 @@ public extension Corbado {
             let clientInfo = await buildClientInfo()
             let invitationToken = await clientStateService.getInvitationToken()?.data
             let res = try await client.appendInit(clientInfo: clientInfo, invitationToken: invitationToken)
+            if let clientEnvHandle = res.newClientEnvHandle {
+                await clientStateService.setClientEnvHandle(clientEnvHandle: clientEnvHandle)
+            }
             
             let appendData = ConnectAppendInitData(
                 appendAllowed: res.appendAllowed,

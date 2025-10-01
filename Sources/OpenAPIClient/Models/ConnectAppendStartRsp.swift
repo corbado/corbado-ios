@@ -18,12 +18,14 @@ public struct ConnectAppendStartRsp: Sendable, Codable, ParameterConvertible, Ha
     public var variant: Variant
     public var isRestrictedBrowser: Bool
     public var autoAppend: Bool
+    public var conditionalAppend: Bool
 
-    public init(attestationOptions: String, variant: Variant, isRestrictedBrowser: Bool, autoAppend: Bool) {
+    public init(attestationOptions: String, variant: Variant, isRestrictedBrowser: Bool, autoAppend: Bool, conditionalAppend: Bool) {
         self.attestationOptions = attestationOptions
         self.variant = variant
         self.isRestrictedBrowser = isRestrictedBrowser
         self.autoAppend = autoAppend
+        self.conditionalAppend = conditionalAppend
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -31,6 +33,7 @@ public struct ConnectAppendStartRsp: Sendable, Codable, ParameterConvertible, Ha
         case variant
         case isRestrictedBrowser
         case autoAppend
+        case conditionalAppend
     }
 
     // Encodable protocol methods
@@ -41,6 +44,7 @@ public struct ConnectAppendStartRsp: Sendable, Codable, ParameterConvertible, Ha
         try container.encode(variant, forKey: .variant)
         try container.encode(isRestrictedBrowser, forKey: .isRestrictedBrowser)
         try container.encode(autoAppend, forKey: .autoAppend)
+        try container.encode(conditionalAppend, forKey: .conditionalAppend)
     }
 }
 

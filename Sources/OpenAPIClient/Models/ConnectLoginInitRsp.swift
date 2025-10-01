@@ -11,15 +11,17 @@ public struct ConnectLoginInitRsp: Sendable, Codable, ParameterConvertible, Hash
 
     public var token: String
     public var newClientEnvHandle: String?
+    public var newClientState: String?
     public var expiresAt: Int64
     public var frontendApiUrl: String
     public var loginAllowed: Bool
     public var conditionalUIChallenge: String?
     public var flags: [String: String]
 
-    public init(token: String, newClientEnvHandle: String? = nil, expiresAt: Int64, frontendApiUrl: String, loginAllowed: Bool, conditionalUIChallenge: String? = nil, flags: [String: String]) {
+    public init(token: String, newClientEnvHandle: String? = nil, newClientState: String? = nil, expiresAt: Int64, frontendApiUrl: String, loginAllowed: Bool, conditionalUIChallenge: String? = nil, flags: [String: String]) {
         self.token = token
         self.newClientEnvHandle = newClientEnvHandle
+        self.newClientState = newClientState
         self.expiresAt = expiresAt
         self.frontendApiUrl = frontendApiUrl
         self.loginAllowed = loginAllowed
@@ -30,6 +32,7 @@ public struct ConnectLoginInitRsp: Sendable, Codable, ParameterConvertible, Hash
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case token
         case newClientEnvHandle
+        case newClientState
         case expiresAt
         case frontendApiUrl
         case loginAllowed
@@ -43,6 +46,7 @@ public struct ConnectLoginInitRsp: Sendable, Codable, ParameterConvertible, Hash
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(token, forKey: .token)
         try container.encodeIfPresent(newClientEnvHandle, forKey: .newClientEnvHandle)
+        try container.encodeIfPresent(newClientState, forKey: .newClientState)
         try container.encode(expiresAt, forKey: .expiresAt)
         try container.encode(frontendApiUrl, forKey: .frontendApiUrl)
         try container.encode(loginAllowed, forKey: .loginAllowed)
