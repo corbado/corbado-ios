@@ -20,6 +20,9 @@ public extension Corbado {
             let clientInfo = await buildClientInfo()
             let invitationToken = await clientStateService.getInvitationToken()
             let res = try await client.loginInit(clientInfo: clientInfo, invitationToken: invitationToken?.data)
+            if let clientEnvHandle = res.newClientEnvHandle {
+                await clientStateService.setClientEnvHandle(clientEnvHandle: clientEnvHandle)
+            }
             
             let loginData = ConnectLoginInitData(
                 loginAllowed: res.loginAllowed,

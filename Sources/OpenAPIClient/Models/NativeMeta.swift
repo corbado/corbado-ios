@@ -26,8 +26,12 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
     public var isGooglePlayServices: Bool?
     public var isDeviceSecure: Bool?
     public var error: String?
+    public var brand: String?
+    public var model: String?
+    public var locale: String?
+    public var screen: NativeMetaScreen?
 
-    public init(platform: String, platformVersion: String, name: String? = nil, version: String? = nil, displayName: String, build: String? = nil, deviceOwnerAuth: DeviceOwnerAuth? = nil, isBluetoothAvailable: Bool? = nil, isBluetoothOn: Bool? = nil, isGooglePlayServices: Bool? = nil, isDeviceSecure: Bool? = nil, error: String? = nil) {
+    public init(platform: String, platformVersion: String, name: String? = nil, version: String? = nil, displayName: String, build: String? = nil, deviceOwnerAuth: DeviceOwnerAuth? = nil, isBluetoothAvailable: Bool? = nil, isBluetoothOn: Bool? = nil, isGooglePlayServices: Bool? = nil, isDeviceSecure: Bool? = nil, error: String? = nil, brand: String? = nil, model: String? = nil, locale: String? = nil, screen: NativeMetaScreen? = nil) {
         self.platform = platform
         self.platformVersion = platformVersion
         self.name = name
@@ -40,6 +44,10 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         self.isGooglePlayServices = isGooglePlayServices
         self.isDeviceSecure = isDeviceSecure
         self.error = error
+        self.brand = brand
+        self.model = model
+        self.locale = locale
+        self.screen = screen
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -55,6 +63,10 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         case isGooglePlayServices
         case isDeviceSecure
         case error
+        case brand
+        case model
+        case locale
+        case screen
     }
 
     // Encodable protocol methods
@@ -73,6 +85,10 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         try container.encodeIfPresent(isGooglePlayServices, forKey: .isGooglePlayServices)
         try container.encodeIfPresent(isDeviceSecure, forKey: .isDeviceSecure)
         try container.encodeIfPresent(error, forKey: .error)
+        try container.encodeIfPresent(brand, forKey: .brand)
+        try container.encodeIfPresent(model, forKey: .model)
+        try container.encodeIfPresent(locale, forKey: .locale)
+        try container.encodeIfPresent(screen, forKey: .screen)
     }
 }
 

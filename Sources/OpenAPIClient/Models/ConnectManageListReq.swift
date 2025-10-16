@@ -9,14 +9,22 @@ import Foundation
 
 public struct ConnectManageListReq: Sendable, Codable, ParameterConvertible, Hashable {
 
+    public enum Mode: String, Sendable, Codable, CaseIterable {
+        case _default = "default"
+        case postDelete = "post-delete"
+        case postAppend = "post-append"
+    }
     public var connectToken: String
+    public var mode: Mode?
 
-    public init(connectToken: String) {
+    public init(connectToken: String, mode: Mode? = nil) {
         self.connectToken = connectToken
+        self.mode = mode
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case connectToken
+        case mode
     }
 
     // Encodable protocol methods
@@ -24,6 +32,7 @@ public struct ConnectManageListReq: Sendable, Codable, ParameterConvertible, Has
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(connectToken, forKey: .connectToken)
+        try container.encodeIfPresent(mode, forKey: .mode)
     }
 }
 

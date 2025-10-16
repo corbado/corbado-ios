@@ -15,14 +15,16 @@ public struct ConnectAppendInitRsp: Sendable, Codable, ParameterConvertible, Has
     public var frontendApiUrl: String
     public var appendAllowed: Bool
     public var flags: [String: String]
+    public var newClientState: String?
 
-    public init(processID: String, newClientEnvHandle: String? = nil, expiresAt: Int64, frontendApiUrl: String, appendAllowed: Bool, flags: [String: String]) {
+    public init(processID: String, newClientEnvHandle: String? = nil, expiresAt: Int64, frontendApiUrl: String, appendAllowed: Bool, flags: [String: String], newClientState: String? = nil) {
         self.processID = processID
         self.newClientEnvHandle = newClientEnvHandle
         self.expiresAt = expiresAt
         self.frontendApiUrl = frontendApiUrl
         self.appendAllowed = appendAllowed
         self.flags = flags
+        self.newClientState = newClientState
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -32,6 +34,7 @@ public struct ConnectAppendInitRsp: Sendable, Codable, ParameterConvertible, Has
         case frontendApiUrl
         case appendAllowed
         case flags
+        case newClientState
     }
 
     // Encodable protocol methods
@@ -44,6 +47,7 @@ public struct ConnectAppendInitRsp: Sendable, Codable, ParameterConvertible, Has
         try container.encode(frontendApiUrl, forKey: .frontendApiUrl)
         try container.encode(appendAllowed, forKey: .appendAllowed)
         try container.encode(flags, forKey: .flags)
+        try container.encodeIfPresent(newClientState, forKey: .newClientState)
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 open class UsersAPI {
 
     /**
-     Delete Current User
+     Delete current user
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: GenericRsp
@@ -21,9 +21,9 @@ open class UsersAPI {
     }
 
     /**
-     Delete Current User
+     Delete current user
      - DELETE /v2/me
-     - Deletes current user
+     - Deletes currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -52,7 +52,7 @@ open class UsersAPI {
     }
 
     /**
-     Get Current User
+     Retrieve current user
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: MeRsp
@@ -63,9 +63,9 @@ open class UsersAPI {
     }
 
     /**
-     Get Current User
+     Retrieve current user
      - GET /v2/me
-     - Gets current user
+     - Retrieves data of currently logged in user including their [login identifiers](/api-reference/backend-api/loginidentifiers/create-a-login-identifier-for-a-user) and [social logins](/api-reference/backend-api/users/create-a-social-login-for-a-user). 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -94,7 +94,7 @@ open class UsersAPI {
     }
 
     /**
-     Create Identifier
+     Create login identifier
      
      - parameter meIdentifierCreateReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -106,9 +106,9 @@ open class UsersAPI {
     }
 
     /**
-     Create Identifier
+     Create login identifier
      - POST /v2/me/identifier
-     - Creates an identifier
+     - Creates a login identifier for the currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -138,7 +138,7 @@ open class UsersAPI {
     }
 
     /**
-     Delete Identifier
+     Delete login identifier
      
      - parameter meIdentifierDeleteReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -150,9 +150,9 @@ open class UsersAPI {
     }
 
     /**
-     Delete Identifier
+     Delete login identifier
      - DELETE /v2/me/identifier
-     - Deletes an identifier
+     - Deletes a login identifier for the currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -182,7 +182,7 @@ open class UsersAPI {
     }
 
     /**
-     Update Identifier
+     Update login identifier
      
      - parameter meIdentifierUpdateReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -194,9 +194,9 @@ open class UsersAPI {
     }
 
     /**
-     Update Identifier
+     Update login identifier
      - PATCH /v2/me/identifier
-     - Modifies an identifier (only permitted for username; identifierID will change)
+     - Updates a login identifier for the currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -226,7 +226,7 @@ open class UsersAPI {
     }
 
     /**
-     Finish Identifier Verification
+     Finish login identifier verification
      
      - parameter meIdentifierVerifyFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -238,9 +238,9 @@ open class UsersAPI {
     }
 
     /**
-     Finish Identifier Verification
+     Finish login identifier verification
      - POST /v2/me/identifier/verify/finish
-     - Verifies challenge
+     - Finishes login identifer verification of currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -270,7 +270,7 @@ open class UsersAPI {
     }
 
     /**
-     Start Identifier Verification
+     Start login identifier verification
      
      - parameter meIdentifierVerifyStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -282,9 +282,9 @@ open class UsersAPI {
     }
 
     /**
-     Start Identifier Verification
+     Start login identifier verification
      - POST /v2/me/identifier/verify/start
-     - Creates challenge (only email otp and phone otp supported for now)
+     - Starts login identifer verification of currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -314,7 +314,7 @@ open class UsersAPI {
     }
 
     /**
-     Finish Passkey Append
+     Finish passkey append
      
      - parameter mePasskeysAppendFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -326,9 +326,9 @@ open class UsersAPI {
     }
 
     /**
-     Finish Passkey Append
+     Finish passkey append
      - POST /v2/me/passkeys/append/finish
-     - Finishes passkey append for current user
+     - Finishes passkey append for currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -358,7 +358,7 @@ open class UsersAPI {
     }
 
     /**
-     Start Passkey Append
+     Start passkey append
      
      - parameter mePasskeysAppendStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -370,9 +370,9 @@ open class UsersAPI {
     }
 
     /**
-     Start Passkey Append
+     Start passkey append
      - POST /v2/me/passkeys/append/start
-     - Starts passkey append for current user
+     - Starts passkey append for currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -402,9 +402,9 @@ open class UsersAPI {
     }
 
     /**
-     Delete User Passkey
+     Delete user passkey
      
-     - parameter credentialID: (path) Credential ID from passkeys 
+     - parameter credentialID: (path) Unique identifier of the passkey. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: MePasskeyDeleteRsp
      */
@@ -414,16 +414,16 @@ open class UsersAPI {
     }
 
     /**
-     Delete User Passkey
+     Delete user passkey
      - DELETE /v2/me/passkeys/{credentialID}
-     - Delete current user's passkeys
+     - Deletes a passkey for the currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
      - API Key:
        - type: apiKey X-Corbado-ProjectID (HEADER)
        - name: projectID
-     - parameter credentialID: (path) Credential ID from passkeys 
+     - parameter credentialID: (path) Unique identifier of the passkey. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<MePasskeyDeleteRsp> 
      */
@@ -449,7 +449,7 @@ open class UsersAPI {
     }
 
     /**
-     Get User Passkeys
+     List all user passkeys
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: MePasskeyRsp
@@ -460,9 +460,9 @@ open class UsersAPI {
     }
 
     /**
-     Get User Passkeys
+     List all user passkeys
      - GET /v2/me/passkeys
-     - Gets current user's passkeys
+     - Returns a list of passkeys for the currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -491,7 +491,7 @@ open class UsersAPI {
     }
 
     /**
-     Logout User
+     Logout user
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Void
@@ -502,9 +502,9 @@ open class UsersAPI {
     }
 
     /**
-     Logout User
+     Logout user
      - POST /v2/me/logout
-     - Performs session logout
+     - Performs session logout of currently logged in user.  Manage users sessions in the [Developer Panel](https://app.corbado.com/users/sessions) or consult the [Documentation](https://docs.corbado.com/corbado-complete/sessions/overview) for more details. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -533,7 +533,7 @@ open class UsersAPI {
     }
 
     /**
-     Refresh Session
+     Refresh user session
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: MeRefreshRsp
@@ -544,9 +544,9 @@ open class UsersAPI {
     }
 
     /**
-     Refresh Session
+     Refresh user session
      - POST /v2/me/refresh
-     - Performs session refresh
+     - Performs session refresh of currently logged in user. Issues a new session-token if session is still valid.  Manage users sessions in the [Developer Panel](https://app.corbado.com/users/sessions) or consult the [Documentation](https://docs.corbado.com/corbado-complete/sessions/overview) for more details. 
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -575,7 +575,7 @@ open class UsersAPI {
     }
 
     /**
-     Update Current User
+     Update current User
      
      - parameter meUpdateReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -587,9 +587,9 @@ open class UsersAPI {
     }
 
     /**
-     Update Current User
+     Update current User
      - PATCH /v2/me
-     - Updates current user
+     - Updates data of currently logged in user. 
      - Bearer Token:
        - type: http
        - name: bearerAuth

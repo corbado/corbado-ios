@@ -18,7 +18,25 @@ struct ProfileView: View {
             if viewModel.isLoading {
                 ProgressView("Loading Profile...")
             } else {
-                ScreenHeadline(title: "Profile", accessibilityIdentifier: "profileScreen.headline")
+                HStack(spacing: 12) {
+                    Button {
+                        appRouter.navigateBack()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                            .foregroundColor(.primary)
+                    }
+                    .accessibilityIdentifier("profileScreen.backButton")
+                    
+                    Text("Profile")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .accessibilityIdentifier("profileScreen.headline")
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top)
                 
                 Divider()
                 

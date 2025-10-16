@@ -90,6 +90,8 @@ public enum ConnectLoginWithoutIdentifierStatus: Equatable, Sendable {
 /// A boolean indicating if a passkey should be automatically appended.
 public typealias autoAppend = Bool
 
+public typealias conditionalAppend = Bool
+
 /// The variant of the append process.
 public enum AppendType: Sendable {
     case defaultAppend
@@ -104,7 +106,7 @@ public struct PasskeyDetails: Equatable, Sendable {
 /// Represents the different states of the passkey append process.
 public enum ConnectAppendStep: Equatable, Sendable {
     /// The user should be asked if they want to append a new passkey.
-    case askUserForAppend(autoAppend = false, appendType: AppendType = .defaultAppend)
+    case askUserForAppend(autoAppend = false, appendType: AppendType = .defaultAppend, conditionalAppend = false, customData: [String: String]? = nil)
     /// The append process should be skipped.
     case skip(developerDetails: String)
 }

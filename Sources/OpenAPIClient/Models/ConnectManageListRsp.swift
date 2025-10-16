@@ -12,17 +12,20 @@ public struct ConnectManageListRsp: Sendable, Codable, ParameterConvertible, Has
     public var passkeys: [Passkey]
     public var rpID: String
     public var userID: String
+    public var signalAllAcceptedCredentials: Bool
 
-    public init(passkeys: [Passkey], rpID: String, userID: String) {
+    public init(passkeys: [Passkey], rpID: String, userID: String, signalAllAcceptedCredentials: Bool) {
         self.passkeys = passkeys
         self.rpID = rpID
         self.userID = userID
+        self.signalAllAcceptedCredentials = signalAllAcceptedCredentials
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case passkeys
         case rpID
         case userID
+        case signalAllAcceptedCredentials
     }
 
     // Encodable protocol methods
@@ -32,6 +35,7 @@ public struct ConnectManageListRsp: Sendable, Codable, ParameterConvertible, Has
         try container.encode(passkeys, forKey: .passkeys)
         try container.encode(rpID, forKey: .rpID)
         try container.encode(userID, forKey: .userID)
+        try container.encode(signalAllAcceptedCredentials, forKey: .signalAllAcceptedCredentials)
     }
 }
 

@@ -12,17 +12,20 @@ public struct ConnectAppendStartReq: Sendable, Codable, ParameterConvertible, Ha
     public var appendTokenValue: String
     public var forcePasskeyAppend: Bool?
     public var loadedMs: Int64
+    public var situation: String?
 
-    public init(appendTokenValue: String, forcePasskeyAppend: Bool? = nil, loadedMs: Int64) {
+    public init(appendTokenValue: String, forcePasskeyAppend: Bool? = nil, loadedMs: Int64, situation: String? = nil) {
         self.appendTokenValue = appendTokenValue
         self.forcePasskeyAppend = forcePasskeyAppend
         self.loadedMs = loadedMs
+        self.situation = situation
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case appendTokenValue
         case forcePasskeyAppend
         case loadedMs
+        case situation
     }
 
     // Encodable protocol methods
@@ -32,6 +35,7 @@ public struct ConnectAppendStartReq: Sendable, Codable, ParameterConvertible, Ha
         try container.encode(appendTokenValue, forKey: .appendTokenValue)
         try container.encodeIfPresent(forcePasskeyAppend, forKey: .forcePasskeyAppend)
         try container.encode(loadedMs, forKey: .loadedMs)
+        try container.encodeIfPresent(situation, forKey: .situation)
     }
 }
 

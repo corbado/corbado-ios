@@ -12,17 +12,20 @@ public struct ConnectAppendInitReq: Sendable, Codable, ParameterConvertible, Has
     public var clientInformation: ClientInformation
     public var flags: [String: String]
     public var invitationToken: String?
+    public var situation: String?
 
-    public init(clientInformation: ClientInformation, flags: [String: String], invitationToken: String? = nil) {
+    public init(clientInformation: ClientInformation, flags: [String: String], invitationToken: String? = nil, situation: String? = nil) {
         self.clientInformation = clientInformation
         self.flags = flags
         self.invitationToken = invitationToken
+        self.situation = situation
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case clientInformation
         case flags
         case invitationToken
+        case situation
     }
 
     // Encodable protocol methods
@@ -32,6 +35,7 @@ public struct ConnectAppendInitReq: Sendable, Codable, ParameterConvertible, Has
         try container.encode(clientInformation, forKey: .clientInformation)
         try container.encode(flags, forKey: .flags)
         try container.encodeIfPresent(invitationToken, forKey: .invitationToken)
+        try container.encodeIfPresent(situation, forKey: .situation)
     }
 }
 

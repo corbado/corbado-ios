@@ -12,6 +12,7 @@ enum AppNavigationPath: Hashable {
     case login
     case signUp
     case home
+    case profile
     case checking
     case postLogin
     case setupTOTP
@@ -22,10 +23,6 @@ class AppRouter: ObservableObject {
     @Published var path: [AppNavigationPath] = []
     
     func navigateTo(_ destination: AppNavigationPath) {
-        if !path.isEmpty {
-            path.removeLast()
-        }
-        
         path.append(destination)
     }
 
