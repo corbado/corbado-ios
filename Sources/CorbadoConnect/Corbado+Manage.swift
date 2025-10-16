@@ -52,7 +52,7 @@ public extension Corbado {
         let attestationOptions: String
         do {
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyAppend)
-            let resStart = try await client.appendStart(connectToken: connectToken, forcePasskeyAppend: true, loadedMs: 0)
+            let resStart = try await client.appendStart(situation: "passkey-list", connectToken: connectToken, forcePasskeyAppend: true, loadedMs: 0)
             
             attestationOptions = resStart.attestationOptions
         } catch let errorResponse as ErrorResponse {

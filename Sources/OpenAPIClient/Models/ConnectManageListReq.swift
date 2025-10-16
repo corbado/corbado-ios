@@ -12,6 +12,7 @@ public struct ConnectManageListReq: Sendable, Codable, ParameterConvertible, Has
     public enum Mode: String, Sendable, Codable, CaseIterable {
         case _default = "default"
         case postDelete = "post-delete"
+        case postAppend = "post-append"
     }
     public var connectToken: String
     public var mode: Mode?

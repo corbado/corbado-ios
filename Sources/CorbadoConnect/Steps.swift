@@ -106,7 +106,7 @@ public struct PasskeyDetails: Equatable, Sendable {
 /// Represents the different states of the passkey append process.
 public enum ConnectAppendStep: Equatable, Sendable {
     /// The user should be asked if they want to append a new passkey.
-    case askUserForAppend(autoAppend = false, appendType: AppendType = .defaultAppend, conditionalAppend = false)
+    case askUserForAppend(autoAppend = false, appendType: AppendType = .defaultAppend, conditionalAppend = false, customData: [String: String]? = nil)
     /// The append process should be skipped.
     case skip(developerDetails: String)
 }

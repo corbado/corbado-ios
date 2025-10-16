@@ -189,15 +189,15 @@ struct CorbadoClient {
         )
     }
     
-    func appendStart(connectToken: String, forcePasskeyAppend: Bool, loadedMs: Int64) async throws(ErrorResponse) -> ConnectAppendStartRsp {
-        let req = ConnectAppendStartReq(appendTokenValue: connectToken, forcePasskeyAppend: forcePasskeyAppend, loadedMs: loadedMs)
+    func appendStart(situation: String?, connectToken: String, forcePasskeyAppend: Bool, loadedMs: Int64) async throws(ErrorResponse) -> ConnectAppendStartRsp {
+        let req = ConnectAppendStartReq(appendTokenValue: connectToken, forcePasskeyAppend: forcePasskeyAppend, loadedMs: loadedMs, situation: situation)
         
         return try await CorbadoConnectAPI.connectAppendStart(connectAppendStartReq: req, apiConfiguration: self.apiConfig)
     }
     
-    func appendFinish(attestationResponse: String, completionType: AppendCompletionType) async throws(ErrorResponse) -> ConnectAppendFinishRsp {
+    func appendFinish(attestationResponse: String, completionType: AppendCompletionType, customData: [String: String]? = nil) async throws(ErrorResponse) -> ConnectAppendFinishRsp {
         let completionType = OpenAPIClient.AppendCompletionType(rawValue: completionType.rawValue) ?? OpenAPIClient.AppendCompletionType.manual
-        let req = ConnectAppendFinishReq(attestationResponse: attestationResponse, completionType: completionType)
+        let req = ConnectAppendFinishReq(attestationResponse: attestationResponse, completionType: completionType, customData: customData)
         
         return try await CorbadoConnectAPI.connectAppendFinish(connectAppendFinishReq: req, apiConfiguration: self.apiConfig)
     }

@@ -19,13 +19,17 @@ public struct ConnectAppendStartRsp: Sendable, Codable, ParameterConvertible, Ha
     public var isRestrictedBrowser: Bool
     public var autoAppend: Bool
     public var conditionalAppend: Bool
+    public var expiresMs: Int64?
+    public var customData: [String: String]?
 
-    public init(attestationOptions: String, variant: Variant, isRestrictedBrowser: Bool, autoAppend: Bool, conditionalAppend: Bool) {
+    public init(attestationOptions: String, variant: Variant, isRestrictedBrowser: Bool, autoAppend: Bool, conditionalAppend: Bool, expiresMs: Int64? = nil, customData: [String: String]? = nil) {
         self.attestationOptions = attestationOptions
         self.variant = variant
         self.isRestrictedBrowser = isRestrictedBrowser
         self.autoAppend = autoAppend
         self.conditionalAppend = conditionalAppend
+        self.expiresMs = expiresMs
+        self.customData = customData
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -34,6 +38,8 @@ public struct ConnectAppendStartRsp: Sendable, Codable, ParameterConvertible, Ha
         case isRestrictedBrowser
         case autoAppend
         case conditionalAppend
+        case expiresMs
+        case customData
     }
 
     // Encodable protocol methods
@@ -45,6 +51,8 @@ public struct ConnectAppendStartRsp: Sendable, Codable, ParameterConvertible, Ha
         try container.encode(isRestrictedBrowser, forKey: .isRestrictedBrowser)
         try container.encode(autoAppend, forKey: .autoAppend)
         try container.encode(conditionalAppend, forKey: .conditionalAppend)
+        try container.encodeIfPresent(expiresMs, forKey: .expiresMs)
+        try container.encodeIfPresent(customData, forKey: .customData)
     }
 }
 

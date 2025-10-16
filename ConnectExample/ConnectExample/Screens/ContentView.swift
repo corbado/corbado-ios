@@ -19,6 +19,8 @@ struct ContentView: View {
         case .signUp:
             SignUpView()
         case .home:
+            HomeView()
+        case .profile:
             ProfileView()
         case .postLogin:
             PostLoginView(appRouter: appRouter)

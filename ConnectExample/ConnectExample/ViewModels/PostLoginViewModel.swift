@@ -49,7 +49,7 @@ class PostLoginViewModel: ObservableObject {
         }
         
         switch nextStep {
-        case .askUserForAppend(let autoAppend, _, let conditionalAppend):
+        case .askUserForAppend(let autoAppend, _, let conditionalAppend, _):
             await triggerPasskeyOperations(autoAppend: autoAppend, conditionalAppend: conditionalAppend)
             
         case .skip:

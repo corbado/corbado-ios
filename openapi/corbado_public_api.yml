@@ -1436,6 +1436,8 @@ components:
             type: string
         invitationToken:
           type: string
+        situation:
+          type: string
 
     connectAppendInitRsp:
       type: object
@@ -1477,6 +1479,8 @@ components:
         loadedMs:
           type: integer
           format: int64
+        situation:
+          type: string
 
     connectAppendStartRsp:
       type: object
@@ -1501,6 +1505,13 @@ components:
           type: boolean
         conditionalAppend:
           type: boolean
+        expiresMs:
+          type: integer
+          format: int64
+        customData:
+          type: object
+          additionalProperties:
+            type: string
 
     connectAppendFinishReq:
       type: object
@@ -1512,6 +1523,10 @@ components:
           type: string
         completionType:
           $ref: "#/components/schemas/appendCompletionType"
+        customData:
+          type: object
+          additionalProperties:
+            type: string
 
     connectAppendFinishRsp:
       type: object
@@ -1581,7 +1596,7 @@ components:
           type: string
         mode:
           type: string
-          enum: [ "default", "post-delete" ]
+          enum: [ "default", "post-delete", "post-append" ]
 
     connectManageListRsp:
       type: object

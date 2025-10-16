@@ -22,11 +22,22 @@ public enum ConnectTokenType: String, Sendable, Encodable {
     case PasskeyDelete = "passkey-delete"
 } 
 
-public enum AppendCompletionType: String, Sendable, Encodable {
+public enum AppendCompletionType: String, Sendable, Encodable, Equatable {
     case Auto = "auto"
     case Conditional = "conditional"
     case Manual = "manual"
     case ManualRetry = "manual-retry"
+}
+
+public struct AppendSituationType: RawRepresentable, Hashable, Sendable, Encodable, Equatable {
+    public let rawValue: String
+    
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+    
+    public static let postLogin = AppendSituationType(rawValue: "post-login")
+    public static let passkeyList = AppendSituationType(rawValue: "passkey-list")
 }
 
 public enum PasskeyListMode: String, Sendable, Encodable {
