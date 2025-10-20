@@ -18,25 +18,10 @@ struct ProfileView: View {
             if viewModel.isLoading {
                 ProgressView("Loading Profile...")
             } else {
-                HStack(spacing: 12) {
-                    Button {
-                        appRouter.navigateBack()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .font(.title2)
-                            .foregroundColor(.primary)
-                    }
-                    .accessibilityIdentifier("profileScreen.backButton")
-                    
-                    Text("Profile")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .accessibilityIdentifier("profileScreen.headline")
-                    
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.top)
+                Text("Profile")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .accessibilityIdentifier("profileScreen.headline")
                 
                 Divider()
                 
@@ -129,6 +114,10 @@ struct ProfileView: View {
                         Task {
                             await viewModel.fetchUserData()
                         }
+                    }
+                    
+                    PrimaryButton(label: "Home", isLoading: false, accessibilityIdentifier: "profileScreen.navigateHome") {
+                        appRouter.navigateTo(.home)
                     }
                 }
                 

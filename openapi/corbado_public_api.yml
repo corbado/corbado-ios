@@ -1490,6 +1490,7 @@ components:
         - isRestrictedBrowser
         - autoAppend
         - conditionalAppend
+        - expiresMs
       properties:
         attestationOptions:
           type: string
@@ -2244,6 +2245,9 @@ components:
           type: string
         screen:
           $ref: "#/components/schemas/nativeMetaScreen"
+        sdkInitTimeMs:
+          type: integer
+          format: int64
 
     nativeMetaScreen:
       type: object
@@ -2254,10 +2258,13 @@ components:
       properties:
         widthPoints:
           type: number
+          format: float
         heightPoints:
           type: number
+          format: float
         scale:
           type: number
+          format: float
 
     clientCapabilities:
       type: object

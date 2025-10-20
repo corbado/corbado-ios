@@ -21,6 +21,7 @@ public actor Corbado {
     
     internal var process: ConnectProcess?
     internal var loginInitCompleted: Date?
+    internal var sdkInitTime: Int64 = Int64(Date().timeIntervalSince1970 * 1000)
     
     /// Initializes a new instance of the Corbado SDK.
     ///
@@ -69,6 +70,10 @@ public actor Corbado {
         process = nil
     }
     
+    public func clearSituationDebounce() async {
+        await clientStateService.clearSituationDebounceMap()
+    }
+    
     /// Sets a custom interceptor for the API client, useful for testing.
     /// - Parameter apiConfigInterceptor: The interceptor to set.
     public func setApiInterceptor(apiConfigInterceptor: OpenAPIInterceptor?) {
@@ -105,7 +110,7 @@ public actor Corbado {
             clientEnvHandle: clientEnvHandleEntry?.data,
             isNative: true,
             clientEnvHandleMeta: clientStateMeta,
-            nativeMeta: await PasskeyClientTelemetryCollector.collectData().toNativeMeta()
+            nativeMeta: await PasskeyClientTelemetryCollector.collectData(sdkInitTime: sdkInitTime).toNativeMeta()
         )
     }
 }

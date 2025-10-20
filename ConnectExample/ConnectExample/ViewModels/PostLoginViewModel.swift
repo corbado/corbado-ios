@@ -115,14 +115,14 @@ class PostLoginViewModel: ObservableObject {
             
             // if the append has been initiated automatically, we don't show an error message
         case .excludeCredentialsMatch:
-            appRouter.navigateTo(.home)
+            appRouter.navigateTo(.profile)
         case .error:
-            appRouter.navigateTo(.home)
+            appRouter.navigateTo(.profile)
         }
     }
     
     func navigateAfterPasskeyAppend() {
-        appRouter.navigateTo(.home)
+        appRouter.navigateTo(.profile)
     }
     
     func skipPasskeyCreation() async {
@@ -130,7 +130,7 @@ class PostLoginViewModel: ObservableObject {
         if !hasMFA {
             appRouter.navigateTo(.setupTOTP)
         } else {
-            appRouter.navigateTo(.home)
+            appRouter.navigateTo(.profile)
         }
     }
     

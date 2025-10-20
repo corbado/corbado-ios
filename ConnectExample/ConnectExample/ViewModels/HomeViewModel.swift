@@ -4,24 +4,28 @@ import Factory
 
 @MainActor
 class HomeViewModel: ObservableObject {
+    static var testLocalDebounceDays: Int? = nil
+    
     @Injected(\.corbadoService) private var corbado: Corbado
     
     @Published var showingBottomSheet: Bool = false
     @Published var isButton1PasskeyActive: Bool = false
     @Published var isButton2PasskeyActive: Bool = false
     @Published var isButton3PasskeyActive: Bool = false
+    @Published var localDebounceDays: String = String(testLocalDebounceDays ?? 0)
     
     private var isAutoAppend = false
     
     func onAppear() {
         Task {
-            let nextStep = await corbado.isAppendAllowed(situation: "home") { _ in
+            let debounce = TimeInterval((Int(localDebounceDays) ?? 0) * 86400)
+            let nextStep = await corbado.isAppendAllowed(situation: AppendSituationType(rawValue: "home", localDebounce: debounce)) { _ in
                 return try await getConnectToken()
             }
             
             switch nextStep {
             case .askUserForAppend(let autoAppend, _, _, let customData):
-                guard let customData = customData, let buttons = customData["buttons"] else {
+                guard let customData = customData, let buttons = customData["actions"] else {
                     return
                 }
                 
@@ -54,7 +58,7 @@ class HomeViewModel: ObservableObject {
                 }
                 
             case .skip:
-                1 == 1
+                break
             }
         }
     }
@@ -97,6 +101,11 @@ class HomeViewModel: ObservableObject {
     
     private func askForPasskeyAppend() {
         showingBottomSheet = true
+    }
+    
+    func updateLocalDebounceDays(_ days: String) {
+        localDebounceDays = days
+        HomeViewModel.testLocalDebounceDays = Int(days)
     }
 }
 

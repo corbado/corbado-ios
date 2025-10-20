@@ -23,6 +23,7 @@ struct PasskeyClientTelemetryData {
     let locale: String
     let screen: ScreenNativeMeta
     let error: String?
+    let sdkInitTime: Int64
     
     func toNativeMeta() -> NativeMeta {
         var backendDeviceOwnerAuth: NativeMeta.DeviceOwnerAuth?
@@ -42,7 +43,8 @@ struct PasskeyClientTelemetryData {
             brand: brand,
             model: model,
             locale: locale,
-            screen: NativeMetaScreen(widthPoints: screen.widthPoints, heightPoints: screen.heightPoints, scale: screen.scale)
+            screen: NativeMetaScreen(widthPoints: screen.widthPoints, heightPoints: screen.heightPoints, scale: screen.scale),
+            sdkInitTimeMs: sdkInitTime
         )
     }
 }
@@ -54,13 +56,13 @@ enum DeviceOwnerAuth: String {
 }
 
 struct ScreenNativeMeta {
-    let widthPoints: Double
-    let heightPoints: Double
-    let scale: Double
+    let widthPoints: Float
+    let heightPoints: Float
+    let scale: Float
 }
 
 class PasskeyClientTelemetryCollector {
-    static func collectData() async -> PasskeyClientTelemetryData {
+    static func collectData(sdkInitTime: Int64) async -> PasskeyClientTelemetryData {
         let (deviceOwnerAuth, error) = getDeviceOwnerAuthType()
         let appDisplayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
             ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
@@ -80,8 +82,9 @@ class PasskeyClientTelemetryCollector {
                 brand: "apple",
                 model: modelIdentifier(),
                 locale: Locale.current.identifier,
-                screen: ScreenNativeMeta(widthPoints: bounds.size.width, heightPoints: bounds.size.height, scale: scale),
-                error: error
+                screen: ScreenNativeMeta(widthPoints: Float(bounds.size.width), heightPoints: Float(bounds.size.height), scale: Float(scale)),
+                error: error,
+                sdkInitTime: sdkInitTime
             )
         }
     }

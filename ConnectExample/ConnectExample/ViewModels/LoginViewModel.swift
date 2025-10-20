@@ -97,7 +97,7 @@ class LoginViewModel: ObservableObject {
             case .confirmSignInWithSMSMFACode:
                 status = .fallbackSecondSMS
             case .done:
-                appRouter.navigateTo(.home)
+                appRouter.navigateTo(.profile)
             case .confirmSignUp:
                 errorMessage = "Please confirm your sign up first."
             case .resetPassword:
@@ -303,7 +303,7 @@ class LoginViewModel: ObservableObject {
             let signInResult = try await Amplify.Auth.signIn(username: username, options: AuthSignInRequest.Options(pluginOptions: option));
             if case .confirmSignInWithCustomChallenge(_) = signInResult.nextStep {
                 _ = try await Amplify.Auth.confirmSignIn(challengeResponse: signedPasskeyData)
-                appRouter.navigateTo(.home)
+                appRouter.navigateTo(.profile)
             }
         } catch let error {
             print("handover error: \(error)")

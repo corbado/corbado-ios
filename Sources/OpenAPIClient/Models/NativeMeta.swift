@@ -30,8 +30,9 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
     public var model: String?
     public var locale: String?
     public var screen: NativeMetaScreen?
+    public var sdkInitTimeMs: Int64?
 
-    public init(platform: String, platformVersion: String, name: String? = nil, version: String? = nil, displayName: String, build: String? = nil, deviceOwnerAuth: DeviceOwnerAuth? = nil, isBluetoothAvailable: Bool? = nil, isBluetoothOn: Bool? = nil, isGooglePlayServices: Bool? = nil, isDeviceSecure: Bool? = nil, error: String? = nil, brand: String? = nil, model: String? = nil, locale: String? = nil, screen: NativeMetaScreen? = nil) {
+    public init(platform: String, platformVersion: String, name: String? = nil, version: String? = nil, displayName: String, build: String? = nil, deviceOwnerAuth: DeviceOwnerAuth? = nil, isBluetoothAvailable: Bool? = nil, isBluetoothOn: Bool? = nil, isGooglePlayServices: Bool? = nil, isDeviceSecure: Bool? = nil, error: String? = nil, brand: String? = nil, model: String? = nil, locale: String? = nil, screen: NativeMetaScreen? = nil, sdkInitTimeMs: Int64? = nil) {
         self.platform = platform
         self.platformVersion = platformVersion
         self.name = name
@@ -48,6 +49,7 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         self.model = model
         self.locale = locale
         self.screen = screen
+        self.sdkInitTimeMs = sdkInitTimeMs
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -67,6 +69,7 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         case model
         case locale
         case screen
+        case sdkInitTimeMs
     }
 
     // Encodable protocol methods
@@ -89,6 +92,7 @@ public struct NativeMeta: Sendable, Codable, ParameterConvertible, Hashable {
         try container.encodeIfPresent(model, forKey: .model)
         try container.encodeIfPresent(locale, forKey: .locale)
         try container.encodeIfPresent(screen, forKey: .screen)
+        try container.encodeIfPresent(sdkInitTimeMs, forKey: .sdkInitTimeMs)
     }
 }
 

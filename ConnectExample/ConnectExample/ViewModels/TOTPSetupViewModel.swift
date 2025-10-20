@@ -40,7 +40,7 @@ class TOTPSetupViewModel: ObservableObject {
                 let authCognitoPlugin = try Amplify.Auth.getPlugin(for: "awsCognitoAuthPlugin") as? AWSCognitoAuthPlugin
                 try await authCognitoPlugin?.updateMFAPreference(sms: .disabled, totp: .enabled)
                 
-                appRouter.navigateTo(.home)
+                appRouter.navigateTo(.profile)
             } catch let amplifyError as AmplifyError {
                 errorMessage = amplifyError.errorDescription
             } catch {

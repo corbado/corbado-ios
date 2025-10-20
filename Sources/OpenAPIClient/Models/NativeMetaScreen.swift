@@ -9,11 +9,11 @@ import Foundation
 
 public struct NativeMetaScreen: Sendable, Codable, ParameterConvertible, Hashable {
 
-    public var widthPoints: Double
-    public var heightPoints: Double
-    public var scale: Double
+    public var widthPoints: Float
+    public var heightPoints: Float
+    public var scale: Float
 
-    public init(widthPoints: Double, heightPoints: Double, scale: Double) {
+    public init(widthPoints: Float, heightPoints: Float, scale: Float) {
         self.widthPoints = widthPoints
         self.heightPoints = heightPoints
         self.scale = scale

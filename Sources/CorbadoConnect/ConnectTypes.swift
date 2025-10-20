@@ -1,4 +1,5 @@
 import OpenAPIClient
+import Foundation
 
 /// Details of the authenticator used to create the passkey.
 public typealias AaguidDetails = OpenAPIClient.AaguidDetails
@@ -29,15 +30,17 @@ public enum AppendCompletionType: String, Sendable, Encodable, Equatable {
     case ManualRetry = "manual-retry"
 }
 
-public struct AppendSituationType: RawRepresentable, Hashable, Sendable, Encodable, Equatable {
+public struct AppendSituationType: Hashable, Sendable, Encodable, Equatable {
     public let rawValue: String
+    public let localDebounce: TimeInterval
     
-    public init(rawValue: String) {
+    public init(rawValue: String, localDebounce: TimeInterval = 86400) {
         self.rawValue = rawValue
+        self.localDebounce = localDebounce
     }
     
-    public static let postLogin = AppendSituationType(rawValue: "post-login")
-    public static let passkeyList = AppendSituationType(rawValue: "passkey-list")
+    public static let postLogin = AppendSituationType(rawValue: "post-login", localDebounce: 0)
+    public static let passkeyList = AppendSituationType(rawValue: "passkey-list", localDebounce: 0)
 }
 
 public enum PasskeyListMode: String, Sendable, Encodable {

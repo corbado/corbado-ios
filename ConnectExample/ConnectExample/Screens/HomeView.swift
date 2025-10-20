@@ -8,7 +8,22 @@ struct HomeView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {
-            ScreenHeadline(title: "Home", accessibilityIdentifier: "homeScreen.headline")
+            HStack(spacing: 12) {
+                Button {
+                    appRouter.navigateBack()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.title2)
+                        .foregroundColor(.primary)
+                }
+                .accessibilityIdentifier("homeScreen.backButton")
+                
+                ScreenHeadline(title: "Home", accessibilityIdentifier: "homeScreen.headline")
+                
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.top)
             
             Text("Welcome to the CorbadoConnect iOS demo app")
                 .font(.title3)
@@ -18,6 +33,15 @@ struct HomeView: View {
                 .accessibilityIdentifier("homeScreen.subtitle")
             
             Divider()
+            
+            TextField("Local Debounce (days)", text: $viewModel.localDebounceDays)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(.numberPad)
+                .padding(.horizontal)
+                .accessibilityIdentifier("homeScreen.localDebounceTextField")
+                .onChange(of: viewModel.localDebounceDays) {
+                    viewModel.updateLocalDebounceDays(viewModel.localDebounceDays)
+                }
             
             HStack(spacing: 15) {
                 DummyButton(number: 1) { number in
@@ -54,10 +78,6 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal)
-            
-            PrimaryButton(label: "Navigate to Profile", isLoading: false, accessibilityIdentifier: "homeScreen.navigateToProfile") {
-                appRouter.navigateTo(.profile)
-            }
             
             Spacer()
         }
