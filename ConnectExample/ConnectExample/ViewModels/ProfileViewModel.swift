@@ -20,7 +20,7 @@ struct ConnectTokenError: LocalizedError {
 class ProfileViewModel: ObservableObject {
     @Injected(\.corbadoService) private var corbado: Corbado
     
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
     @Published var errorMessage: String?
     @Published var listMessage: String?
     @Published var email: String = ""

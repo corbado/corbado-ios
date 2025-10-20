@@ -69,6 +69,7 @@ actor ClientStateService: Sendable {
     private lazy var cachedLastLogin: ClientStateEntry<LastLogin>? = getEntryFromUserDefaults(forKey: getStorageKeyLastLogin())
     private lazy var cachedClientEnvHandle: ClientStateEntry<String>?  = getEntryFromUserDefaults(forKey: getStorageKeyClientHandle())
     private lazy var cachedInvitationToken: ClientStateEntry<String>? = getEntryFromUserDefaults(forKey: getStorageKeyInvitationToken())
+    private lazy var cachedSituationDebounceMap: [String: TimeInterval] = getFromUserDefaults(forKey: getStorageKeySituationDebounceMap()) ?? [:]
     
     init(projectId: String) {
         self.projectId = projectId
@@ -125,6 +126,20 @@ actor ClientStateService: Sendable {
         removeEntryFromUserDefaults(forKey: getStorageKeyInvitationToken())
     }
     
+    func getSituationDebounceMap() -> [String: Date] {
+        return cachedSituationDebounceMap.mapValues { Date(timeIntervalSince1970: $0) }
+    }
+    
+    func setSituationDebounceMapEntry(key: String, value: Date) {
+        cachedSituationDebounceMap[key] = value.timeIntervalSince1970
+        setToUserDefaults(cachedSituationDebounceMap, forKey: getStorageKeySituationDebounceMap())
+    }
+    
+    func clearSituationDebounceMap() {
+        cachedSituationDebounceMap = [:]
+        removeEntryFromUserDefaults(forKey: getStorageKeySituationDebounceMap())
+    }
+    
     private func getStorageKeyClientHandle() -> String {
         return "cbo_client_handle-\(projectId)"
     }
@@ -135,6 +150,10 @@ actor ClientStateService: Sendable {
     
     private func getStorageKeyInvitationToken() -> String {
         return "cbo_connect_invitation_token-\(projectId)"
+    }
+    
+    private func getStorageKeySituationDebounceMap() -> String {
+        return "cbo_situation_debounce_map-\(projectId)"
     }
     
     private func getEntryFromUserDefaults<T: Decodable>(forKey key: String) -> ClientStateEntry<T>? {
@@ -167,5 +186,33 @@ actor ClientStateService: Sendable {
 
     private func removeEntryFromUserDefaults(forKey key: String) {
         userDefaults.removeObject(forKey: key)
+    }
+    
+    private func getFromUserDefaults<T: Decodable>(forKey key: String) -> T? {
+        guard let data = userDefaults.data(forKey: key) else {
+            return nil
+        }
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            print("ClientStateService: Error decoding data for key '\(key)': \(error)")
+            return nil
+        }
+    }
+    
+    private func setToUserDefaults<T: Encodable>(_ data: T?, forKey key: String) {
+        guard let data = data else {
+            userDefaults.removeObject(forKey: key)
+            return
+        }
+        
+        do {
+            let encoder = JSONEncoder()
+            let encoded = try encoder.encode(data)
+            userDefaults.set(encoded, forKey: key)
+        } catch {
+            print("ClientStateService: Error encoding data for key '\(key)': \(error)")
+        }
     }
 } 

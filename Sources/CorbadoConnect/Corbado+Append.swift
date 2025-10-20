@@ -16,8 +16,21 @@ public extension Corbado {
     /// This is typically called after a user has successfully logged in and you want to offer them the option to add a passkey.
     /// - Parameter connectTokenProvider: A closure that provides a fresh short-session cookie (as a connect token) from your backend.
     /// - Returns: A `ConnectAppendStep` indicating whether the user can be asked to append a passkey.
-    func isAppendAllowed(connectTokenProvider: (_: ConnectTokenType) async throws -> String) async -> ConnectAppendStep {
-        let appendAllowed = await appendAllowedStep1()
+    func isAppendAllowed(connectTokenProvider: (_: ConnectTokenType) async throws -> String, situation: AppendSituationType? = nil) async -> ConnectAppendStep {
+        if let situation = situation {
+            let lastAppendAt = await clientStateService.getSituationDebounceMap()[situation.rawValue]
+            let now = Date()
+            
+            await clientStateService.setSituationDebounceMapEntry(key: situation.rawValue, value: now)
+            if let lastAppendAt = lastAppendAt {
+                let elapsed = now.timeIntervalSince(lastAppendAt)
+                if elapsed < situation.localDebounce {
+                    return .skip(developerDetails: "append skipped due to local debounce")
+                }
+            }
+        }
+        
+        let appendAllowed = await appendAllowedStep1(situation: situation?.rawValue)
         if !appendAllowed {
             return .skip(developerDetails: "append not allowed by gradual rollout")
         }
@@ -25,7 +38,7 @@ public extension Corbado {
         do {
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyAppend)
             
-            let resStart = try await client.appendStart(connectToken: connectToken, forcePasskeyAppend: false, loadedMs: 0)
+            let resStart = try await client.appendStart(situation: situation?.rawValue, connectToken: connectToken, forcePasskeyAppend: false, loadedMs: 0)
             if resStart.attestationOptions.count == 0 {
                 return .skip(developerDetails: "append not allowed by passkey intel")
             }
@@ -33,7 +46,7 @@ public extension Corbado {
             self.process = process?.copyWith(attestationOptions: resStart.attestationOptions)
             
             // for now, we only support default
-            return .askUserForAppend(resStart.autoAppend, appendType: .defaultAppend)
+            return .askUserForAppend(resStart.autoAppend, appendType: .defaultAppend, resStart.conditionalAppend, customData: resStart.customData)
         } catch let errorMessage as ErrorResponse {
             let message = errorMessage.serializeToString()
             await client.recordAppendEvent(
@@ -58,7 +71,7 @@ public extension Corbado {
     /// This should be called after `isAppendAllowed` has returned `.askUserForAppend` and the user has confirmed they want to create a passkey.
     /// - Returns: A `ConnectAppendStatus` indicating the result of the append operation.
     @MainActor
-    func completeAppend() async -> ConnectAppendStatus {
+    func completeAppend(completionType: AppendCompletionType = .Manual, customData: [String: String]? = nil, awaitCompletion: Bool = true) async -> ConnectAppendStatus {
         guard #available(iOS 16.0, *) else {
             return .error(developerDetails: "passkey append requires at least iOS 16")
         }
@@ -67,21 +80,13 @@ public extension Corbado {
             return .error(developerDetails: "attestation options are missing or empty")
         }
         
+        if let attestationExpiry = await process?.attestationExpiry, attestationExpiry > Date() {
+            return .error(developerDetails: "attestation is expired")
+        }
+        
+        let rspAuthenticate: String
         do {
-            let rspAuthenticate = try await passkeysPlugin.create(attestationOptions: attestationOptions)
-            
-            let resFinish = try await client.appendFinish(attestationResponse: rspAuthenticate)
-            
-            if let lastLogin = LastLogin.from(passkeyOperation: resFinish.passkeyOperation) {
-                await self.clientStateService.setLastLogin(lastLogin: lastLogin)
-            }
-            
-            var passkeyDetails: PasskeyDetails? = nil
-            if let aaguidDetails = resFinish.passkeyOperation.aaguidDetails {
-                passkeyDetails = PasskeyDetails(aaguidName: aaguidDetails.name, iconLight: aaguidDetails.iconLight, iconDark: aaguidDetails.iconDark)
-            }
-            
-            return .completed(passkeyDetails: passkeyDetails)
+            rspAuthenticate = try await passkeysPlugin.create(attestationOptions: attestationOptions, completionType: completionType)
         } catch let error as AuthorizationError {
             switch error.type {
             case .cancelled:
@@ -115,14 +120,48 @@ public extension Corbado {
             )
             
             return .error(developerDetails: message)
-        } catch {
-            let message = error.localizedDescription
-            await client.recordAppendEvent(
-                event: .appendErrorUnexpected(message),
-                situation: .cboApiNotAvailablePostAuthenticator
-            )
+        }
+        
+        let finishBlock: () async -> ConnectAppendStatus = {
+            do {
+                let resFinish = try await self.client.appendFinish(attestationResponse: rspAuthenticate, completionType: completionType, customData: customData)
+                
+                if let lastLogin = LastLogin.from(passkeyOperation: resFinish.passkeyOperation) {
+                    await self.clientStateService.setLastLogin(lastLogin: lastLogin)
+                }
+                
+                var passkeyDetails: PasskeyDetails? = nil
+                if let aaguidDetails = resFinish.passkeyOperation.aaguidDetails {
+                    passkeyDetails = PasskeyDetails(aaguidName: aaguidDetails.name, iconLight: aaguidDetails.iconLight, iconDark: aaguidDetails.iconDark)
+                }
+                
+                return .completed(passkeyDetails: passkeyDetails)
+            } catch let errorMessage as ErrorResponse {
+                let message = errorMessage.serializeToString()
+                await self.client.recordAppendEvent(
+                    event: .appendErrorUnexpected(message),
+                    situation: .cboApiNotAvailablePostAuthenticator
+                )
+                
+                return .error(developerDetails: message)
+            } catch {
+                let message = error.localizedDescription
+                await self.client.recordAppendEvent(
+                    event: .appendErrorUnexpected(message),
+                    situation: .cboApiNotAvailablePostAuthenticator
+                )
 
-            return .error(developerDetails: message)
+                return .error(developerDetails: message)
+            }
+        }
+        
+        if awaitCompletion {
+            return await finishBlock()
+        } else {
+            Task {
+                await finishBlock()
+            }
+            return .completed(passkeyDetails: nil)
         }
     }
     
@@ -134,11 +173,14 @@ public extension Corbado {
         await client.recordAppendEvent(event: .appendLearnMore)
     }
     
-    internal func appendAllowedStep1() async -> Bool {
+    internal func appendAllowedStep1(situation: String?) async -> Bool {
         do {
             let clientInfo = await buildClientInfo()
             let invitationToken = await clientStateService.getInvitationToken()?.data
             let res = try await client.appendInit(clientInfo: clientInfo, invitationToken: invitationToken)
+            if let clientEnvHandle = res.newClientEnvHandle {
+                await clientStateService.setClientEnvHandle(clientEnvHandle: clientEnvHandle)
+            }
             
             let appendData = ConnectAppendInitData(
                 appendAllowed: res.appendAllowed,

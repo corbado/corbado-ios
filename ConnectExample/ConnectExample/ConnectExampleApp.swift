@@ -43,10 +43,10 @@ struct ConnectExampleApp: App {
                                     _ = await Amplify.Auth.signOut()
                                     appRouter.replace(.login)
                                 } else {
-                                    appRouter.replace(.home)
+                                    appRouter.replace(.profile)
                                 }
 #else
-                                appRouter.replace(.home)
+                                appRouter.replace(.profile)
 #endif
                             } else {
                                 appRouter.replace(.login)

@@ -6,7 +6,6 @@
 //
 
 import Testing
-@testable import ConnectExample
 
 struct ConnectExampleTests {
 

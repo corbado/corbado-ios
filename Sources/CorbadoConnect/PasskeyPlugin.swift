@@ -82,7 +82,7 @@ public actor PasskeyPlugin {
     
     @available(iOS 16.0, *)
     @MainActor
-    func create(attestationOptions: String) async throws(AuthorizationError) -> String {
+    func create(attestationOptions: String, completionType: AppendCompletionType) async throws(AuthorizationError) -> String {
         guard let jsonData = attestationOptions.data(using: .utf8) else {
             throw AuthorizationError(type: .decoding, originalError: DecodingError.stringToDataConversionFailed)
         }
@@ -109,6 +109,12 @@ public actor PasskeyPlugin {
             if #available(iOS 17.4, *) {
                 let excluded = await parseCredentials(credentials: decoded.publicKey.excludeCredentials ?? [])
                 platformRequest.excludedCredentials = excluded
+            }
+            
+            if completionType == AppendCompletionType.Conditional {
+                if #available(iOS 18.0, *) {
+                    platformRequest.requestStyle = .conditional
+                }
             }
             
             let result = try await controller.create(requests: [platformRequest])
@@ -145,6 +151,23 @@ public actor PasskeyPlugin {
     @MainActor
     func cancelCurrentAuthenticatorOperation() async {
         await controller.cancel()
+    }
+    
+    @MainActor
+    func signalAllAcceptedCredentials(rpID: String, userHandle: String, acceptedCredentialIDs: [String]) async throws(AuthorizationError) {
+        guard let decodedUserHandle = Data.fromBase64(userHandle) else {
+            throw AuthorizationError(type: .decoding)
+        }
+        
+        var decodedAcceptedCredentialIDs: [Data] = []
+        for acceptedCredentialID in acceptedCredentialIDs {
+            guard let decodedAcceptedCredentialID = Data.fromBase64(acceptedCredentialID) else {
+                throw AuthorizationError(type: .decoding)
+            }
+            decodedAcceptedCredentialIDs.append(decodedAcceptedCredentialID)
+        }
+        
+        try await controller.signalAllAcceptedCredentials(rpID: rpID, userHandle: decodedUserHandle, acceptedCredentialIDs: decodedAcceptedCredentialIDs)
     }
     
     @MainActor

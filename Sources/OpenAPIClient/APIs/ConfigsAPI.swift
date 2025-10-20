@@ -10,7 +10,49 @@ import Foundation
 open class ConfigsAPI {
 
     /**
-     Get Session Configuration
+     Retrieve process configuration
+     
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: ProcessConfigRsp
+     */
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    open class func getProcessConfig(apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> ProcessConfigRsp {
+        return try await getProcessConfigWithRequestBuilder(apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     Retrieve process configuration
+     - GET /v2/process-config
+     - Retrieves the process configuration settings.
+     - Bearer Token:
+       - type: http
+       - name: bearerAuth
+     - API Key:
+       - type: apiKey X-Corbado-ProjectID (HEADER)
+       - name: projectID
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<ProcessConfigRsp> 
+     */
+    open class func getProcessConfigWithRequestBuilder(apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<ProcessConfigRsp> {
+        let localVariablePath = "/v2/process-config"
+        let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
+
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
+
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<ProcessConfigRsp>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    }
+
+    /**
+     Retrieve session configuration
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: SessionConfigRsp
@@ -21,9 +63,9 @@ open class ConfigsAPI {
     }
 
     /**
-     Get Session Configuration
+     Retrieve session configuration
      - GET /v2/session-config
-     - Retrieves the session configuration settings
+     - Retrieves the session configuration settings.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -52,7 +94,7 @@ open class ConfigsAPI {
     }
 
     /**
-     Get User Details Configuration
+     Retrieve user details configuration
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: UserDetailsConfigRsp
@@ -63,9 +105,9 @@ open class ConfigsAPI {
     }
 
     /**
-     Get User Details Configuration
+     Retrieve user details configuration
      - GET /v2/user-details-config
-     - Gets configs needed by the UserDetails component
+     - Retrieves user details configuration needed by the UserDetails component.
      - Bearer Token:
        - type: http
        - name: bearerAuth

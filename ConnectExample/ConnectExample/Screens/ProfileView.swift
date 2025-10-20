@@ -18,7 +18,10 @@ struct ProfileView: View {
             if viewModel.isLoading {
                 ProgressView("Loading Profile...")
             } else {
-                ScreenHeadline(title: "Profile", accessibilityIdentifier: "profileScreen.headline")
+                Text("Profile")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .accessibilityIdentifier("profileScreen.headline")
                 
                 Divider()
                 
@@ -111,6 +114,10 @@ struct ProfileView: View {
                         Task {
                             await viewModel.fetchUserData()
                         }
+                    }
+                    
+                    PrimaryButton(label: "Home", isLoading: false, accessibilityIdentifier: "profileScreen.navigateHome") {
+                        appRouter.navigateTo(.home)
                     }
                 }
                 

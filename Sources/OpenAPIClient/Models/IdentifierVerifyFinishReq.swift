@@ -12,20 +12,17 @@ public struct IdentifierVerifyFinishReq: Sendable, Codable, ParameterConvertible
     public var code: String
     public var identifierType: LoginIdentifierType
     public var verificationType: VerificationMethod
-    public var isNewDevice: Bool
 
-    public init(code: String, identifierType: LoginIdentifierType, verificationType: VerificationMethod, isNewDevice: Bool) {
+    public init(code: String, identifierType: LoginIdentifierType, verificationType: VerificationMethod) {
         self.code = code
         self.identifierType = identifierType
         self.verificationType = verificationType
-        self.isNewDevice = isNewDevice
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case code
         case identifierType
         case verificationType
-        case isNewDevice
     }
 
     // Encodable protocol methods
@@ -35,7 +32,6 @@ public struct IdentifierVerifyFinishReq: Sendable, Codable, ParameterConvertible
         try container.encode(code, forKey: .code)
         try container.encode(identifierType, forKey: .identifierType)
         try container.encode(verificationType, forKey: .verificationType)
-        try container.encode(isNewDevice, forKey: .isNewDevice)
     }
 }
 

@@ -16,6 +16,8 @@ public enum LaunchArgument: String {
     case controlServerURL = "-ControlServerURL="
     case filteredByGradualRollout = "-FilteredByGradualRollout"
     case enableOverlay = "-EnableOverlay"
+    case allowInAppAppendInstant = "-AllowInAppAppendInstant"
+    case allowInAppAppendButton = "-AllowInAppAppendButton"
 }
 
 @MainActor
@@ -38,10 +40,15 @@ class UITestSetup {
             
             await corbado.clearLocalState()
         }
-        
-        await corbado.setInvitationToken(token: "inv-token-correct")
+                
         if arguments.contains(LaunchArgument.filteredByGradualRollout.rawValue) {
             await corbado.setInvitationToken(token: "inv-token-negative")
+        } else if arguments.contains(LaunchArgument.allowInAppAppendInstant.rawValue) {
+            await corbado.setInvitationToken(token: "inv-token-correct-a")
+        } else if arguments.contains(LaunchArgument.allowInAppAppendButton.rawValue) {
+            await corbado.setInvitationToken(token: "inv-token-correct-b")
+        } else {
+            await corbado.setInvitationToken(token: "inv-token-correct")
         }
     }
     

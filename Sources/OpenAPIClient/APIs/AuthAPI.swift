@@ -10,7 +10,7 @@ import Foundation
 open class AuthAPI {
 
     /**
-     Skip Authentication Block
+     Skip authentication block
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: ProcessResponse
@@ -21,9 +21,9 @@ open class AuthAPI {
     }
 
     /**
-     Skip Authentication Block
+     Skip authentication block
      - POST /v2/auth/block/skip
-     - Skips the current authentication block
+     - Skips the current authentication block.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -52,7 +52,7 @@ open class AuthAPI {
     }
 
     /**
-     Create Authentication Event
+     Create authentication event
      
      - parameter eventCreateReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -64,9 +64,9 @@ open class AuthAPI {
     }
 
     /**
-     Create Authentication Event
+     Create authentication event
      - POST /v2/auth/events
-     - Creates a new user generated complete event
+     - Creates a new user generated complete event.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -96,7 +96,7 @@ open class AuthAPI {
     }
 
     /**
-     Update Identifier
+     Update identifier
      
      - parameter identifierUpdateReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -108,9 +108,9 @@ open class AuthAPI {
     }
 
     /**
-     Update Identifier
+     Update identifier
      - POST /v2/auth/identifier/update
-     - Updates the user's identifier information
+     - Updates the user's identifier information.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -140,7 +140,7 @@ open class AuthAPI {
     }
 
     /**
-     Finish Identifier Verification
+     Finish identifier verification
      
      - parameter identifierVerifyFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -152,9 +152,9 @@ open class AuthAPI {
     }
 
     /**
-     Finish Identifier Verification
+     Finish identifier verification
      - POST /v2/auth/identifier/verify/finish
-     - Completes the identifier verification process
+     - Completes the identifier verification process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -184,7 +184,7 @@ open class AuthAPI {
     }
 
     /**
-     Start Identifier Verification
+     Start identifier verification
      
      - parameter identifierVerifyStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -196,9 +196,9 @@ open class AuthAPI {
     }
 
     /**
-     Start Identifier Verification
+     Start identifier verification
      - POST /v2/auth/identifier/verify/start
-     - Initiates the identifier verification process
+     - Initiates the identifier verification process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -228,7 +228,7 @@ open class AuthAPI {
     }
 
     /**
-     Get Identifier Verification Status
+     Retrieve identifier verification status
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: ProcessResponse
@@ -239,9 +239,9 @@ open class AuthAPI {
     }
 
     /**
-     Get Identifier Verification Status
+     Retrieve identifier verification status
      - GET /v2/auth/identifier/verify/status
-     - Retrieves the current status of identifier verification
+     - Retrieves the current status of identifier verification.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -270,7 +270,7 @@ open class AuthAPI {
     }
 
     /**
-     Initialize Login
+     Initialize login
      
      - parameter loginInitReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -282,9 +282,9 @@ open class AuthAPI {
     }
 
     /**
-     Initialize Login
+     Initialize login
      - POST /v2/auth/login/init
-     - Initializes a new login process
+     - Initializes a new login process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -314,7 +314,7 @@ open class AuthAPI {
     }
 
     /**
-     Finish Passkey Append
+     Finish passkey append
      
      - parameter passkeyAppendFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -326,9 +326,9 @@ open class AuthAPI {
     }
 
     /**
-     Finish Passkey Append
+     Finish passkey append
      - POST /v2/auth/passkey/append/finish
-     - Completes the process of appending a new passkey
+     - Completes the process of appending a new passkey.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -358,7 +358,7 @@ open class AuthAPI {
     }
 
     /**
-     Start Passkey Append
+     Start passkey append
      
      - parameter passkeyAppendStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -370,9 +370,9 @@ open class AuthAPI {
     }
 
     /**
-     Start Passkey Append
+     Start passkey append
      - POST /v2/auth/passkey/append/start
-     - Starts the process of appending a new passkey
+     - Starts the process of appending a new passkey.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -402,7 +402,7 @@ open class AuthAPI {
     }
 
     /**
-     Finish Passkey Login
+     Finish passkey login
      
      - parameter passkeyLoginFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -414,9 +414,9 @@ open class AuthAPI {
     }
 
     /**
-     Finish Passkey Login
+     Finish passkey login
      - POST /v2/auth/passkey/login/finish
-     - Completes the passkey login process
+     - Completes the passkey login process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -446,7 +446,7 @@ open class AuthAPI {
     }
 
     /**
-     Start Passkey Login
+     Start passkey login
      
      - parameter passkeyLoginStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -458,9 +458,9 @@ open class AuthAPI {
     }
 
     /**
-     Start Passkey Login
+     Start passkey login
      - POST /v2/auth/passkey/login/start
-     - Initiates the passkey login process
+     - Initiates the passkey login process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -490,7 +490,7 @@ open class AuthAPI {
     }
 
     /**
-     Finish Passkey Mediation
+     Finish passkey mediation
      
      - parameter passkeyMediationFinishReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -502,9 +502,9 @@ open class AuthAPI {
     }
 
     /**
-     Finish Passkey Mediation
+     Finish passkey mediation
      - POST /v2/auth/passkey/mediation/finish
-     - Completes the passkey mediation process
+     - Completes the passkey mediation process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -534,7 +534,7 @@ open class AuthAPI {
     }
 
     /**
-     Complete Authentication Process
+     Complete authentication process
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: ProcessResponse
@@ -545,9 +545,9 @@ open class AuthAPI {
     }
 
     /**
-     Complete Authentication Process
+     Complete authentication process
      - POST /v2/auth/process/complete
-     - Completes the current authentication process
+     - Completes the current authentication process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -576,7 +576,7 @@ open class AuthAPI {
     }
 
     /**
-     Get Authentication Process
+     Retrieve authentication process
      
      - parameter preferredBlock: (query)  (optional)
      - parameter apiConfiguration: The configuration for the http request.
@@ -588,9 +588,9 @@ open class AuthAPI {
     }
 
     /**
-     Get Authentication Process
+     Retrieve authentication process
      - GET /v2/auth/process
-     - Retrieves the current authentication process state
+     - Retrieves the current authentication process state.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -623,7 +623,7 @@ open class AuthAPI {
     }
 
     /**
-     Initialize Authentication Process
+     Initialize authentication process
      
      - parameter processInitReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -635,9 +635,9 @@ open class AuthAPI {
     }
 
     /**
-     Initialize Authentication Process
+     Initialize authentication process
      - POST /v2/auth/process/init
-     - Initializes a new authentication process
+     - Initializes a new authentication process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -667,7 +667,7 @@ open class AuthAPI {
     }
 
     /**
-     Reset Authentication Process
+     Reset authentication process
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: ProcessResponse
@@ -678,9 +678,9 @@ open class AuthAPI {
     }
 
     /**
-     Reset Authentication Process
+     Reset authentication process
      - POST /v2/auth/process/reset
-     - Resets the current authentication process
+     - Resets the current authentication process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -709,7 +709,7 @@ open class AuthAPI {
     }
 
     /**
-     Initialize Signup
+     Initialize signup
      
      - parameter signupInitReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -721,9 +721,9 @@ open class AuthAPI {
     }
 
     /**
-     Initialize Signup
+     Initialize signup
      - POST /v2/auth/signup/init
-     - Initializes a new user signup process
+     - Initializes a new user signup process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -753,7 +753,7 @@ open class AuthAPI {
     }
 
     /**
-     Social Verification Callback
+     Social verification callback
      
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Void
@@ -764,9 +764,9 @@ open class AuthAPI {
     }
 
     /**
-     Social Verification Callback
+     Social verification callback
      - GET /v2/auth/social/verify/callback
-     - Handles the callback from social authentication providers
+     - Handles the callback from social authentication providers.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -795,7 +795,7 @@ open class AuthAPI {
     }
 
     /**
-     Finish Social Verification
+     Finish social verification
      
      - parameter body: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -807,9 +807,9 @@ open class AuthAPI {
     }
 
     /**
-     Finish Social Verification
+     Finish social verification
      - POST /v2/auth/social/verify/finish
-     - Completes the social authentication verification process
+     - Completes the social authentication verification process.
      - Bearer Token:
        - type: http
        - name: bearerAuth
@@ -839,7 +839,7 @@ open class AuthAPI {
     }
 
     /**
-     Start Social Verification
+     Start social verification
      
      - parameter socialVerifyStartReq: (body)  
      - parameter apiConfiguration: The configuration for the http request.
@@ -851,9 +851,9 @@ open class AuthAPI {
     }
 
     /**
-     Start Social Verification
+     Start social verification
      - POST /v2/auth/social/verify/start
-     - Initiates the social authentication verification process
+     - Initiates the social authentication verification process.
      - Bearer Token:
        - type: http
        - name: bearerAuth

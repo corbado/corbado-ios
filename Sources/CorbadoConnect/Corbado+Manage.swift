@@ -17,7 +17,7 @@ public extension Corbado {
     func isManageAppendAllowed(connectTokenProvider: @Sendable (_: ConnectTokenType) async throws -> String) async -> ConnectManageStep {
         do {
             let allowed = try await manageAllowedStep()
-            let passkeys = try await getPasskeys(connectTokenProvider: connectTokenProvider)
+            let passkeys = try await getPasskeys(connectTokenProvider: connectTokenProvider, mode: .Default)
             return allowed ? .allowed(passkeys: passkeys) : .notAllowed(passkeys: passkeys)
         } catch let errorMessage as ErrorResponse {
             let message = errorMessage.serializeToString()
@@ -52,7 +52,7 @@ public extension Corbado {
         let attestationOptions: String
         do {
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyAppend)
-            let resStart = try await client.appendStart(connectToken: connectToken, forcePasskeyAppend: true, loadedMs: 0)
+            let resStart = try await client.appendStart(situation: "passkey-list", connectToken: connectToken, forcePasskeyAppend: true, loadedMs: 0)
             
             attestationOptions = resStart.attestationOptions
         } catch let errorResponse as ErrorResponse {
@@ -74,14 +74,14 @@ public extension Corbado {
         }
          
         do {
-            let rspAuthenticate = try await passkeysPlugin.create(attestationOptions: attestationOptions)
-            let resFinish = try await client.appendFinish(attestationResponse: rspAuthenticate)
+            let rspAuthenticate = try await passkeysPlugin.create(attestationOptions: attestationOptions, completionType: .Manual)
+            let resFinish = try await client.appendFinish(attestationResponse: rspAuthenticate, completionType: .Manual)
             
             if let lastLogin = LastLogin.from(passkeyOperation: resFinish.passkeyOperation) {
                 await self.clientStateService.setLastLogin(lastLogin: lastLogin)
             }
             
-            let passkeys = try await getPasskeys(connectTokenProvider: connectTokenProvider)
+            let passkeys = try await getPasskeys(connectTokenProvider: connectTokenProvider, mode: .PostAppend)
             return .done(passkeys: passkeys)
         } catch let error as AuthorizationError {
             switch error.type {
@@ -137,7 +137,7 @@ public extension Corbado {
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyDelete)
             let res = try await client.manageDelete(connectToken: connectToken, passkeyId: passkeyId)
             await clientStateService.clearLastLogin()
-            let passkeys = try await getPasskeys(connectTokenProvider: connectTokenProvider)
+            let passkeys = try await getPasskeys(connectTokenProvider: connectTokenProvider, mode: .PostDelete)
                 
             return .done(passkeys: passkeys)
         }  catch let errorResponse as ErrorResponse {
@@ -167,6 +167,10 @@ public extension Corbado {
         let clientInfo = await buildClientInfo()
         let invitationToken = await clientStateService.getInvitationToken()?.data
         let res = try await client.manageInit(clientInfo: clientInfo, invitationToken: invitationToken)
+        if let clientEnvHandle = res.newClientEnvHandle {
+            await clientStateService.setClientEnvHandle(clientEnvHandle: clientEnvHandle)
+        }
+        
         let manageData = ConnectManageInitData(
             manageAllowed: res.manageAllowed,
             flags: [:],
@@ -192,9 +196,16 @@ public extension Corbado {
     /// Retrieves the list of passkeys for the current user.
     /// - Parameter connectTokenProvider: A closure that provides a fresh short-session cookie (as a connect token) from your backend.
     /// - Returns: A `ManageListStatus` containing either the list of passkeys or an error.
-    internal func getPasskeys(connectTokenProvider: @Sendable (_: ConnectTokenType) async throws -> String) async throws -> [Passkey] {
+    internal func getPasskeys(connectTokenProvider: @Sendable (_: ConnectTokenType) async throws -> String, mode: PasskeyListMode) async throws -> [Passkey] {
         let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyList)
-        let (passkeys, _, _) = try await client.manageList(connectToken: connectToken)
+        let (passkeys, rpID, userHandle, signalAllAcceptedCredentials) = try await client.manageList(connectToken: connectToken, mode: mode)
+        if signalAllAcceptedCredentials {
+            let acceptedCredentialIDs = passkeys.map { passkey in
+                return passkey.credentialID
+            }
+                        
+            try await passkeysPlugin.signalAllAcceptedCredentials(rpID: rpID, userHandle: userHandle, acceptedCredentialIDs: acceptedCredentialIDs)
+        }
         
         return passkeys
     }

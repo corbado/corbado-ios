@@ -371,8 +371,105 @@ final class ConnectExampleUITests: XCTestCase {
         
         // block connectTokenProvider
     }
+    
+    func testInAppAppendInstant() async throws {
+        let initialScreen = try startApp(allowInAppAppendInstant: true)
+        let email = TestDataFactory.createEmail()
+        let authenticatorApp = AuthenticatorApp()
         
-    private func startApp(filteredByGradualRollout: Bool = false, enableOverlay: Bool = false) throws -> LoginScreen {
+        controlServer.createError = .cancelled
+        let signUpScreen = initialScreen.navigateToSignUp()
+        let postLoginScreen = try await signUpScreen.signUpWithValidData(email: email, phoneNumber: TestDataFactory.phoneNumber, password: TestDataFactory.password)
+        
+        let totpSetupScreen = postLoginScreen.skipAfterSignUp()
+        let (profileScreen, _) = try await totpSetupScreen.setupTOTP(authenticatorApp: authenticatorApp)
+        XCTAssertEqual(profileScreen.getListMessage(), "There is currently no passkey saved for this account.")
+        controlServer.createError = nil
+        
+        let homeScreen = profileScreen.goToHome()
+        homeScreen.acceptAutomaticAppend(instant: true)
+        let profileScreen2 = homeScreen.navigateBackToProfileScreen()
+        try waitForCondition() { profileScreen2.countNumberOfPasskeys() == 1 }
+        profileScreen2.deletePasskey(passkeyId: profileScreen2.getPasskeyIds()[0], complete: true)
+        XCTAssertEqual(profileScreen.getListMessage(), "There is currently no passkey saved for this account.")
+        
+        let homeScreen2 = profileScreen2.goToHome()
+        homeScreen2.declineAutomaticAppend(controlServer: controlServer, instant: true)
+        homeScreen2.acceptBottomSheetAppend()
+        let profileScreen3 = homeScreen2.navigateBackToProfileScreen()
+        try waitForCondition() { profileScreen3.countNumberOfPasskeys() == 1 }
+        profileScreen3.deletePasskey(passkeyId: profileScreen3.getPasskeyIds()[0], complete: true)
+        XCTAssertEqual(profileScreen.getListMessage(), "There is currently no passkey saved for this account.")
+        
+        let homeScreen3 = profileScreen3.goToHome()
+        homeScreen3.declineAutomaticAppend(controlServer: controlServer, instant: true)
+        homeScreen3.declineBottomSheet()
+        homeScreen3.clickButton1(expectDummyDialog: true)
+    }
+    
+    func testInAppAppendInstantWithDebounce() async throws {
+        let initialScreen = try startApp(allowInAppAppendInstant: true)
+        let email = TestDataFactory.createEmail()
+        let authenticatorApp = AuthenticatorApp()
+        
+        controlServer.createError = .cancelled
+        let signUpScreen = initialScreen.navigateToSignUp()
+        let postLoginScreen = try await signUpScreen.signUpWithValidData(email: email, phoneNumber: TestDataFactory.phoneNumber, password: TestDataFactory.password)
+        
+        let totpSetupScreen = postLoginScreen.skipAfterSignUp()
+        let (profileScreen, _) = try await totpSetupScreen.setupTOTP(authenticatorApp: authenticatorApp)
+        XCTAssertEqual(profileScreen.getListMessage(), "There is currently no passkey saved for this account.")
+        controlServer.createError = nil
+        
+        let homeScreen = profileScreen.goToHome()
+        homeScreen.acceptAutomaticAppend(instant: true)
+        homeScreen.setLocalDebounceDays("1")
+        
+        let profileScreen2 = homeScreen.navigateBackToProfileScreen()
+        try waitForCondition() { profileScreen2.countNumberOfPasskeys() == 1 }
+        
+        profileScreen2.deletePasskey(passkeyId: profileScreen2.getPasskeyIds()[0], complete: true)
+        XCTAssertEqual(profileScreen2.getListMessage(), "There is currently no passkey saved for this account.")
+        
+        let homeScreen2 = profileScreen2.goToHome()
+        sleep(2)
+        
+        let profileScreen3 = homeScreen2.navigateBackToProfileScreen()
+        XCTAssertEqual(profileScreen3.getListMessage(), "There is currently no passkey saved for this account.")
+    }
+    
+    func testInAppAppendButtons() async throws {
+        let initialScreen = try startApp(allowInAppAppendButton: true)
+        let email = TestDataFactory.createEmail()
+        let authenticatorApp = AuthenticatorApp()
+        
+        controlServer.createError = .cancelled
+        let signUpScreen = initialScreen.navigateToSignUp()
+        let postLoginScreen = try await signUpScreen.signUpWithValidData(email: email, phoneNumber: TestDataFactory.phoneNumber, password: TestDataFactory.password)
+        
+        let totpSetupScreen = postLoginScreen.skipAfterSignUp()
+        let (profileScreen, _) = try await totpSetupScreen.setupTOTP(authenticatorApp: authenticatorApp)
+        XCTAssertEqual(profileScreen.getListMessage(), "There is currently no passkey saved for this account.")
+        controlServer.createError = nil
+        
+        let homeScreen = profileScreen.goToHome()
+        homeScreen.acceptAutomaticAppend(instant: false)
+        homeScreen.clickButton1(expectDummyDialog: true)
+        let profileScreen2 = homeScreen.navigateBackToProfileScreen()
+        try waitForCondition() { profileScreen2.countNumberOfPasskeys() == 1 }
+        profileScreen2.deletePasskey(passkeyId: profileScreen2.getPasskeyIds()[0], complete: true)
+        XCTAssertEqual(profileScreen.getListMessage(), "There is currently no passkey saved for this account.")
+        
+        let homeScreen2 = profileScreen2.goToHome()            
+        homeScreen2.declineAutomaticAppend(controlServer: controlServer, instant: false)
+        homeScreen2.acceptBottomSheetAppend()
+        let profileScreen3 = homeScreen2.navigateBackToProfileScreen()
+        try waitForCondition() { profileScreen3.countNumberOfPasskeys() == 1 }
+        profileScreen3.deletePasskey(passkeyId: profileScreen3.getPasskeyIds()[0], complete: true)
+        XCTAssertEqual(profileScreen.getListMessage(), "There is currently no passkey saved for this account.")
+    }
+        
+    private func startApp(filteredByGradualRollout: Bool = false, enableOverlay: Bool = false, allowInAppAppendInstant: Bool = false, allowInAppAppendButton: Bool = false) throws -> LoginScreen {
         controlServer = ControlServer()
         try controlServer.start()
         
@@ -386,6 +483,14 @@ final class ConnectExampleUITests: XCTestCase {
         
         if enableOverlay {
             app.launchArguments += ["-EnableOverlay"]
+        }
+        
+        if allowInAppAppendInstant {
+            app.launchArguments += ["-AllowInAppAppendInstant"]
+        }
+        
+        if allowInAppAppendButton {
+            app.launchArguments += ["-AllowInAppAppendButton"]
         }
         
         app.launch()

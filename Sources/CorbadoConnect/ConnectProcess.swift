@@ -55,6 +55,7 @@ public struct ConnectProcess: Codable, Sendable {
     public let appendData: ConnectAppendInitData?
     public let manageData: ConnectManageInitData?
     public let attestationOptions: String?
+    public let attestationExpiry: Date?
     
     public init(
         id: String,
@@ -62,7 +63,8 @@ public struct ConnectProcess: Codable, Sendable {
         loginData: ConnectLoginInitData? = nil,
         appendData: ConnectAppendInitData? = nil,
         manageData: ConnectManageInitData? = nil,
-        attestationOptions: String? = nil
+        attestationOptions: String? = nil,
+        attestationExpiry: Date? = nil
     ) {
         self.id = id
         self.frontendApiUrl = frontendApiUrl
@@ -70,6 +72,7 @@ public struct ConnectProcess: Codable, Sendable {
         self.appendData = appendData
         self.manageData = manageData
         self.attestationOptions = attestationOptions
+        self.attestationExpiry = attestationExpiry
     }
     
     /// Creates a new `ConnectProcess` with updated values.
@@ -77,15 +80,17 @@ public struct ConnectProcess: Codable, Sendable {
         loginData: ConnectLoginInitData? = nil,
         appendData: ConnectAppendInitData? = nil,
         manageData: ConnectManageInitData? = nil,
-        attestationOptions: String? = nil
+        attestationOptions: String? = nil,
+        attestationExpiry: Date? = nil
     ) -> ConnectProcess {
         return ConnectProcess(
             id: id,
             frontendApiUrl: frontendApiUrl,
-            loginData: loginData,
-            appendData: appendData,
-            manageData: manageData,
-            attestationOptions: attestationOptions
+            loginData: loginData ?? self.loginData,
+            appendData: appendData ?? self.appendData,
+            manageData: manageData ?? self.manageData,
+            attestationOptions: attestationOptions ?? self.attestationOptions,
+            attestationExpiry: attestationExpiry ?? self.attestationExpiry
         )
     }
     

@@ -76,6 +76,11 @@ class ProfileScreen: BaseScreen {
         reloadButton.waitAndTap()
     }
     
+    func goToHome() -> HomeScreen {
+        app.buttons["profileScreen.navigateHome"].waitAndTap()
+        return HomeScreen(app: app)
+    }
+    
     private func passkeyDeleteButton(passkeyId: String) -> XCUIElement {
         let passkeyListEntry = app.buttons["passkeyListEntry_\(passkeyId)"]
         return passkeyListEntry.buttons.firstMatch
