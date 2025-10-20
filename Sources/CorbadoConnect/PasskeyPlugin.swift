@@ -114,6 +114,8 @@ public actor PasskeyPlugin {
             if completionType == AppendCompletionType.Conditional {
                 if #available(iOS 18.0, *) {
                     platformRequest.requestStyle = .conditional
+                } else {
+                    throw AuthorizationError(type: .cancelled)
                 }
             }
             

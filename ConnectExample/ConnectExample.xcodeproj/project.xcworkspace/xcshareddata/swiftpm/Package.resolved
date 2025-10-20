@@ -92,6 +92,15 @@
       }
     },
     {
+      "identity" : "simpleauthenticationservices",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/corbado/SimpleAuthenticationServices.git",
+      "state" : {
+        "revision" : "9ecf088095f6998ef2451f41c75190ea6d06ec3a",
+        "version" : "1.1.1"
+      }
+    },
+    {
       "identity" : "smithy-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smithy-lang/smithy-swift",
