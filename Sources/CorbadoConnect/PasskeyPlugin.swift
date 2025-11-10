@@ -169,7 +169,8 @@ public actor PasskeyPlugin {
             decodedAcceptedCredentialIDs.append(decodedAcceptedCredentialID)
         }
         
-        try await controller.signalAllAcceptedCredentials(rpID: rpID, userHandle: decodedUserHandle, acceptedCredentialIDs: decodedAcceptedCredentialIDs)
+        // only works with XCode 26
+        // try await controller.signalAllAcceptedCredentials(rpID: rpID, userHandle: decodedUserHandle, acceptedCredentialIDs: decodedAcceptedCredentialIDs)
     }
     
     @MainActor
