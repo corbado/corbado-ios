@@ -14,8 +14,7 @@ let package = Package(
             targets: ["CorbadoConnect"]),
     ],
     dependencies: [        
-        // Release prerequisite: replace this PR revision with from: "1.3.2" once published.
-        .package(url: "https://github.com/corbado/SimpleAuthenticationServices.git", revision: "55b5f050a773dafe1de9a3950d87ccb993fd625b"),
+        .package(url: "https://github.com/corbado/SimpleAuthenticationServices.git", from: "1.2.1"),
     ],
     targets: [
         .target(
