@@ -20,4 +20,4 @@ jobs:
           xcode-version: '26.0.1'
 
       - name: Run SDK tests
-        run: xcodebuild test -scheme CorbadoConnect -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.0'
+        run: xcodebuild test -scheme CorbadoConnect -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.0.1'
