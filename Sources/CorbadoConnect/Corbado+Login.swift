@@ -111,7 +111,7 @@ public extension Corbado {
             switch error.type {
             case .cancelled:
                 await client.recordLoginEvent(
-                    event: .loginError(error.originalError?.localizedDescription ?? "-"),
+                    event: .loginError(error.localizedDescription),
                     situation: .clientPasskeyConditionalOperationCancelled
                 )
                 
@@ -125,7 +125,7 @@ public extension Corbado {
                 return .ignore(developerDetails: "No local credentials available for login.")
             default:
                 await client.recordLoginEvent(
-                    event: .loginErrorUnexpected(error.originalError?.localizedDescription ?? "-"),
+                    event: .loginErrorUnexpected(error.localizedDescription),
                     situation: .cboApiNotAvailablePostConditionalAuthenticator
                 )
                 
@@ -208,7 +208,7 @@ public extension Corbado {
             switch error.type {
             case .cancelled:
                 await client.recordLoginEvent(
-                    event: .loginError(error.originalError?.localizedDescription ?? "-"),
+                    event: .loginError(error.localizedDescription),
                     situation: .clientPasskeyOperationCancelled
                 )
                 
@@ -222,7 +222,7 @@ public extension Corbado {
                 return .initSilentFallback(username: identifier, developerDetails: "No local credentials available for login.")
             default:
                 await client.recordLoginEvent(
-                    event: .loginErrorUnexpected(error.originalError?.localizedDescription ?? "-"),
+                    event: .loginErrorUnexpected(error.localizedDescription),
                     situation: .cboApiNotAvailablePostAuthenticator
                 )
                 

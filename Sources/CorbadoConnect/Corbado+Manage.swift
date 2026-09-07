@@ -203,8 +203,16 @@ public extension Corbado {
             let acceptedCredentialIDs = passkeys.map { passkey in
                 return passkey.credentialID
             }
-                        
-            try await passkeysPlugin.signalAllAcceptedCredentials(rpID: rpID, userHandle: userHandle, acceptedCredentialIDs: acceptedCredentialIDs)
+
+            do {
+                try await passkeysPlugin.signalAllAcceptedCredentials(rpID: rpID, userHandle: userHandle, acceptedCredentialIDs: acceptedCredentialIDs)
+            } catch {
+                // the signal call is best-effort: it must never fail the passkey list load
+                await client.recordManageEvent(
+                    event: .manageErrorUnexpected("signalAllAcceptedCredentials failed: mode=\(mode.rawValue) acceptedCredentialCount=\(acceptedCredentialIDs.count) \(error.localizedDescription)"),
+                    situation: .unknown
+                )
+            }
         }
         
         return passkeys

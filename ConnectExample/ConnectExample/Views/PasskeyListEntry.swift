@@ -55,7 +55,8 @@ struct PasskeyListEntry: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                
+                .buttonStyle(.borderless)
+
             }
             
             // Middle row: Status Badges

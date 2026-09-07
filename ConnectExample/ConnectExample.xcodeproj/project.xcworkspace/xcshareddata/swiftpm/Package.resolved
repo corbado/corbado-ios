@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/corbado/SimpleAuthenticationServices.git",
       "state" : {
-        "revision" : "9ecf088095f6998ef2451f41c75190ea6d06ec3a",
-        "version" : "1.1.1"
+        "revision" : "875db0aa866b95dc6561193cfc9a558f249e447c",
+        "version" : "1.2.1"
       }
     },
     {
