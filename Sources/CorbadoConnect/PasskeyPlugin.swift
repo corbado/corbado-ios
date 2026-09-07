@@ -158,13 +158,13 @@ public actor PasskeyPlugin {
     @MainActor
     func signalAllAcceptedCredentials(rpID: String, userHandle: String, acceptedCredentialIDs: [String]) async throws(AuthorizationError) {
         guard let decodedUserHandle = Data.fromBase64Url(userHandle) else {
-            throw AuthorizationError(type: .decoding)
+            throw AuthorizationError(type: .decoding, originalError: SignalDecodingError.userHandle(encodedLength: userHandle.utf8.count))
         }
 
         var decodedAcceptedCredentialIDs: [Data] = []
-        for acceptedCredentialID in acceptedCredentialIDs {
+        for (index, acceptedCredentialID) in acceptedCredentialIDs.enumerated() {
             guard let decodedAcceptedCredentialID = Data.fromBase64Url(acceptedCredentialID) else {
-                throw AuthorizationError(type: .decoding)
+                throw AuthorizationError(type: .decoding, originalError: SignalDecodingError.acceptedCredentialID(index: index, encodedLength: acceptedCredentialID.utf8.count))
             }
             decodedAcceptedCredentialIDs.append(decodedAcceptedCredentialID)
         }

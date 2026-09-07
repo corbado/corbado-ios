@@ -209,7 +209,7 @@ public extension Corbado {
             } catch {
                 // the signal call is best-effort: it must never fail the passkey list load
                 await client.recordManageEvent(
-                    event: .manageErrorUnexpected("signalAllAcceptedCredentials failed: \(error.type.rawValue) (\(String(describing: error.originalError)))"),
+                    event: .manageErrorUnexpected("signalAllAcceptedCredentials failed: mode=\(mode.rawValue) acceptedCredentialCount=\(acceptedCredentialIDs.count) \(error.localizedDescription)"),
                     situation: .unknown
                 )
             }
