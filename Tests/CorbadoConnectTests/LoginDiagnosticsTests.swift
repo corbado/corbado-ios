@@ -17,6 +17,11 @@ struct LoginDiagnosticsTests {
         ])
         let corbado = Corbado(projectId: UUID().uuidString, frontendApiUrlSuffix: nil)
         await corbado.installTestClient(factory)
+        // login-init has been run (valid login-init data) => login-start is called directly
+        await corbado.installProcess(ConnectProcess(
+            id: "process", frontendApiUrl: "https://example.invalid",
+            loginData: ConnectLoginInitData(loginAllowed: true, expiresAt: Date().timeIntervalSince1970 + 1800)
+        ))
         let controller = StubAuthorizationController()
         controller.failure = AuthorizationError(type: errorType, originalError: errorType == .unknown ? testNativeError() : nil)
         await corbado.setVirtualAuthorizationController(controller)

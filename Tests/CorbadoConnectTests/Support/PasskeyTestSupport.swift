@@ -107,6 +107,18 @@ private final class StubRequestBuilder<T>: RequestBuilder<T>, @unchecked Sendabl
 }
 
 extension Corbado {
+    func installProcess(_ process: ConnectProcess?) {
+        self.process = process
+    }
+
+    /// Simulates a completed manage-init (valid manage-init data) so follow-up manage calls don't re-run it.
+    func installInitializedManageProcess() {
+        process = ConnectProcess(
+            id: "process", frontendApiUrl: "https://example.invalid",
+            manageData: ConnectManageInitData(manageAllowed: true, flags: [:], expiresAt: Date().timeIntervalSince1970 + 1800)
+        )
+    }
+
     func installTestClient(_ factory: StubRequestBuilderFactory) {
         client = CorbadoClient(apiConfig: OpenAPIClientAPIConfiguration(
             basePath: "https://example.invalid", requestBuilderFactory: factory

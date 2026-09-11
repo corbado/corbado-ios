@@ -94,18 +94,27 @@ public struct ConnectProcess: Codable, Sendable {
         )
     }
     
-    /// Returns the login data if it is still valid.
-    public func validLoginData() -> ConnectLoginInitData? {
-        guard let data = loginData, let expires = data.expiresAt, expires > Date().timeIntervalSince1970 else {
+    /// Returns the login data if it is still valid (for at least `margin` more seconds).
+    public func validLoginData(margin: TimeInterval = 0) -> ConnectLoginInitData? {
+        guard let data = loginData, let expires = data.expiresAt, expires > Date().timeIntervalSince1970 + margin else {
             return nil
         }
         
         return data
     }
 
-    /// Returns the append data if it is still valid.
-    public func validAppendData() -> ConnectAppendInitData? {
-        guard let data = appendData, let expires = data.expiresAt, expires > Date().timeIntervalSince1970 else {
+    /// Returns the append data if it is still valid (for at least `margin` more seconds).
+    public func validAppendData(margin: TimeInterval = 0) -> ConnectAppendInitData? {
+        guard let data = appendData, let expires = data.expiresAt, expires > Date().timeIntervalSince1970 + margin else {
+            return nil
+        }
+        
+        return data
+    }
+
+    /// Returns the manage data if it is still valid (for at least `margin` more seconds).
+    public func validManageData(margin: TimeInterval = 0) -> ConnectManageInitData? {
+        guard let data = manageData, let expires = data.expiresAt, expires > Date().timeIntervalSince1970 + margin else {
             return nil
         }
         
