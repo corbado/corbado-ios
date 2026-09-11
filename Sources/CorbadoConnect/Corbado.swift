@@ -23,6 +23,9 @@ public actor Corbado {
     internal var loginInitCompleted: Date?
     internal var sdkInitTime: Int64 = Int64(Date().timeIntervalSince1970 * 1000)
     
+    /// safety margin (seconds) when checking the expiry of init data (login-init, manage-init)
+    internal static let initExpiryMargin: TimeInterval = 5
+    
     /// Initializes a new instance of the Corbado SDK.
     ///
     /// - Parameters:

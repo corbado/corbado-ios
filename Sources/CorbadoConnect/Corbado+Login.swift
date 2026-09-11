@@ -171,6 +171,10 @@ public extension Corbado {
         guard #available(iOS 16.0, *) else {
             return .initSilentFallback(username: identifier, developerDetails: "passkey login requires at least iOS 16")
         }
+        
+        guard await ensureValidLoginProcess() else {
+            return .initSilentFallback(username: identifier, developerDetails: "The login-init data expired and the re-run of login-init did not allow passkey login.")
+        }
                 
         let (assertionOptions, effectivePreferImmediatelyAvailableCredentials): (String, Bool)
         do {
@@ -374,6 +378,23 @@ public extension Corbado {
                 username: fallbackOperationError.identifier
             )
         }
+    }
+    
+    /// Makes sure the current process has valid login-init data.
+    ///
+    /// The backend removes processes after their lifetime. A login-start with a stale process ID is answered with a silent fallback
+    /// (no passkey login, nothing tracked), so if the login-init data has expired we transparently re-run login-init (same as the
+    /// web SDK does before every login-start). Returns false if the re-run did not allow passkey login (e.g. gradual rollout changed) or failed.
+    internal func ensureValidLoginProcess() async -> Bool {
+        if process?.validLoginData(margin: Corbado.initExpiryMargin) != nil {
+            return true
+        }
+        
+        if case .initFallback = await isLoginAllowed() {
+            return false
+        }
+        
+        return true
     }
     
     internal func getConnectLoginStepLoginInit(loginData: ConnectLoginInitData) async -> ConnectLoginStep {

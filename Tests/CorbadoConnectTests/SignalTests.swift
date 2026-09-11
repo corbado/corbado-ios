@@ -89,6 +89,7 @@ struct SignalTests {
         ])
         let corbado = Corbado(projectId: UUID().uuidString, frontendApiUrlSuffix: nil)
         await corbado.installTestClient(factory)
+        await corbado.installInitializedManageProcess()
         let controller = StubAuthorizationController()
         controller.signalFailure = AuthorizationError(type: .unknown, originalError: testNativeError())
         await corbado.setVirtualAuthorizationController(controller)
@@ -136,6 +137,7 @@ struct SignalTests {
         ])
         let corbado = Corbado(projectId: UUID().uuidString, frontendApiUrlSuffix: nil)
         await corbado.installTestClient(factory)
+        await corbado.installInitializedManageProcess()
         let controller = StubAuthorizationController()
         await corbado.setVirtualAuthorizationController(controller)
 

@@ -51,6 +51,8 @@ public extension Corbado {
         
         let attestationOptions: String
         do {
+            try await ensureValidManageProcess()
+            
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyAppend)
             let resStart = try await client.appendStart(situation: "passkey-list", connectToken: connectToken, forcePasskeyAppend: true, loadedMs: 0)
             
@@ -134,6 +136,8 @@ public extension Corbado {
     /// - Returns: A `ManageDeleteStatus` indicating the result of the deletion.
     func deletePasskey(connectTokenProvider: @Sendable (_: ConnectTokenType) async throws -> String, passkeyId: String) async -> ConnectManageStatus {
         do {
+            try await ensureValidManageProcess()
+            
             let connectToken = try await connectTokenProvider(ConnectTokenType.PasskeyDelete)
             let res = try await client.manageDelete(connectToken: connectToken, passkeyId: passkeyId)
             await clientStateService.clearLastLogin()
@@ -161,6 +165,16 @@ public extension Corbado {
     
     func manageRecordLearnMoreEvent() async {
         await client.recordManageEvent(event: .manageLearnMore)
+    }
+    
+    /// Re-runs manage-init if the manage-init data of the current process has expired (the backend removes processes after
+    /// their lifetime; a stale process ID would be rejected by the follow-up calls).
+    internal func ensureValidManageProcess() async throws(ErrorResponse) {
+        if process?.validManageData(margin: Corbado.initExpiryMargin) != nil {
+            return
+        }
+        
+        _ = try await manageAllowedStep()
     }
     
     internal func manageAllowedStep() async throws(ErrorResponse) -> Bool {
