@@ -14,18 +14,23 @@ final class StubAuthorizationController: SimpleAuthenticationServices.Authorizat
     }
 
     var failure = AuthorizationError(type: .noPresentationAnchor)
+    /// Returned by authorize/create instead of throwing `failure` when set.
+    var result: AuthorizationResult?
     var signalFailure: AuthorizationError?
     private(set) var signals: [SignalRequest] = []
 
     func authorize(requests: [ASAuthorizationRequest], preferImmediatelyAvailableCredentials: Bool) async throws -> AuthorizationResult {
+        if let result { return result }
         throw failure
     }
 
     func authorizeWithAutoFill(requests: [ASAuthorizationRequest]) async throws -> AuthorizationResult {
+        if let result { return result }
         throw failure
     }
 
     func create(requests: [ASAuthorizationRequest]) async throws -> AuthorizationResult {
+        if let result { return result }
         throw failure
     }
 

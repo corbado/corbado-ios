@@ -14,7 +14,7 @@ let package = Package(
             targets: ["CorbadoConnect"]),
     ],
     dependencies: [        
-        .package(url: "https://github.com/corbado/SimpleAuthenticationServices.git", from: "1.2.1"),
+        .package(url: "https://github.com/corbado/SimpleAuthenticationServices.git", from: "1.3.0"),
     ],
     targets: [
         .target(

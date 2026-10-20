@@ -59,7 +59,9 @@ public actor PasskeyPlugin {
                         authenticatorData: typed.rawAuthenticatorData.toBase64URL(),
                         signature: typed.signature.toBase64URL(),
                         userHandle: typed.userID.toBase64URL()
-                    )
+                    ),
+                    authenticatorAttachment: typed.attachment?.rawValue,
+                    clientExtensionResults: ClientExtensionResults(typed.clientExtensionResults)
                 )
                 
                 let encoder = JSONEncoder()
@@ -128,8 +130,10 @@ public actor PasskeyPlugin {
                     response: AuthenticatorAttestationResponse(
                         clientDataJSON: typed.rawClientDataJSON.toBase64URL(),
                         attestationObject: typed.rawAttestationObject.toBase64URL(),
-                        transports: typed.transports.compactMap { $0.toBase64URL() }
-                    )
+                        transports: typed.transportNames
+                    ),
+                    authenticatorAttachment: typed.attachment?.rawValue,
+                    clientExtensionResults: ClientExtensionResults(typed.clientExtensionResults)
                 )
                 
                 let encoder = JSONEncoder()
