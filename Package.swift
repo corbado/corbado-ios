@@ -14,8 +14,7 @@ let package = Package(
             targets: ["CorbadoConnect"]),
     ],
     dependencies: [        
-        // TODO before merge: switch to `from: "1.3.0"` once SimpleAuthenticationServices 1.3.0 is tagged.
-        .package(url: "https://github.com/corbado/SimpleAuthenticationServices.git", branch: "feat/credential-attachment-extensions"),
+        .package(url: "https://github.com/corbado/SimpleAuthenticationServices.git", from: "1.3.0"),
     ],
     targets: [
         .target(

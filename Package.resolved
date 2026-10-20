@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/corbado/SimpleAuthenticationServices.git",
       "state" : {
-        "branch" : "feat/credential-attachment-extensions",
-        "revision" : "f4378d5d8843b948ae85b9cde5273fd2c1bc1ed4"
+        "revision" : "99c625dd9a0d282006325d877283ecd65967db41",
+        "version" : "1.3.0"
       }
     },
     {
